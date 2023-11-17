@@ -1,3 +1,5 @@
+mod entity;
+
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
