@@ -1,4 +1,5 @@
 mod entity;
+mod parser;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
