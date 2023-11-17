@@ -1,0 +1,9 @@
+[package]
+name = "japanese-address-parser"
+version = "0.1.0"
+edition = "2021"
+authors = ["Yuuki Toriyama <github@toriyama.dev>"]
+repository = "https://github.com/YuukiToriyama/japanese-address-parser"
+license = "MIT"
+
+[dependencies]
