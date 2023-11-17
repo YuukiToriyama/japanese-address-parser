@@ -1,6 +1,17 @@
+use nom::bytes::complete::tag;
+use nom::error::VerboseError;
+use nom::Parser;
 use crate::entity::Prefecture;
 
-pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(&str, &str)> {}
+pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(&str, &str)> {
+    for city_name in prefecture.cities {
+        match tag::<&str, &str, VerboseError<&str>>(city_name.as_str()).parse(input) {
+            Ok(result) => return Some(result),
+            Err(_) => {}
+        }
+    }
+    None
+}
 
 #[cfg(test)]
 mod parser_tests {
