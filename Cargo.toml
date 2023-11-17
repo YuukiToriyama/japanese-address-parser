@@ -6,5 +6,8 @@ authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 license = "MIT"
 
+[lib]
+crate-type = ["cdylib"]
+
 [dependencies]
 wasm-bindgen = "0.2.88"
