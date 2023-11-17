@@ -1,7 +1,7 @@
+use crate::entity::Prefecture;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
-use crate::entity::Prefecture;
 
 pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(&str, &str)> {
     for city_name in prefecture.cities {
@@ -26,7 +26,8 @@ mod parser_tests {
                 "京都市北区".to_string(),
                 "京都市上京区".to_string(),
                 "京都市山科区".to_string(),
-                "京都市西京区".to_string()],
+                "京都市西京区".to_string(),
+            ],
         };
         let (rest, city) = read_city("京都市山科区椥辻池尻町14-2", prefecture).unwrap();
         assert_eq!(rest, "椥辻池尻町14-2");
@@ -41,7 +42,8 @@ mod parser_tests {
                 "京都市北区".to_string(),
                 "京都市上京区".to_string(),
                 "京都市山科区".to_string(),
-                "京都市西京区".to_string()],
+                "京都市西京区".to_string(),
+            ],
         };
         assert_eq!(read_city("港区芝公園4丁目2-8", prefecture), None);
     }
