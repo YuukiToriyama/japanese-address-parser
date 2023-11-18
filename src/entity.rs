@@ -1,3 +1,6 @@
+use serde::Deserialize;
+
+#[derive(Deserialize)]
 pub struct Prefecture {
     pub name: String,
     pub cities: Vec<String>,
