@@ -2,6 +2,10 @@ use gloo_net::http::Request;
 
 use crate::entity::Prefecture;
 
+trait Api {
+    async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, String>;
+}
+
 async fn get_prefecture_master(prefecture_name: &str) -> Result<Prefecture, String> {
     let endpoint = format!(
         "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/{}/master.json",
