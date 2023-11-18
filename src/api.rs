@@ -19,8 +19,7 @@ async fn get_prefecture_master(prefecture_name: &str) -> Result<Prefecture, Stri
 #[cfg(all(test, target_arch = "wasm32"))]
 mod api_tests {
     use wasm_bindgen_test::wasm_bindgen_test;
-
-    use crate::parser::api::get_prefecture_master;
+    use crate::api::get_prefecture_master;
 
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
