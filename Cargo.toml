@@ -10,5 +10,6 @@ license = "MIT"
 crate-type = ["cdylib"]
 
 [dependencies]
+gloo-net = "0.4.0"
 nom = "7.1.3"
 wasm-bindgen = "0.2.88"
