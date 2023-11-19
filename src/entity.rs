@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct Prefecture {
@@ -20,6 +20,7 @@ pub struct Town {
     pub lng: f32,
 }
 
+#[derive(Serialize)]
 pub struct ParsedAddress {
     pub prefecture: String,
     pub city: String,
