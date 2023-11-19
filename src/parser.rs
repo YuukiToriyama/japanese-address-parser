@@ -1,5 +1,4 @@
 use crate::api::Api;
-use crate::api::wasm::ApiImplForWasm;
 use crate::entity::ParsedAddress;
 use crate::parser::read_city::read_city;
 use crate::parser::read_prefecture::read_prefecture;
@@ -9,7 +8,7 @@ mod read_city;
 mod read_prefecture;
 mod read_town;
 
-pub async fn parse(api: ApiImplForWasm, input: &str) -> ParsedAddress {
+pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
     // 都道府県を特定
     let (rest, prefecture_name) = read_prefecture(input).unwrap();
     // その都道府県の市町村名リストを取得
