@@ -4,8 +4,8 @@ mod api;
 mod entity;
 mod parser;
 
-use wasm_bindgen::prelude::wasm_bindgen;
 use crate::api::wasm::ApiImplForWasm;
+use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
 struct Parser();
@@ -21,8 +21,8 @@ impl Parser {
 
 #[cfg(test)]
 mod integration_tests {
-    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
     use crate::Parser;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     wasm_bindgen_test_configure!(run_in_browser);
 
