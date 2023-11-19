@@ -27,3 +27,29 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
         rest: rest.to_string(),
     }
 }
+
+#[cfg(test)]
+mod parser_tests {
+    use crate::api::mock::ApiMock;
+    use crate::parser::parse;
+
+    #[tokio::test]
+    async fn parse_mocked_success_神奈川県平塚市御殿二丁目() {
+        let api = ApiMock { should_fail: false };
+        let address = parse(api, "神奈川県平塚市御殿二丁目2-23").await;
+        assert_eq!(address.prefecture, "神奈川県".to_string());
+        assert_eq!(address.city, "平塚市".to_string());
+        assert_eq!(address.town, "御殿二丁目".to_string());
+        assert_eq!(address.rest, "2-23".to_string());
+    }
+
+    #[tokio::test]
+    async fn parse_mocked_success_神奈川県平塚市桜ケ丘() {
+        let api = ApiMock { should_fail: false };
+        let address = parse(api, "神奈川県平塚市桜ケ丘100-1").await;
+        assert_eq!(address.prefecture, "神奈川県".to_string());
+        assert_eq!(address.city, "平塚市".to_string());
+        assert_eq!(address.town, "桜ケ丘".to_string());
+        assert_eq!(address.rest, "100-1".to_string());
+    }
+}
