@@ -27,6 +27,8 @@ jobs:
           git commit -m "cargo fmt"
           git push
         continue-on-error: true
+      - name: Code style check
+        run: cargo fmt --check
       - name: Build check
         run: cargo build --verbose
       - name: Unit Testing
@@ -35,5 +37,3 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Unit Testing for Wasm module
         run: wasm-pack test --firefox --headless
-      - name: Code style check
-        run: cargo fmt --check
