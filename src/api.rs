@@ -1,4 +1,5 @@
 pub mod wasm;
+pub mod mock;
 
 use crate::entity::{City, Prefecture};
 
