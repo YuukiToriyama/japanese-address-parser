@@ -1,6 +1,6 @@
 use gloo_net::http::Request;
 use crate::api::Api;
-use crate::entity::Prefecture;
+use crate::entity::{City, Prefecture, Town};
 
 pub struct ApiImplForWasm {}
 
@@ -18,6 +18,24 @@ impl Api for ApiImplForWasm {
             Err(format!("Failed to fetch {}", &endpoint))
         }
     }
+
+    async fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, String> {
+        let endpoint = format!(
+            "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
+            prefecture_name,
+            city_name
+        );
+        let response = Request::get(&endpoint).send().await.unwrap();
+        if response.ok() {
+            let towns = response.json::<Vec<Town>>().await.unwrap();
+            Ok(City {
+                name: city_name.to_string(),
+                towns,
+            })
+        } else {
+            Err(format!("Failed to fetch {}", &endpoint))
+        }
+    }
 }
 
 #[cfg(all(test, target_arch = "wasm32"))]
@@ -25,6 +43,7 @@ mod api_tests {
     use wasm_bindgen_test::wasm_bindgen_test;
     use crate::api::Api;
     use crate::api::wasm::ApiImplForWasm;
+    use crate::entity::Town;
 
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
@@ -60,5 +79,26 @@ mod api_tests {
     async fn get_prefecture_master_fail() {
         let api = ApiImplForWasm {};
         api.get_prefecture_master("大阪都").await.unwrap();
+    }
+
+    #[wasm_bindgen_test]
+    async fn get_city_master_success() {
+        let api = ApiImplForWasm {};
+        let city = api.get_city_master("石川県", "羽咋郡志賀町").await.unwrap();
+        assert_eq!(city.name, "羽咋郡志賀町".to_string());
+        let town = Town {
+            name: "末吉".to_string(),
+            koaza: "千古".to_string(),
+            lat: 37.006235,
+            lng: 136.779155,
+        };
+        assert!(city.towns.contains(&town));
+    }
+
+    #[wasm_bindgen_test]
+    #[should_panic]
+    async fn get_city_master_fail() {
+        let api = ApiImplForWasm {};
+        api.get_city_master("石川県", "敦賀市").await.unwrap();
     }
 }

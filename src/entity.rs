@@ -11,7 +11,9 @@ pub struct City {
     pub towns: Vec<Town>,
 }
 
+#[derive(PartialEq, Deserialize)]
 pub struct Town {
+    #[serde(alias = "town")]
     pub name: String,
     pub koaza: String,
     pub lat: f32,
