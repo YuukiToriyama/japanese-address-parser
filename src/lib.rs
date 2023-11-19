@@ -1,8 +1,8 @@
 #![feature(async_fn_in_trait)]
 
+mod api;
 mod entity;
 mod parser;
-mod api;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 

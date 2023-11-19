@@ -16,7 +16,10 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
     // 市町村名を特定
     let (rest, city_name) = read_city(rest, prefecture).unwrap();
     // その市町村の町名リストを取得
-    let city = api.get_city_master(prefecture_name, city_name).await.unwrap();
+    let city = api
+        .get_city_master(prefecture_name, city_name)
+        .await
+        .unwrap();
     // 町名を特定
     let (rest, town_name) = read_town(rest, city).unwrap();
 
@@ -30,10 +33,10 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
 
 #[cfg(test)]
 mod parser_tests {
-    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
     use crate::api::mock::ApiMock;
     use crate::api::wasm::ApiImplForWasm;
     use crate::parser::parse;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     #[tokio::test]
     async fn parse_mocked_success_神奈川県平塚市御殿二丁目() {

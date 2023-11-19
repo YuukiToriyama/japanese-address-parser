@@ -22,15 +22,21 @@ impl Api for ApiMock {
         }
     }
 
-    async fn get_city_master(&self, _prefecture_name: &str, _city_name: &str) -> Result<City, String> {
+    async fn get_city_master(
+        &self,
+        _prefecture_name: &str,
+        _city_name: &str,
+    ) -> Result<City, String> {
         if self.should_fail {
-            Err("https://geolonia.github.io/japanese-addresses/api/ja/神奈川県/平塚市.json".to_string())
+            Err(
+                "https://geolonia.github.io/japanese-addresses/api/ja/神奈川県/平塚市.json"
+                    .to_string(),
+            )
         } else {
             Ok(City {
                 name: "平塚市".to_string(),
                 towns: vec![
-                    Town
-                    {
+                    Town {
                         name: "御殿一丁目".to_string(),
                         koaza: "".to_string(),
                         lat: 35.341184,

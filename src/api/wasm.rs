@@ -1,6 +1,6 @@
-use gloo_net::http::Request;
 use crate::api::Api;
 use crate::entity::{City, Prefecture, Town};
+use gloo_net::http::Request;
 
 pub struct ApiImplForWasm {}
 
@@ -19,11 +19,14 @@ impl Api for ApiImplForWasm {
         }
     }
 
-    async fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, String> {
+    async fn get_city_master(
+        &self,
+        prefecture_name: &str,
+        city_name: &str,
+    ) -> Result<City, String> {
         let endpoint = format!(
             "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
-            prefecture_name,
-            city_name
+            prefecture_name, city_name
         );
         let response = Request::get(&endpoint).send().await.unwrap();
         if response.ok() {
@@ -40,10 +43,10 @@ impl Api for ApiImplForWasm {
 
 #[cfg(all(test, target_arch = "wasm32"))]
 mod api_tests {
-    use wasm_bindgen_test::wasm_bindgen_test;
-    use crate::api::Api;
     use crate::api::wasm::ApiImplForWasm;
+    use crate::api::Api;
     use crate::entity::Town;
+    use wasm_bindgen_test::wasm_bindgen_test;
 
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
