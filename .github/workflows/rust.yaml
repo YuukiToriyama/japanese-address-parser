@@ -16,6 +16,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Set up a Rust toolchain
+        uses: hecrj/setup-rust-action@v2.0.0
+        with:
+          rust-version: nightly
+          components: rustfmt, cargo
       - name: Code formatting
         run: |
           cargo fmt
