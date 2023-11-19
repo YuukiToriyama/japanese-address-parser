@@ -12,6 +12,11 @@ struct Parser();
 
 #[wasm_bindgen]
 impl Parser {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Parser {}
+    }
+
     pub async fn parse(&self, address: &str) -> String {
         console_error_panic_hook::set_once();
         let api = ApiImplForWasm {};
