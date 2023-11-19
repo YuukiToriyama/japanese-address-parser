@@ -30,7 +30,9 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
 
 #[cfg(test)]
 mod parser_tests {
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
     use crate::api::mock::ApiMock;
+    use crate::api::wasm::ApiImplForWasm;
     use crate::parser::parse;
 
     #[tokio::test]
@@ -51,5 +53,17 @@ mod parser_tests {
         assert_eq!(address.city, "平塚市".to_string());
         assert_eq!(address.town, "桜ケ丘".to_string());
         assert_eq!(address.rest, "100-1".to_string());
+    }
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    async fn parse_wasm_success() {
+        let api = ApiImplForWasm {};
+        let address = parse(api, "兵庫県淡路市生穂新島8番地").await;
+        assert_eq!(address.prefecture, "兵庫県".to_string());
+        assert_eq!(address.city, "淡路市".to_string());
+        assert_eq!(address.town, "生穂".to_string());
+        assert_eq!(address.rest, "新島8番地".to_string());
     }
 }
