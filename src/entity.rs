@@ -19,3 +19,10 @@ pub struct Town {
     pub lat: f32,
     pub lng: f32,
 }
+
+pub struct ParsedAddress {
+    pub prefecture: String,
+    pub city: String,
+    pub town: String,
+    pub rest: String,
+}
