@@ -13,6 +13,7 @@ struct Parser();
 #[wasm_bindgen]
 impl Parser {
     pub async fn parse(&self, address: &str) -> String {
+        console_error_panic_hook::set_once();
         let api = ApiImplForWasm {};
         let result = parser::parse(api, address).await;
         serde_json::to_string(&result).unwrap()
