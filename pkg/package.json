@@ -1,0 +1,22 @@
+{
+  "name": "@toriyama/japanese-address-parser",
+  "collaborators": [
+    "Yuuki Toriyama <github@toriyama.dev>"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YuukiToriyama/japanese-address-parser"
+  },
+  "files": [
+    "japanese_address_parser_bg.wasm",
+    "japanese_address_parser.js",
+    "japanese_address_parser.d.ts"
+  ],
+  "module": "japanese_address_parser.js",
+  "types": "japanese_address_parser.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
