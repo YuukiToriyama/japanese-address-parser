@@ -17,8 +17,9 @@ pub struct Town {
     #[serde(alias = "town")]
     pub name: String,
     pub koaza: String,
-    pub lat: f32,
-    pub lng: f32,
+    // TODO: https://github.com/geolonia/japanese-addresses/issues/148 が解消されたらOptionを外すことができる
+    pub lat: Option<f32>,
+    pub lng: Option<f32>,
 }
 
 #[derive(Serialize)]
