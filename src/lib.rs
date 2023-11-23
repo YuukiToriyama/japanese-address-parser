@@ -2,6 +2,7 @@
 
 mod api;
 mod entity;
+mod err;
 mod parser;
 
 use crate::api::wasm::ApiImplForWasm;
