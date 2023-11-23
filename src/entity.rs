@@ -22,16 +22,16 @@ pub struct Town {
 }
 
 #[derive(Serialize)]
-pub struct ParsedAddress {
+pub struct Address {
     pub prefecture: String,
     pub city: String,
     pub town: String,
     pub rest: String,
 }
 
-impl ParsedAddress {
+impl Address {
     pub fn new(prefecture_name: &str, city_name: &str, town_name: &str, rest_name: &str) -> Self {
-        ParsedAddress {
+        Address {
             prefecture: prefecture_name.to_string(),
             city: city_name.to_string(),
             town: town_name.to_string(),
@@ -42,6 +42,6 @@ impl ParsedAddress {
 
 #[derive(Serialize)]
 pub struct ParseResult {
-    pub address: ParsedAddress,
+    pub address: Address,
     pub error: Option<Error>,
 }

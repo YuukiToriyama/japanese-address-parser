@@ -1,5 +1,5 @@
 use crate::api::Api;
-use crate::entity::{ParseResult, ParsedAddress};
+use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
 use crate::parser::read_city::read_city;
 use crate::parser::read_prefecture::read_prefecture;
@@ -14,7 +14,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
         None => {
             return ParseResult {
-                address: ParsedAddress::new("", "", "", input),
+                address: Address::new("", "", "", input),
                 error: Some(Error::new_parse_error(ParseErrorKind::PREFECTURE)),
             }
         }
@@ -26,7 +26,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     let (rest, city_name) = match read_city(rest, prefecture) {
         None => {
             return ParseResult {
-                address: ParsedAddress::new(prefecture_name, "", "", rest),
+                address: Address::new(prefecture_name, "", "", rest),
                 error: Some(Error::new_parse_error(ParseErrorKind::CITY)),
             }
         }
@@ -41,7 +41,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     let (rest, town_name) = match read_town(rest, city) {
         None => {
             return ParseResult {
-                address: ParsedAddress::new(prefecture_name, city_name, "", rest),
+                address: Address::new(prefecture_name, city_name, "", rest),
                 error: Some(Error::new_parse_error(ParseErrorKind::TOWN)),
             }
         }
@@ -49,7 +49,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     };
 
     ParseResult {
-        address: ParsedAddress::new(prefecture_name, city_name, town_name, rest),
+        address: Address::new(prefecture_name, city_name, town_name, rest),
         error: None,
     }
 }
