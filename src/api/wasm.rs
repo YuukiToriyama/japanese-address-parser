@@ -91,10 +91,14 @@ mod api_tests {
     }
 
     #[wasm_bindgen_test]
-    #[should_panic]
     async fn get_prefecture_master_fail() {
         let api = ApiImplForWasm {};
-        api.get_prefecture_master("大阪都").await.unwrap();
+        let result = api.get_prefecture_master("大阪都").await;
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap().error_message,
+            "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/大阪都/master.jsonを取得できませんでした".to_string()
+        )
     }
 
     #[wasm_bindgen_test]
@@ -112,9 +116,13 @@ mod api_tests {
     }
 
     #[wasm_bindgen_test]
-    #[should_panic]
     async fn get_city_master_fail() {
         let api = ApiImplForWasm {};
-        api.get_city_master("石川県", "敦賀市").await.unwrap();
+        let result = api.get_city_master("石川県", "敦賀市").await;
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap().error_message,
+            "https://geolonia.github.io/japanese-addresses/api/ja/石川県/敦賀市.jsonを取得できませんでした".to_string()
+        );
     }
 }
