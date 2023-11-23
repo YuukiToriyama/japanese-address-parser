@@ -9,10 +9,10 @@ pub struct Error {
 }
 
 impl Error {
-    pub fn new_parse_error(message: &str) -> Self {
+    pub fn new_parse_error(parse_error_kind: ParseErrorKind) -> Self {
         Error {
             error_type: "ParseError".to_string(),
-            error_message: message.to_string(),
+            error_message: parse_error_kind.to_string(),
         }
     }
     pub fn new_resource_unavailable_error(message: &str) -> Self {
