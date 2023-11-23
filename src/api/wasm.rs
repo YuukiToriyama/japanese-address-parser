@@ -1,21 +1,27 @@
 use crate::api::Api;
 use crate::entity::{City, Prefecture, Town};
+use crate::err::{ApiErrorKind, Error};
 use gloo_net::http::Request;
 
 pub struct ApiImplForWasm {}
 
 impl Api for ApiImplForWasm {
-    async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, String> {
+    async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!(
             "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/{}/master.json",
             prefecture_name
         );
-        let response = Request::get(&endpoint).send().await.unwrap();
+        let response = match Request::get(&endpoint).send().await {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+        };
         if response.ok() {
-            let prefecture = response.json::<Prefecture>().await.unwrap();
-            Ok(prefecture)
+            match response.json::<Prefecture>().await {
+                Ok(result) => Ok(result),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+            }
         } else {
-            Err(format!("Failed to fetch {}", &endpoint))
+            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
         }
     }
 

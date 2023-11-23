@@ -1,14 +1,17 @@
 use crate::api::Api;
 use crate::entity::{City, Prefecture, Town};
+use crate::err::{ApiErrorKind, Error};
 
 pub struct ApiMock {
     pub should_fail: bool,
 }
 
 impl Api for ApiMock {
-    async fn get_prefecture_master(&self, _prefecture_name: &str) -> Result<Prefecture, String> {
+    async fn get_prefecture_master(&self, _prefecture_name: &str) -> Result<Prefecture, Error> {
         if self.should_fail {
-            Err("Failed to fetch https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/神奈川県/master.json".to_string())
+            Err(Error::new_api_error(
+                ApiErrorKind::FETCH("https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/神奈川県/master.json".to_string())
+            ))
         } else {
             Ok(Prefecture {
                 name: "神奈川県".to_string(),
