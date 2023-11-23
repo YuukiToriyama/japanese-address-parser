@@ -10,7 +10,10 @@ mod read_town;
 
 pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
     // 都道府県を特定
-    let (rest, prefecture_name) = read_prefecture(input).unwrap();
+    let (rest, prefecture_name) = match read_prefecture(input) {
+        None => return ParsedAddress::new("", "", "", input),
+        Some(result) => result,
+    };
     // その都道府県の市町村名リストを取得
     let prefecture = api.get_prefecture_master(prefecture_name).await.unwrap();
     // 市町村名を特定
@@ -51,6 +54,16 @@ mod parser_tests {
         assert_eq!(address.city, "平塚市".to_string());
         assert_eq!(address.town, "桜ケ丘".to_string());
         assert_eq!(address.rest, "100-1".to_string());
+    }
+
+    #[tokio::test]
+    async fn parse_mocked_fail_都道府県名が間違っている場合() {
+        let api = ApiMock { should_fail: false };
+        let address = parse(api, "神奈側県平塚市桜ケ丘100-1").await;
+        assert_eq!(address.prefecture, "".to_string());
+        assert_eq!(address.city, "".to_string());
+        assert_eq!(address.town, "".to_string());
+        assert_eq!(address.rest, "神奈側県平塚市桜ケ丘100-1".to_string());
     }
 
     wasm_bindgen_test_configure!(run_in_browser);
