@@ -23,12 +23,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParsedAddress {
     // 町名を特定
     let (rest, town_name) = read_town(rest, city).unwrap();
 
-    ParsedAddress {
-        prefecture: prefecture_name.to_string(),
-        city: city_name.to_string(),
-        town: town_name.to_string(),
-        rest: rest.to_string(),
-    }
+    ParsedAddress::new(prefecture_name, city_name, town_name, rest)
 }
 
 #[cfg(test)]
