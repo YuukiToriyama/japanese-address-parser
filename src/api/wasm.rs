@@ -29,20 +29,27 @@ impl Api for ApiImplForWasm {
         &self,
         prefecture_name: &str,
         city_name: &str,
-    ) -> Result<City, String> {
+    ) -> Result<City, Error> {
         let endpoint = format!(
             "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
             prefecture_name, city_name
         );
-        let response = Request::get(&endpoint).send().await.unwrap();
+        let response = match Request::get(&endpoint).send().await {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+        };
         if response.ok() {
-            let towns = response.json::<Vec<Town>>().await.unwrap();
-            Ok(City {
-                name: city_name.to_string(),
-                towns,
-            })
+            match response.json::<Vec<Town>>().await {
+                Ok(towns) => Ok(City {
+                    name: city_name.to_string(),
+                    towns,
+                }),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint)))
+            }
         } else {
-            Err(format!("Failed to fetch {}", &endpoint))
+            Err(Error::new_api_error(
+                ApiErrorKind::FETCH(endpoint)
+            ))
         }
     }
 }
