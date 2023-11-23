@@ -15,7 +15,7 @@ impl Error {
             error_message: parse_error_kind.to_string(),
         }
     }
-    pub fn new_resource_unavailable_error(message: &str) -> Self {
+    pub fn new_api_error(message: &str) -> Self {
         Error {
             error_type: "ResourceUnavailableError".to_string(),
             error_message: message.to_string(),
