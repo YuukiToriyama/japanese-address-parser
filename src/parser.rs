@@ -39,10 +39,13 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Some(result) => result,
     };
     // その市町村の町名リストを取得
-    let city = api
-        .get_city_master(prefecture_name, city_name)
-        .await
-        .unwrap();
+    let city = match api.get_city_master(prefecture_name, city_name).await {
+        Err(error) => return ParseResult {
+            address: Address::new(prefecture_name, city_name, "", rest),
+            error: Some(error)
+        },
+        Ok(result) => result
+    };
     // 町名を特定
     let (rest, town_name) = match read_town(rest, city) {
         None => {
@@ -130,6 +133,11 @@ mod parser_tests {
             result.error.unwrap().error_message,
             ParseErrorKind::CITY.to_string()
         );
+    }
+
+    #[tokio::test]
+    async fn parse_mocked_fail_市区町村マスタの取得に失敗する() {
+        // TODO: ApiMockの仕様を修正しないとこのテストコードは書けない
     }
 
     #[tokio::test]
