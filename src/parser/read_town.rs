@@ -26,14 +26,14 @@ mod parser_tests {
                 Town {
                     name: "旭町".to_string(),
                     koaza: "".to_string(),
-                    lat: 35.016292,
-                    lng: 138.489362,
+                    lat: Some(35.016292),
+                    lng: Some(138.489362),
                 },
                 Town {
                     name: "新丹谷".to_string(),
                     koaza: "".to_string(),
-                    lat: 35.072403,
-                    lng: 138.474199,
+                    lat: Some(35.072403),
+                    lng: Some(138.474199),
                 },
             ],
         };

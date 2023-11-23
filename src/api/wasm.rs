@@ -92,8 +92,8 @@ mod api_tests {
         let town = Town {
             name: "末吉".to_string(),
             koaza: "千古".to_string(),
-            lat: 37.006235,
-            lng: 136.779155,
+            lat: Some(37.006235),
+            lng: Some(136.779155),
         };
         assert!(city.towns.contains(&town));
     }
