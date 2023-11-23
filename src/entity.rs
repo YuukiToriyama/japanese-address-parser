@@ -58,3 +58,9 @@ impl Error {
         }
     }
 }
+
+#[derive(Serialize)]
+pub struct ParseResult {
+    pub address: ParsedAddress,
+    pub error: Option<Error>,
+}
