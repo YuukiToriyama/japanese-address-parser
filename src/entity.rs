@@ -27,3 +27,14 @@ pub struct ParsedAddress {
     pub town: String,
     pub rest: String,
 }
+
+impl ParsedAddress {
+    pub fn new(prefecture_name: &str, city_name: &str, town_name: &str, rest_name: &str) -> Self {
+        ParsedAddress {
+            prefecture: prefecture_name.to_string(),
+            city: city_name.to_string(),
+            town: town_name.to_string(),
+            rest: rest_name.to_string(),
+        }
+    }
+}
