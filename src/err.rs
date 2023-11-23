@@ -2,7 +2,7 @@ use std::fmt::{Display, Formatter};
 
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug, PartialEq)]
 pub struct Error {
     pub error_type: String,
     pub error_message: String,
