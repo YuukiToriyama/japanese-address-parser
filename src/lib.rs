@@ -38,7 +38,7 @@ mod integration_tests {
         let parser = Parser();
         assert_eq!(
             parser.parse("岩手県盛岡市内丸10番1号").await,
-            "{\"prefecture\":\"岩手県\",\"city\":\"盛岡市\",\"town\":\"内丸\",\"rest\":\"10番1号\"}".to_string()
+            "{\"address\":{\"prefecture\":\"岩手県\",\"city\":\"盛岡市\",\"town\":\"内丸\",\"rest\":\"10番1号\"},\"error\":null}".to_string()
         )
     }
 }
