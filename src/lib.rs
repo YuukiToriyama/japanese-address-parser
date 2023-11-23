@@ -2,6 +2,7 @@
 
 mod api;
 mod entity;
+mod err;
 mod parser;
 
 use crate::api::wasm::ApiImplForWasm;
@@ -37,7 +38,16 @@ mod integration_tests {
         let parser = Parser();
         assert_eq!(
             parser.parse("岩手県盛岡市内丸10番1号").await,
-            "{\"prefecture\":\"岩手県\",\"city\":\"盛岡市\",\"town\":\"内丸\",\"rest\":\"10番1号\"}".to_string()
+            "{\"address\":{\"prefecture\":\"岩手県\",\"city\":\"盛岡市\",\"town\":\"内丸\",\"rest\":\"10番1号\"},\"error\":null}".to_string()
+        )
+    }
+
+    #[wasm_bindgen_test]
+    async fn parse_fail_unknown_town_name() {
+        let parser = Parser();
+        assert_eq!(
+            parser.parse("東京都中央区銀座九丁目").await,
+            "{\"address\":{\"prefecture\":\"東京都\",\"city\":\"中央区\",\"town\":\"\",\"rest\":\"銀座九丁目\"},\"error\":{\"error_type\":\"ParseError\",\"error_message\":\"一致する町名がありませんでした\"}}".to_string()
         )
     }
 }

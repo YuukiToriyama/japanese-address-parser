@@ -1,3 +1,4 @@
+use crate::err::Error;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -21,20 +22,26 @@ pub struct Town {
 }
 
 #[derive(Serialize)]
-pub struct ParsedAddress {
+pub struct Address {
     pub prefecture: String,
     pub city: String,
     pub town: String,
     pub rest: String,
 }
 
-impl ParsedAddress {
+impl Address {
     pub fn new(prefecture_name: &str, city_name: &str, town_name: &str, rest_name: &str) -> Self {
-        ParsedAddress {
+        Address {
             prefecture: prefecture_name.to_string(),
             city: city_name.to_string(),
             town: town_name.to_string(),
             rest: rest_name.to_string(),
         }
     }
+}
+
+#[derive(Serialize)]
+pub struct ParseResult {
+    pub address: Address,
+    pub error: Option<Error>,
 }
