@@ -15,10 +15,14 @@ impl Error {
             error_message: parse_error_kind.to_string(),
         }
     }
-    pub fn new_resource_unavailable_error(message: &str) -> Self {
+    pub fn new_api_error(api_error_kind: ApiErrorKind) -> Self {
+        let error_message = match api_error_kind {
+            ApiErrorKind::FETCH(url) => format!("{}を取得できませんでした", url),
+            ApiErrorKind::DESERIALIZE(url) => format!("{}のデシリアライズに失敗しました", url),
+        };
         Error {
-            error_type: "ResourceUnavailableError".to_string(),
-            error_message: message.to_string(),
+            error_type: "ApiError".to_string(),
+            error_message,
         }
     }
 }
@@ -38,4 +42,9 @@ impl Display for ParseErrorKind {
         };
         write!(f, "一致する{}がありませんでした", label)
     }
+}
+
+pub enum ApiErrorKind {
+    FETCH(String),
+    DESERIALIZE(String),
 }

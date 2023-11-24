@@ -21,7 +21,13 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Some(result) => result,
     };
     // その都道府県の市町村名リストを取得
-    let prefecture = api.get_prefecture_master(prefecture_name).await.unwrap();
+    let prefecture = match api.get_prefecture_master(prefecture_name).await {
+        Err(error) => return ParseResult {
+            address: Address::new(prefecture_name, "", "", rest),
+            error: Some(error)
+        },
+        Ok(result) => result,
+    };
     // 市町村名を特定
     let (rest, city_name) = match read_city(rest, prefecture) {
         None => {
@@ -33,10 +39,13 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Some(result) => result,
     };
     // その市町村の町名リストを取得
-    let city = api
-        .get_city_master(prefecture_name, city_name)
-        .await
-        .unwrap();
+    let city = match api.get_city_master(prefecture_name, city_name).await {
+        Err(error) => return ParseResult {
+            address: Address::new(prefecture_name, city_name, "", rest),
+            error: Some(error)
+        },
+        Ok(result) => result
+    };
     // 町名を特定
     let (rest, town_name) = match read_town(rest, city) {
         None => {
@@ -99,6 +108,20 @@ mod parser_tests {
     }
 
     #[tokio::test]
+    async fn parse_mocked_fail_都道府県マスタの取得に失敗する() {
+        let api = ApiMock {should_fail: true};
+        let result = parse(api, "東京都新宿区西新宿二丁目8-1").await;
+        assert_eq!(result.address.prefecture, "東京都".to_string());
+        assert_eq!(result.address.city, "".to_string());
+        assert_eq!(result.address.town, "".to_string());
+        assert_eq!(result.address.rest, "新宿区西新宿二丁目8-1".to_string());
+        assert_eq!(
+            result.error.unwrap().error_type,
+            "ApiError".to_string()
+        );
+    }
+
+    #[tokio::test]
     async fn parse_mocked_fail_市町村名が間違っている場合() {
         let api = ApiMock { should_fail: false };
         let result = parse(api, "神奈川県平束市桜ケ丘100-1").await;
@@ -110,6 +133,11 @@ mod parser_tests {
             result.error.unwrap().error_message,
             ParseErrorKind::CITY.to_string()
         );
+    }
+
+    #[tokio::test]
+    async fn parse_mocked_fail_市区町村マスタの取得に失敗する() {
+        // TODO: ApiMockの仕様を修正しないとこのテストコードは書けない
     }
 
     #[tokio::test]

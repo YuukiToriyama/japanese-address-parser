@@ -1,21 +1,27 @@
 use crate::api::Api;
 use crate::entity::{City, Prefecture, Town};
+use crate::err::{ApiErrorKind, Error};
 use gloo_net::http::Request;
 
 pub struct ApiImplForWasm {}
 
 impl Api for ApiImplForWasm {
-    async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, String> {
+    async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!(
             "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/{}/master.json",
             prefecture_name
         );
-        let response = Request::get(&endpoint).send().await.unwrap();
+        let response = match Request::get(&endpoint).send().await {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+        };
         if response.ok() {
-            let prefecture = response.json::<Prefecture>().await.unwrap();
-            Ok(prefecture)
+            match response.json::<Prefecture>().await {
+                Ok(result) => Ok(result),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+            }
         } else {
-            Err(format!("Failed to fetch {}", &endpoint))
+            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
         }
     }
 
@@ -23,20 +29,27 @@ impl Api for ApiImplForWasm {
         &self,
         prefecture_name: &str,
         city_name: &str,
-    ) -> Result<City, String> {
+    ) -> Result<City, Error> {
         let endpoint = format!(
             "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
             prefecture_name, city_name
         );
-        let response = Request::get(&endpoint).send().await.unwrap();
+        let response = match Request::get(&endpoint).send().await {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+        };
         if response.ok() {
-            let towns = response.json::<Vec<Town>>().await.unwrap();
-            Ok(City {
-                name: city_name.to_string(),
-                towns,
-            })
+            match response.json::<Vec<Town>>().await {
+                Ok(towns) => Ok(City {
+                    name: city_name.to_string(),
+                    towns,
+                }),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint)))
+            }
         } else {
-            Err(format!("Failed to fetch {}", &endpoint))
+            Err(Error::new_api_error(
+                ApiErrorKind::FETCH(endpoint)
+            ))
         }
     }
 }
@@ -78,10 +91,14 @@ mod api_tests {
     }
 
     #[wasm_bindgen_test]
-    #[should_panic]
     async fn get_prefecture_master_fail() {
         let api = ApiImplForWasm {};
-        api.get_prefecture_master("大阪都").await.unwrap();
+        let result = api.get_prefecture_master("大阪都").await;
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap().error_message,
+            "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/大阪都/master.jsonを取得できませんでした".to_string()
+        )
     }
 
     #[wasm_bindgen_test]
@@ -99,9 +116,13 @@ mod api_tests {
     }
 
     #[wasm_bindgen_test]
-    #[should_panic]
     async fn get_city_master_fail() {
         let api = ApiImplForWasm {};
-        api.get_city_master("石川県", "敦賀市").await.unwrap();
+        let result = api.get_city_master("石川県", "敦賀市").await;
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap().error_message,
+            "https://geolonia.github.io/japanese-addresses/api/ja/石川県/敦賀市.jsonを取得できませんでした".to_string()
+        );
     }
 }
