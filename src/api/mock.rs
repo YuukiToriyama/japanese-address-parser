@@ -31,9 +31,10 @@ impl Api for ApiMock {
         _city_name: &str,
     ) -> Result<City, Error> {
         if self.should_fail {
-            Err(Error::new_api_error(
-                ApiErrorKind::FETCH("https://geolonia.github.io/japanese-addresses/api/ja/神奈川県/平塚市.json".to_string())
-            ))
+            Err(Error::new_api_error(ApiErrorKind::FETCH(
+                "https://geolonia.github.io/japanese-addresses/api/ja/神奈川県/平塚市.json"
+                    .to_string(),
+            )))
         } else {
             Ok(City {
                 name: "平塚市".to_string(),

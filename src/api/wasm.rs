@@ -25,11 +25,7 @@ impl Api for ApiImplForWasm {
         }
     }
 
-    async fn get_city_master(
-        &self,
-        prefecture_name: &str,
-        city_name: &str,
-    ) -> Result<City, Error> {
+    async fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!(
             "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
             prefecture_name, city_name
@@ -44,12 +40,10 @@ impl Api for ApiImplForWasm {
                     name: city_name.to_string(),
                     towns,
                 }),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint)))
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
             }
         } else {
-            Err(Error::new_api_error(
-                ApiErrorKind::FETCH(endpoint)
-            ))
+            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
         }
     }
 }
