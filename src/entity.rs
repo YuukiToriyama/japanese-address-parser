@@ -7,6 +7,16 @@ pub struct Prefecture {
     pub cities: Vec<String>,
 }
 
+impl Prefecture {
+    // 主にテストコードで使用する
+    pub fn new(prefecture_name: &str, city_names: Vec<&str>) -> Self {
+        Prefecture {
+            name: prefecture_name.to_string(),
+            cities: city_names.iter().map(|s| s.to_string()).collect(),
+        }
+    }
+}
+
 pub struct City {
     pub name: String,
     pub towns: Vec<Town>,
