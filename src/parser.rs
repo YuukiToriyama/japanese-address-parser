@@ -5,6 +5,7 @@ use crate::parser::read_city::read_city;
 use crate::parser::read_prefecture::read_prefecture;
 use crate::parser::read_town::read_town;
 
+mod adapter;
 mod read_city;
 mod read_prefecture;
 mod read_town;
