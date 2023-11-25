@@ -71,4 +71,20 @@ mod parser_tests {
         assert_eq!(rest, "香川5丁目1");
         assert_eq!(city, "茅ヶ崎市");
     }
+
+    #[test]
+    fn read_city_表記ゆれ_横浜市保土ケ谷区() {
+        let prefecture = Prefecture {
+            name: "神奈川県".to_string(),
+            cities: vec![
+                "横浜市中区".to_string(),
+                "横浜市南区".to_string(),
+                "横浜市保土ケ谷区".to_string(),
+                "横浜市磯子区".to_string(),
+            ],
+        };
+        let (rest, city) = read_city("横浜市保土ヶ谷区川辺町2番地9", prefecture).unwrap();
+        assert_eq!(rest, "川辺町2番地9");
+        assert_eq!(city, "横浜市保土ケ谷区");
+    }
 }
