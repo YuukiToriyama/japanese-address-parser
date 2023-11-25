@@ -41,20 +41,20 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Some(result) => result,
     };
     // その市町村の町名リストを取得
-    let city = match api.get_city_master(prefecture_name, city_name).await {
+    let city = match api.get_city_master(prefecture_name, &city_name).await {
         Err(error) => {
             return ParseResult {
-                address: Address::new(prefecture_name, city_name, "", rest),
+                address: Address::new(prefecture_name, &city_name, "", &rest),
                 error: Some(error),
             }
         }
         Ok(result) => result,
     };
     // 町名を特定
-    let (rest, town_name) = match read_town(rest, city) {
+    let (rest, town_name) = match read_town(&rest, city) {
         None => {
             return ParseResult {
-                address: Address::new(prefecture_name, city_name, "", rest),
+                address: Address::new(prefecture_name, &city_name, "", &rest),
                 error: Some(Error::new_parse_error(ParseErrorKind::TOWN)),
             }
         }
@@ -62,7 +62,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     };
 
     ParseResult {
-        address: Address::new(prefecture_name, city_name, town_name, rest),
+        address: Address::new(prefecture_name, &city_name, town_name, rest),
         error: None,
     }
 }

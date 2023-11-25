@@ -3,10 +3,10 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(&str, &str)> {
+pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)> {
     for city_name in prefecture.cities {
         match tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input) {
-            Ok(result) => return Some(result),
+            Ok((rest, city_name)) => return Some((rest.to_string(), city_name.to_string())),
             Err(_) => {}
         };
     }
