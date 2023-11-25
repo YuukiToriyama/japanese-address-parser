@@ -1,13 +1,17 @@
 use crate::entity::City;
+use crate::parser::adapter::adapt_variety_of_spelling;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-pub fn read_town(input: &str, city: City) -> Option<(&str, &str)> {
+pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
     for town in city.towns {
-        match tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input) {
-            Ok(result) => return Some(result),
-            Err(_) => {}
+        if let Ok((rest, town_name)) = tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input) {
+            return Some((rest.to_string(), town_name.to_string()));
+        }
+        // 「の」「ノ」の表記ゆれに対応する
+        if let Some(result) = adapt_variety_of_spelling(input, town.name, vec!["の", "ノ"]) {
+            return Some(result);
         }
     }
     None
@@ -49,5 +53,35 @@ mod parser_tests {
             towns: vec![],
         };
         assert_eq!(read_town("旭町6-8", city), None);
+    }
+
+    #[test]
+    fn read_town_表記ゆれ_東京都千代田区丸の内() {
+        let city = City {
+            name: "千代田区".to_string(),
+            towns: vec![
+                Town {
+                    name: "富士見一丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.697871),
+                    lng: Some(139.746978),
+                },
+                Town {
+                    name: "富士見二丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.698126),
+                    lng: Some(139.743057),
+                },
+                Town {
+                    name: "丸の内一丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.68156),
+                    lng: Some(139.767201),
+                },
+            ],
+        };
+        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
+        assert_eq!(rest, "9");
+        assert_eq!(town, "丸の内一丁目");
     }
 }
