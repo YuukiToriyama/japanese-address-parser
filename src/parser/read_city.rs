@@ -5,10 +5,10 @@ use nom::Parser;
 
 pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(&str, &str)> {
     for city_name in prefecture.cities {
-        match tag::<&str, &str, VerboseError<&str>>(city_name.as_str()).parse(input) {
+        match tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input) {
             Ok(result) => return Some(result),
             Err(_) => {}
-        }
+        };
     }
     None
 }
