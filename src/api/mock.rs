@@ -13,15 +13,10 @@ impl Api for ApiMock {
                 ApiErrorKind::FETCH("https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/神奈川県/master.json".to_string())
             ))
         } else {
-            Ok(Prefecture {
-                name: "神奈川県".to_string(),
-                cities: vec![
-                    "平塚市".to_string(),
-                    "鎌倉市".to_string(),
-                    "藤沢市".to_string(),
-                    "小田原市".to_string(),
-                ],
-            })
+            Ok(Prefecture::new(
+                "神奈川県",
+                vec!["平塚市", "鎌倉市", "藤沢市", "小田原市"],
+            ))
         }
     }
 
