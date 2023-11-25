@@ -49,4 +49,34 @@ mod parser_tests {
         };
         assert_eq!(read_town("旭町6-8", city), None);
     }
+
+    #[test]
+    fn read_town_表記ゆれ_東京都千代田区丸の内() {
+        let city = City {
+            name: "千代田区".to_string(),
+            towns: vec![
+                Town {
+                    name: "富士見一丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.697871),
+                    lng: Some(139.746978),
+                },
+                Town {
+                    name: "富士見二丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.698126),
+                    lng: Some(139.743057),
+                },
+                Town {
+                    name: "丸の内一丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.68156),
+                    lng: Some(139.767201),
+                },
+            ],
+        };
+        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
+        assert_eq!(rest, "9");
+        assert_eq!(town, "丸の内一丁目");
+    }
 }
