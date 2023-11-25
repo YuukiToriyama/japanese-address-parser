@@ -94,4 +94,21 @@ mod parser_tests {
         assert_eq!(rest, "川辺町2番地9");
         assert_eq!(city, "横浜市保土ケ谷区");
     }
+
+    #[test]
+    fn read_city_表記ゆれ_不破郡関ケ原町() {
+        let prefecture = Prefecture {
+            name: "岐阜県".to_string(),
+            cities: vec![
+                "養老郡養老町".to_string(),
+                "不破郡垂井町".to_string(),
+                "不破郡関ケ原町".to_string(),
+                "安八郡神戸町".to_string(),
+                "安八郡輪之内町".to_string(),
+            ],
+        };
+        let (rest, city) = read_city("不破郡関が原町大字関ケ原894番地の58", prefecture).unwrap();
+        assert_eq!(rest, "大字関ケ原894番地の58");
+        assert_eq!(city, "不破郡関ケ原町");
+    }
 }
