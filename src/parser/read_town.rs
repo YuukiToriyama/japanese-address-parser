@@ -13,7 +13,7 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
         if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["の", "ノ"]) {
             return Some(result);
         }
-        // 「ツ」と「ッ」の表記ゆれに対応する
+        // 「ツ」「ッ」の表記ゆれに対応する
         if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ツ", "ッ"]) {
             return Some(result);
         }
