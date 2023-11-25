@@ -57,7 +57,14 @@ mod parser_tests {
 
     #[test]
     fn read_town_表記ゆれ_東京都千代田区丸の内() {
-        let city = City {
+        let city = generate_city_東京都千代田区();
+        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
+        assert_eq!(rest, "9");
+        assert_eq!(town, "丸の内一丁目");
+    }
+
+    fn generate_city_東京都千代田区() -> City {
+        City {
             name: "千代田区".to_string(),
             towns: vec![
                 Town {
@@ -79,9 +86,6 @@ mod parser_tests {
                     lng: Some(139.767201),
                 },
             ],
-        };
-        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
-        assert_eq!(rest, "9");
-        assert_eq!(town, "丸の内一丁目");
+        }
     }
 }
