@@ -1,4 +1,5 @@
 use crate::entity::City;
+use crate::parser::adapter::adapt_variety_of_spelling;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
@@ -7,6 +8,10 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
     for town in city.towns {
         if let Ok((rest, town_name)) = tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input) {
             return Some((rest.to_string(), town_name.to_string()));
+        }
+        // 「の」「ノ」の表記ゆれに対応する
+        if let Some(result) = adapt_variety_of_spelling(input, town.name, vec!["の", "ノ"]) {
+            return Some(result);
         }
     }
     None
