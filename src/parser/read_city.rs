@@ -16,6 +16,13 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
                 Err(_) => {}
             };
         };
+        if city_name.contains("ケ") {
+            let edited_city_name = city_name.replace("ケ", "ヶ");
+            match tag::<&str, &str, VerboseError<&str>>(&edited_city_name).parse(input) {
+                Ok((rest, _)) => return Some((rest.to_string(), city_name.to_string())),
+                Err(_) => {}
+            };
+        };
     }
     None
 }
