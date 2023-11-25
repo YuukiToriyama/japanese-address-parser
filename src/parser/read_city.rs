@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use crate::entity::Prefecture;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
@@ -9,27 +10,16 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             Ok((rest, city_name)) => return Some((rest.to_string(), city_name.to_string())),
             Err(_) => {}
         };
-        if city_name.contains("ヶ") {
-            let edited_city_name = city_name.replace("ヶ", "ケ");
-            match tag::<&str, &str, VerboseError<&str>>(&edited_city_name).parse(input) {
-                Ok((rest, _)) => return Some((rest.to_string(), city_name.to_string())),
-                Err(_) => {}
+        // 「ケ」「ヶ」「が」の表記ゆれに対応する
+        for permutation in ["ケ", "ヶ", "が"].iter().permutations(2) {
+            if city_name.contains(permutation[0]) {
+                let edited_city_name = city_name.replace(permutation[0], permutation[1]);
+                match tag::<&str, &str, VerboseError<&str>>(&edited_city_name).parse(input) {
+                    Ok((rest, _)) => return Some((rest.to_string(), city_name.to_string())),
+                    Err(_) => {}
+                };
             };
         };
-        if city_name.contains("ケ") {
-            let edited_city_name = city_name.replace("ケ", "ヶ");
-            match tag::<&str, &str, VerboseError<&str>>(&edited_city_name).parse(input) {
-                Ok((rest, _)) => return Some((rest.to_string(), city_name.to_string())),
-                Err(_) => {}
-            };
-        };
-        if city_name.contains("ケ") {
-            let edited_city_name = city_name.replace("ケ", "が");
-            match tag::<&str, &str, VerboseError<&str>>(&edited_city_name).parse(input) {
-                Ok((rest, _)) => return Some((rest.to_string(), city_name.to_string())),
-                Err(_) => {}
-            };
-        }
     }
     None
 }
