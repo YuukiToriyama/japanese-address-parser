@@ -47,4 +47,21 @@ mod parser_tests {
         };
         assert_eq!(read_city("港区芝公園4丁目2-8", prefecture), None);
     }
+
+    #[test]
+    fn read_city_表記ゆれ_茅ヶ崎市() {
+        let prefecture = Prefecture {
+            name: "神奈川県".to_string(),
+            cities: vec![
+                "鎌倉市".to_string(),
+                "藤沢市".to_string(),
+                "小田原市".to_string(),
+                "茅ヶ崎市".to_string(),
+                "逗子市".to_string(),
+            ],
+        };
+        let (rest, city) = read_city("茅ケ崎市香川5丁目1", prefecture).unwrap();
+        assert_eq!(rest, "香川5丁目1");
+        assert_eq!(city, "茅ヶ崎市");
+    }
 }
