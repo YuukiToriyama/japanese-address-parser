@@ -63,7 +63,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     };
 
     ParseResult {
-        address: Address::new(prefecture_name, &city_name, town_name, rest),
+        address: Address::new(prefecture_name, &city_name, &town_name, &rest),
         error: None,
     }
 }
