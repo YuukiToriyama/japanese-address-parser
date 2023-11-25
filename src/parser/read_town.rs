@@ -63,6 +63,14 @@ mod parser_tests {
         assert_eq!(town, "丸の内一丁目");
     }
 
+    #[test]
+    fn read_town_表記ゆれ_東京都千代田区一ツ橋() {
+        let city = generate_city_東京都千代田区();
+        let (rest, town) = read_town("一ッ橋二丁目1番", city).unwrap();
+        assert_eq!(rest, "1番");
+        assert_eq!(town, "一ツ橋二丁目");
+    }
+
     fn generate_city_東京都千代田区() -> City {
         City {
             name: "千代田区".to_string(),
@@ -84,6 +92,18 @@ mod parser_tests {
                     koaza: "".to_string(),
                     lat: Some(35.68156),
                     lng: Some(139.767201),
+                },
+                Town {
+                    name: "一ツ橋一丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.691189),
+                    lng: Some(139.757119),
+                },
+                Town {
+                    name: "一ツ橋二丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.693171),
+                    lng: Some(139.757346),
                 },
             ],
         }
