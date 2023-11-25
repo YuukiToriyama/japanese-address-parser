@@ -10,7 +10,11 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
             return Some((rest.to_string(), town_name.to_string()));
         }
         // 「の」「ノ」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, town.name, vec!["の", "ノ"]) {
+        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["の", "ノ"]) {
+            return Some(result);
+        }
+        // 「ツ」「ッ」の表記ゆれに対応する
+        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ツ", "ッ"]) {
             return Some(result);
         }
     }
@@ -57,7 +61,22 @@ mod parser_tests {
 
     #[test]
     fn read_town_表記ゆれ_東京都千代田区丸の内() {
-        let city = City {
+        let city = generate_city_東京都千代田区();
+        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
+        assert_eq!(rest, "9");
+        assert_eq!(town, "丸の内一丁目");
+    }
+
+    #[test]
+    fn read_town_表記ゆれ_東京都千代田区一ツ橋() {
+        let city = generate_city_東京都千代田区();
+        let (rest, town) = read_town("一ッ橋二丁目1番", city).unwrap();
+        assert_eq!(rest, "1番");
+        assert_eq!(town, "一ツ橋二丁目");
+    }
+
+    fn generate_city_東京都千代田区() -> City {
+        City {
             name: "千代田区".to_string(),
             towns: vec![
                 Town {
@@ -78,10 +97,19 @@ mod parser_tests {
                     lat: Some(35.68156),
                     lng: Some(139.767201),
                 },
+                Town {
+                    name: "一ツ橋一丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.691189),
+                    lng: Some(139.757119),
+                },
+                Town {
+                    name: "一ツ橋二丁目".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.693171),
+                    lng: Some(139.757346),
+                },
             ],
-        };
-        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
-        assert_eq!(rest, "9");
-        assert_eq!(town, "丸の内一丁目");
+        }
     }
 }
