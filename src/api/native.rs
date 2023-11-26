@@ -102,9 +102,13 @@ mod api_tests {
     }
 
     #[tokio::test]
-    #[should_panic]
     async fn get_city_master_fail() {
         let api = ApiImplForNative {};
-        api.get_city_master("石川県", "敦賀市").await.unwrap();
+        let result = api.get_city_master("石川県", "敦賀市").await;
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap().error_message,
+            "https://geolonia.github.io/japanese-addresses/api/ja/石川県/敦賀市.jsonを取得できませんでした".to_string()
+        );
     }
 }
