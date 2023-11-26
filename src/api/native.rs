@@ -24,24 +24,25 @@ impl Api for ApiImplForNative {
         }
     }
 
-    async fn get_city_master(
-        &self,
-        prefecture_name: &str,
-        city_name: &str,
-    ) -> Result<City, String> {
+    async fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!(
             "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
             prefecture_name, city_name
         );
-        let response = reqwest::get(&endpoint).await.unwrap();
+        let response = match reqwest::get(&endpoint).await {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+        };
         if response.status() == 200 {
-            let towns = response.json::<Vec<Town>>().await.unwrap();
-            Ok(City {
-                name: city_name.to_string(),
-                towns,
-            })
+            match response.json::<Vec<Town>>().await {
+                Ok(result) => Ok(City {
+                    name: city_name.to_string(),
+                    towns: result,
+                }),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+            }
         } else {
-            Err(format!("Failed to fetch {}", &endpoint))
+            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
         }
     }
 }
