@@ -17,6 +17,11 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
         if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ツ", "ッ"]) {
             return Some(result);
         }
+        // 「ケ」「ヶ」「が」の表記ゆれに対応する
+        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ケ", "ヶ", "が"])
+        {
+            return Some(result);
+        }
     }
     None
 }
@@ -108,6 +113,40 @@ mod parser_tests {
                     koaza: "".to_string(),
                     lat: Some(35.693171),
                     lng: Some(139.757346),
+                },
+            ],
+        }
+    }
+
+    #[test]
+    fn read_town_表記ゆれ_京都府京都市左京区松ケ崎杉ケ海道町() {
+        let city = generate_city_京都府京都市左京区();
+        let (rest, town) = read_town("松ヶ崎杉ヶ海道町1", city).unwrap();
+        assert_eq!(rest, "1");
+        assert_eq!(town, "松ケ崎杉ケ海道町");
+    }
+
+    fn generate_city_京都府京都市左京区() -> City {
+        City {
+            name: "京都市左京区".to_string(),
+            towns: vec![
+                Town {
+                    name: "松ケ崎杉ケ海道町".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.047438),
+                    lng: Some(135.779877),
+                },
+                Town {
+                    name: "松ケ崎西池ノ内町".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.054046),
+                    lng: Some(135.773686),
+                },
+                Town {
+                    name: "松ケ崎井出ケ鼻町".to_string(),
+                    koaza: "".to_string(),
+                    lat: Some(35.056292),
+                    lng: Some(135.790852),
                 },
             ],
         }
