@@ -81,10 +81,14 @@ mod api_tests {
     }
 
     #[tokio::test]
-    #[should_panic]
     async fn get_prefecture_master_fail() {
         let api = ApiImplForNative {};
-        api.get_prefecture_master("大阪都").await.unwrap();
+        let result = api.get_prefecture_master("大阪都").await;
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap().error_message,
+            "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/大阪都/master.jsonを取得できませんでした".to_string()
+        );
     }
 
     #[tokio::test]
