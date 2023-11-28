@@ -1,21 +1,20 @@
 use crate::api::Api;
 use crate::entity::{City, Prefecture, Town};
 use crate::err::{ApiErrorKind, Error};
-use gloo_net::http::Request;
 
-pub struct ApiImplForWasm {}
+pub struct ApiImpl {}
 
-impl Api for ApiImplForWasm {
+impl Api for ApiImpl {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!(
             "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/{}/master.json",
             prefecture_name
         );
-        let response = match Request::get(&endpoint).send().await {
+        let response = match reqwest::get(&endpoint).await {
             Ok(result) => result,
             Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
         };
-        if response.ok() {
+        if response.status() == 200 {
             match response.json::<Prefecture>().await {
                 Ok(result) => Ok(result),
                 Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
@@ -30,15 +29,15 @@ impl Api for ApiImplForWasm {
             "https://geolonia.github.io/japanese-addresses/api/ja/{}/{}.json",
             prefecture_name, city_name
         );
-        let response = match Request::get(&endpoint).send().await {
+        let response = match reqwest::get(&endpoint).await {
             Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
         };
-        if response.ok() {
+        if response.status() == 200 {
             match response.json::<Vec<Town>>().await {
-                Ok(towns) => Ok(City {
+                Ok(result) => Ok(City {
                     name: city_name.to_string(),
-                    towns,
+                    towns: result,
                 }),
                 Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
             }
@@ -48,18 +47,15 @@ impl Api for ApiImplForWasm {
     }
 }
 
-#[cfg(all(test, target_arch = "wasm32"))]
+#[cfg(test)]
 mod api_tests {
-    use crate::api::wasm::ApiImplForWasm;
+    use crate::api::client::ApiImpl;
     use crate::api::Api;
     use crate::entity::Town;
-    use wasm_bindgen_test::wasm_bindgen_test;
 
-    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
-
-    #[wasm_bindgen_test]
+    #[tokio::test]
     async fn get_prefecture_master_success() {
-        let api = ApiImplForWasm {};
+        let api = ApiImpl {};
         let prefecture = api.get_prefecture_master("富山県").await.unwrap();
         assert_eq!(prefecture.name, "富山県".to_string());
         let cities = vec![
@@ -84,20 +80,20 @@ mod api_tests {
         }
     }
 
-    #[wasm_bindgen_test]
+    #[tokio::test]
     async fn get_prefecture_master_fail() {
-        let api = ApiImplForWasm {};
+        let api = ApiImpl {};
         let result = api.get_prefecture_master("大阪都").await;
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap().error_message,
             "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/大阪都/master.jsonを取得できませんでした".to_string()
-        )
+        );
     }
 
-    #[wasm_bindgen_test]
+    #[tokio::test]
     async fn get_city_master_success() {
-        let api = ApiImplForWasm {};
+        let api = ApiImpl {};
         let city = api.get_city_master("石川県", "羽咋郡志賀町").await.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町".to_string());
         let town = Town {
@@ -109,9 +105,9 @@ mod api_tests {
         assert!(city.towns.contains(&town));
     }
 
-    #[wasm_bindgen_test]
+    #[tokio::test]
     async fn get_city_master_fail() {
-        let api = ApiImplForWasm {};
+        let api = ApiImpl {};
         let result = api.get_city_master("石川県", "敦賀市").await;
         assert!(result.is_err());
         assert_eq!(
