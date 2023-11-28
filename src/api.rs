@@ -1,5 +1,5 @@
-pub mod mock;
 pub mod client;
+pub mod mock;
 
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
