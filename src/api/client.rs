@@ -2,9 +2,9 @@ use crate::api::Api;
 use crate::entity::{City, Prefecture, Town};
 use crate::err::{ApiErrorKind, Error};
 
-pub struct ApiImplForNative {}
+pub struct ApiImpl {}
 
-impl Api for ApiImplForNative {
+impl Api for ApiImpl {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!(
             "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/{}/master.json",
@@ -49,13 +49,13 @@ impl Api for ApiImplForNative {
 
 #[cfg(test)]
 mod api_tests {
-    use crate::api::client::ApiImplForNative;
+    use crate::api::client::ApiImpl;
     use crate::api::Api;
     use crate::entity::Town;
 
     #[tokio::test]
     async fn get_prefecture_master_success() {
-        let api = ApiImplForNative {};
+        let api = ApiImpl {};
         let prefecture = api.get_prefecture_master("富山県").await.unwrap();
         assert_eq!(prefecture.name, "富山県".to_string());
         let cities = vec![
@@ -82,7 +82,7 @@ mod api_tests {
 
     #[tokio::test]
     async fn get_prefecture_master_fail() {
-        let api = ApiImplForNative {};
+        let api = ApiImpl {};
         let result = api.get_prefecture_master("大阪都").await;
         assert!(result.is_err());
         assert_eq!(
@@ -93,7 +93,7 @@ mod api_tests {
 
     #[tokio::test]
     async fn get_city_master_success() {
-        let api = ApiImplForNative {};
+        let api = ApiImpl {};
         let city = api.get_city_master("石川県", "羽咋郡志賀町").await.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町".to_string());
         let town = Town {
@@ -107,7 +107,7 @@ mod api_tests {
 
     #[tokio::test]
     async fn get_city_master_fail() {
-        let api = ApiImplForNative {};
+        let api = ApiImpl {};
         let result = api.get_city_master("石川県", "敦賀市").await;
         assert!(result.is_err());
         assert_eq!(
