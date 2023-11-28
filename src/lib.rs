@@ -5,7 +5,7 @@ mod entity;
 mod err;
 mod parser;
 
-use crate::api::native::ApiImplForNative;
+use crate::api::client::ApiImpl;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
@@ -20,7 +20,7 @@ impl Parser {
 
     pub async fn parse(&self, address: &str) -> String {
         console_error_panic_hook::set_once();
-        let api = ApiImplForNative {};
+        let api = ApiImpl {};
         let result = parser::parse(api, address).await;
         serde_json::to_string(&result).unwrap()
     }

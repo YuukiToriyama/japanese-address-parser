@@ -70,7 +70,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 #[cfg(test)]
 mod parser_tests {
     use crate::api::mock::ApiMock;
-    use crate::api::native::ApiImplForNative;
+    use crate::api::client::ApiImpl;
     use crate::err::ParseErrorKind;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
@@ -159,7 +159,7 @@ mod parser_tests {
 
     #[wasm_bindgen_test]
     async fn parse_wasm_success() {
-        let api = ApiImplForNative {};
+        let api = ApiImpl {};
         let result = parse(api, "兵庫県淡路市生穂新島8番地").await;
         assert_eq!(result.address.prefecture, "兵庫県".to_string());
         assert_eq!(result.address.city, "淡路市".to_string());
