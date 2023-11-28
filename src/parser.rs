@@ -70,7 +70,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 #[cfg(test)]
 mod parser_tests {
     use crate::api::mock::ApiMock;
-    use crate::api::native::ApiImplForNative;
+    use crate::api::client::ApiImplForNative;
     use crate::err::ParseErrorKind;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};

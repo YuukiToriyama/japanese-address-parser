@@ -5,7 +5,7 @@ mod entity;
 mod err;
 mod parser;
 
-use crate::api::native::ApiImplForNative;
+use crate::api::client::ApiImplForNative;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]

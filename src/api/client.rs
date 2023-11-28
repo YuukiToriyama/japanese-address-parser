@@ -49,7 +49,7 @@ impl Api for ApiImplForNative {
 
 #[cfg(test)]
 mod api_tests {
-    use crate::api::native::ApiImplForNative;
+    use crate::api::client::ApiImplForNative;
     use crate::api::Api;
     use crate::entity::Town;
 
