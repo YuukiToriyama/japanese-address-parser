@@ -2,6 +2,7 @@
 name = "japanese-address-parser"
 version = "0.1.0"
 edition = "2021"
+description = "日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです"
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 license = "MIT"
