@@ -4,7 +4,7 @@
     "Yuuki Toriyama <github@toriyama.dev>"
   ],
   "description": "日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "license": "MIT",
   "repository": {
     "type": "git",
