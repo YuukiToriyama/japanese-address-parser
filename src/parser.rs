@@ -1,4 +1,4 @@
-use crate::api::Api;
+use crate::api::{Api, BlockingApi};
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
 use crate::parser::read_city::read_city;
@@ -166,5 +166,58 @@ mod parser_tests {
         assert_eq!(result.address.town, "生穂".to_string());
         assert_eq!(result.address.rest, "新島8番地".to_string());
         assert_eq!(result.error, None);
+    }
+}
+
+pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
+    let (rest, prefecture_name) = match read_prefecture(input) {
+        None => {
+            return ParseResult {
+                address: Address::new("", "", "", input),
+                error: Some(Error::new_parse_error(ParseErrorKind::PREFECTURE)),
+            };
+        }
+        Some(result) => result,
+    };
+    let prefecture = match api.get_prefecture_master(prefecture_name) {
+        Err(error) => {
+            return ParseResult {
+                address: Address::new(prefecture_name, "", "", rest),
+                error: Some(error),
+            };
+        }
+        Ok(result) => result
+    };
+    let (rest, city_name) = match read_city(rest, prefecture) {
+        None => {
+            return ParseResult {
+                address: Address::new(prefecture_name, "", "", rest),
+                error: Some(Error::new_parse_error(ParseErrorKind::CITY)),
+            };
+        }
+        Some(result) => result,
+    };
+    let city = match api.get_city_master(prefecture_name, city_name) {
+        Err(error) => {
+            return ParseResult {
+                address: Address::new(prefecture_name, city_name, "", rest),
+                error: Some(error),
+            };
+        }
+        Ok(result) => result
+    };
+    let (rest, town_name) = match read_town(rest, city) {
+        None => {
+            return ParseResult {
+                address: Address::new(prefecture_name, city_name, "", rest),
+                error: Some(Error::new_parse_error(ParseErrorKind::TOWN)),
+            };
+        }
+        Some(result) => result,
+    };
+
+    ParseResult {
+        address: Address::new(prefecture_name, city_name, town_name, rest),
+        error: None,
     }
 }
