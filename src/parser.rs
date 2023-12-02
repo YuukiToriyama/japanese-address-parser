@@ -221,3 +221,35 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
         error: None,
     }
 }
+
+#[cfg(test)]
+mod parse_blocking_tests {
+    use crate::api;
+    use crate::err::ParseErrorKind;
+    use crate::parser::parse_blocking;
+
+    #[test]
+    fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
+        let client = api::blocking::Client {};
+        let result = parse_blocking(client, "埼玉県秩父市熊木町8番15号");
+        assert_eq!(result.address.prefecture, "埼玉県");
+        assert_eq!(result.address.city, "秩父市");
+        assert_eq!(result.address.town, "熊木町");
+        assert_eq!(result.address.rest, "8番15号");
+        assert_eq!(result.error, None);
+    }
+
+    #[test]
+    fn parse_blocking_fail_市町村名が間違っている場合() {
+        let client = api::blocking::Client {};
+        let result = parse_blocking(client, "埼玉県秩父柿熊木町8番15号");
+        assert_eq!(result.address.prefecture, "埼玉県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "秩父柿熊木町8番15号");
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::CITY.to_string()
+        );
+    }
+}
