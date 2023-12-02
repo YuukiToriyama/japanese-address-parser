@@ -1,7 +1,7 @@
 use crate::err::Error;
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq, Debug)]
 pub struct Prefecture {
     pub name: String,
     pub cities: Vec<String>,
