@@ -46,3 +46,51 @@ impl BlockingApi for Client {
         }
     }
 }
+
+#[cfg(test)]
+mod blocking_client_tests {
+    use crate::api::blocking::Client;
+    use crate::api::BlockingApi;
+    use crate::entity::Prefecture;
+
+    #[test]
+    fn get_prefecture_master_成功_香川県() {
+        let client = Client {};
+        let result = client.get_prefecture_master("香川県");
+        assert!(result.is_ok());
+        let prefecture = result.unwrap();
+        assert_eq!(
+            prefecture,
+            Prefecture::new(
+                "香川県",
+                vec![
+                    "高松市",
+                    "丸亀市",
+                    "坂出市",
+                    "善通寺市",
+                    "観音寺市",
+                    "さぬき市",
+                    "東かがわ市",
+                    "三豊市",
+                    "小豆郡土庄町",
+                    "小豆郡小豆島町",
+                    "木田郡三木町",
+                    "香川郡直島町",
+                    "綾歌郡宇多津町",
+                    "綾歌郡綾川町",
+                    "仲多度郡琴平町",
+                    "仲多度郡多度津町",
+                    "仲多度郡まんのう町",
+                ],
+            )
+        );
+    }
+
+    #[test]
+    fn get_prefecture_master_失敗_都道府県名が誤っている() {
+        let client = Client {};
+        let result = client.get_prefecture_master("東京県");
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err().error_message, "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/東京県/master.jsonを取得できませんでした");
+    }
+}
