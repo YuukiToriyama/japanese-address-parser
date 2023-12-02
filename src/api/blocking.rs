@@ -51,7 +51,7 @@ impl BlockingApi for Client {
 mod blocking_client_tests {
     use crate::api::blocking::Client;
     use crate::api::BlockingApi;
-    use crate::entity::Prefecture;
+    use crate::entity::{Prefecture, Town};
 
     #[test]
     fn get_prefecture_master_成功_香川県() {
@@ -92,5 +92,24 @@ mod blocking_client_tests {
         let result = client.get_prefecture_master("東京県");
         assert!(result.is_err());
         assert_eq!(result.unwrap_err().error_message, "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/東京県/master.jsonを取得できませんでした");
+    }
+
+    #[test]
+    fn get_city_master_成功_香川県坂出市() {
+        let client = Client {};
+        let result = client.get_city_master("香川県", "坂出市");
+        assert!(result.is_ok());
+        let city = result.unwrap();
+        assert_eq!(city.name, "坂出市");
+        let town = Town::new("青葉町", "", 34.307609, 133.85252);
+        assert!(city.towns.contains(&town));
+    }
+
+    #[test]
+    fn get_city_master_失敗_市町村名が誤っている() {
+        let client = Client {};
+        let result = client.get_city_master("東京都", "東京市");
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err().error_message, "https://geolonia.github.io/japanese-addresses/api/ja/東京都/東京市.jsonを取得できませんでした")
     }
 }

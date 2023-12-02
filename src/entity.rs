@@ -17,12 +17,13 @@ impl Prefecture {
     }
 }
 
+#[derive(Debug)]
 pub struct City {
     pub name: String,
     pub towns: Vec<Town>,
 }
 
-#[derive(PartialEq, Deserialize)]
+#[derive(PartialEq, Deserialize, Debug)]
 pub struct Town {
     #[serde(alias = "town")]
     pub name: String,
@@ -30,6 +31,18 @@ pub struct Town {
     // TODO: https://github.com/geolonia/japanese-addresses/issues/148 が解消されたらOptionを外すことができる
     pub lat: Option<f32>,
     pub lng: Option<f32>,
+}
+
+impl Town {
+    // 主にテストコードで使用する
+    pub fn new(town_name: &str, koaza_name: &str, lat: f32, lng: f32) -> Self {
+        Town {
+            name: town_name.to_string(),
+            koaza: koaza_name.to_string(),
+            lat: Some(lat),
+            lng: Some(lng),
+        }
+    }
 }
 
 #[derive(Serialize)]
