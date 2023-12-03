@@ -1,2 +1,5 @@
 # japanese-address-parser
-Rust製の住所パーサーです
+
+![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser)
+
+日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです
