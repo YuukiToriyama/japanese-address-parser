@@ -187,7 +187,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
                 error: Some(error),
             };
         }
-        Ok(result) => result
+        Ok(result) => result,
     };
     let (rest, city_name) = match read_city(rest, prefecture) {
         None => {
@@ -205,7 +205,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
                 error: Some(error),
             };
         }
-        Ok(result) => result
+        Ok(result) => result,
     };
     let (rest, town_name) = match read_town(rest, city) {
         None => {

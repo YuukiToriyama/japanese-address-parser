@@ -12,7 +12,7 @@ impl BlockingApi for Client {
         );
         let response = match reqwest::blocking::get(&endpoint) {
             Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
         };
         if response.status() == 200 {
             match response.json::<Prefecture>() {
