@@ -169,6 +169,7 @@ mod parser_tests {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
         None => {
@@ -222,7 +223,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, not(target_arch = "wasm32")))]
 mod parse_blocking_tests {
     use crate::api;
     use crate::err::ParseErrorKind;
