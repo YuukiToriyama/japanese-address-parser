@@ -1,19 +1,24 @@
 [package]
 name = "japanese-address-parser"
-version = "0.1.0"
+version = "0.1.0-alpha.2"
 edition = "2021"
+description = "日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです"
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 license = "MIT"
+exclude = [
+    "public/*",
+    ".github/*",
+]
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["rlib", "cdylib"]
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
 itertools = "0.12.0"
 nom = "7.1.3"
-reqwest = { version = "0.11.22", features = ["json"] }
+reqwest = { version = "0.11.22", default-features = false, features = ["json", "rustls-tls", "blocking"] }
 serde = { version = "1.0.192", features = ["derive"] }
 serde_json = "1.0.108"
 wasm-bindgen = "0.2.88"
