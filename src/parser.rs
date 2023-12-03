@@ -1,4 +1,4 @@
-use crate::api::Api;
+use crate::api::{Api, BlockingApi};
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
 use crate::parser::read_city::read_city;
@@ -166,5 +166,91 @@ mod parser_tests {
         assert_eq!(result.address.town, "生穂".to_string());
         assert_eq!(result.address.rest, "新島8番地".to_string());
         assert_eq!(result.error, None);
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
+    let (rest, prefecture_name) = match read_prefecture(input) {
+        None => {
+            return ParseResult {
+                address: Address::new("", "", "", input),
+                error: Some(Error::new_parse_error(ParseErrorKind::PREFECTURE)),
+            };
+        }
+        Some(result) => result,
+    };
+    let prefecture = match api.get_prefecture_master(prefecture_name) {
+        Err(error) => {
+            return ParseResult {
+                address: Address::new(prefecture_name, "", "", rest),
+                error: Some(error),
+            };
+        }
+        Ok(result) => result
+    };
+    let (rest, city_name) = match read_city(rest, prefecture) {
+        None => {
+            return ParseResult {
+                address: Address::new(prefecture_name, "", "", rest),
+                error: Some(Error::new_parse_error(ParseErrorKind::CITY)),
+            };
+        }
+        Some(result) => result,
+    };
+    let city = match api.get_city_master(prefecture_name, city_name) {
+        Err(error) => {
+            return ParseResult {
+                address: Address::new(prefecture_name, city_name, "", rest),
+                error: Some(error),
+            };
+        }
+        Ok(result) => result
+    };
+    let (rest, town_name) = match read_town(rest, city) {
+        None => {
+            return ParseResult {
+                address: Address::new(prefecture_name, city_name, "", rest),
+                error: Some(Error::new_parse_error(ParseErrorKind::TOWN)),
+            };
+        }
+        Some(result) => result,
+    };
+
+    ParseResult {
+        address: Address::new(prefecture_name, city_name, town_name, rest),
+        error: None,
+    }
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod parse_blocking_tests {
+    use crate::api;
+    use crate::err::ParseErrorKind;
+    use crate::parser::parse_blocking;
+
+    #[test]
+    fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
+        let client = api::blocking::Client {};
+        let result = parse_blocking(client, "埼玉県秩父市熊木町8番15号");
+        assert_eq!(result.address.prefecture, "埼玉県");
+        assert_eq!(result.address.city, "秩父市");
+        assert_eq!(result.address.town, "熊木町");
+        assert_eq!(result.address.rest, "8番15号");
+        assert_eq!(result.error, None);
+    }
+
+    #[test]
+    fn parse_blocking_fail_市町村名が間違っている場合() {
+        let client = api::blocking::Client {};
+        let result = parse_blocking(client, "埼玉県秩父柿熊木町8番15号");
+        assert_eq!(result.address.prefecture, "埼玉県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "秩父柿熊木町8番15号");
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::CITY.to_string()
+        );
     }
 }
