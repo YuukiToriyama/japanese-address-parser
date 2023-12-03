@@ -11,7 +11,8 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             Err(_) => {}
         };
         // 「ケ」「ヶ」「が」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &city_name, vec!["ケ", "ヶ", "が"]) {
+        if let Some(result) = adapt_variety_of_spelling(input, &city_name, vec!["ケ", "ヶ", "が"])
+        {
             return Some(result);
         }
     }

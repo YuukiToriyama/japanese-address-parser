@@ -6,7 +6,9 @@ use nom::Parser;
 
 pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
     for town in city.towns {
-        if let Ok((rest, town_name)) = tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input) {
+        if let Ok((rest, town_name)) =
+            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input)
+        {
             return Some((rest.to_string(), town_name.to_string()));
         }
         // 「の」「ノ」の表記ゆれに対応する
