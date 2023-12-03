@@ -36,18 +36,8 @@ mod parser_tests {
         let city = City {
             name: "静岡市清水区".to_string(),
             towns: vec![
-                Town {
-                    name: "旭町".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.016292),
-                    lng: Some(138.489362),
-                },
-                Town {
-                    name: "新丹谷".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.072403),
-                    lng: Some(138.474199),
-                },
+                Town::new("旭町", "", 35.016292, 138.489362),
+                Town::new("新丹谷", "", 35.072403, 138.474199),
             ],
         };
         let (rest, town) = read_town("旭町6-8", city).unwrap();
@@ -84,36 +74,11 @@ mod parser_tests {
         City {
             name: "千代田区".to_string(),
             towns: vec![
-                Town {
-                    name: "富士見一丁目".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.697871),
-                    lng: Some(139.746978),
-                },
-                Town {
-                    name: "富士見二丁目".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.698126),
-                    lng: Some(139.743057),
-                },
-                Town {
-                    name: "丸の内一丁目".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.68156),
-                    lng: Some(139.767201),
-                },
-                Town {
-                    name: "一ツ橋一丁目".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.691189),
-                    lng: Some(139.757119),
-                },
-                Town {
-                    name: "一ツ橋二丁目".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.693171),
-                    lng: Some(139.757346),
-                },
+                Town::new("富士見一丁目", "", 35.697871, 139.746978),
+                Town::new("富士見二丁目", "", 35.698126, 139.743057),
+                Town::new("丸の内一丁目", "", 35.68156, 139.767201),
+                Town::new("一ツ橋一丁目", "", 35.691189, 139.757119),
+                Town::new("一ツ橋二丁目", "", 35.693171, 139.757346),
             ],
         }
     }
@@ -130,24 +95,9 @@ mod parser_tests {
         City {
             name: "京都市左京区".to_string(),
             towns: vec![
-                Town {
-                    name: "松ケ崎杉ケ海道町".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.047438),
-                    lng: Some(135.779877),
-                },
-                Town {
-                    name: "松ケ崎西池ノ内町".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.054046),
-                    lng: Some(135.773686),
-                },
-                Town {
-                    name: "松ケ崎井出ケ鼻町".to_string(),
-                    koaza: "".to_string(),
-                    lat: Some(35.056292),
-                    lng: Some(135.790852),
-                },
+                Town::new("松ケ崎杉ケ海道町", "", 35.047438, 135.779877),
+                Town::new("松ケ崎西池ノ内町", "", 35.054046, 135.773686),
+                Town::new("松ケ崎井出ケ鼻町", "", 35.056292, 135.790852),
             ],
         }
     }
