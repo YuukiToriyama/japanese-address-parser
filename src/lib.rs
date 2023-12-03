@@ -3,5 +3,5 @@
 mod api;
 mod entity;
 mod err;
-mod parser;
+pub mod parser;
 pub mod wasm;
