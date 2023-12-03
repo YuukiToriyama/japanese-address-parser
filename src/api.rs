@@ -1,5 +1,6 @@
 pub mod client;
 pub mod mock;
+#[cfg(not(target_arch = "wasm32"))]
 pub mod blocking;
 
 use crate::entity::{City, Prefecture};
