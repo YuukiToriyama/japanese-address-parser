@@ -54,9 +54,8 @@ const PREFECTURE_NAME_LIST: [&str; 47] = [
 
 pub fn read_prefecture(input: &str) -> Option<(&str, &str)> {
     for prefecture_name in PREFECTURE_NAME_LIST {
-        match tag::<&str, &str, VerboseError<&str>>(prefecture_name).parse(input) {
-            Ok(result) => return Some(result),
-            Err(_) => {}
+        if let Ok(result) = tag::<&str, &str, VerboseError<&str>>(prefecture_name).parse(input) {
+            return Some(result);
         }
     }
     None
