@@ -30,7 +30,7 @@ impl Error {
 pub enum ParseErrorKind {
     Prefecture,
     City,
-    TOWN,
+    Town,
 }
 
 impl Display for ParseErrorKind {
@@ -38,7 +38,7 @@ impl Display for ParseErrorKind {
         let label = match *self {
             Self::Prefecture => "都道府県",
             Self::City => "市区町村",
-            Self::TOWN => "町名",
+            Self::Town => "町名",
         };
         write!(f, "一致する{}がありませんでした", label)
     }
