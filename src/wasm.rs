@@ -21,6 +21,8 @@ impl Parser {
     }
 }
 
+const hoge: &str = "hogehoge";
+
 #[cfg(test)]
 mod integration_tests {
     use crate::wasm::Parser;
