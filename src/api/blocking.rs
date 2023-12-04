@@ -17,7 +17,7 @@ impl BlockingApi for Client {
         if response.status() == 200 {
             match response.json::<Prefecture>() {
                 Ok(result) => Ok(result),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
             }
         } else {
             Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
@@ -39,7 +39,7 @@ impl BlockingApi for Client {
                     name: city_name.to_string(),
                     towns: result,
                 }),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
             }
         } else {
             Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
