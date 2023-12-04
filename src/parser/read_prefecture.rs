@@ -2,7 +2,7 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-const PREFECTURE_NAME_LIST: [&'static str; 47] = [
+const PREFECTURE_NAME_LIST: [&str; 47] = [
     "北海道",
     "青森県",
     "岩手県",
