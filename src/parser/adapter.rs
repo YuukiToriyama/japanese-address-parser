@@ -2,6 +2,7 @@ use itertools::Itertools;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
+use std::ops::Not;
 
 pub fn adapt_variety_of_spelling(
     input: &str,
@@ -10,7 +11,7 @@ pub fn adapt_variety_of_spelling(
 ) -> Option<(String, String)> {
     if variety_of_spelling
         .iter()
-        .all(|s| region_name.contains(s) == false)
+        .all(|s| region_name.contains(s).not())
     {
         return None;
     }

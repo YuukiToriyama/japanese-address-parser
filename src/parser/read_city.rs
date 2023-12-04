@@ -6,10 +6,11 @@ use nom::Parser;
 
 pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)> {
     for city_name in prefecture.cities {
-        match tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input) {
-            Ok((rest, city_name)) => return Some((rest.to_string(), city_name.to_string())),
-            Err(_) => {}
-        };
+        if let Ok((rest, city_name)) =
+            tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input)
+        {
+            return Some((rest.to_string(), city_name.to_string()));
+        }
         // 「ケ」「ヶ」「が」の表記ゆれに対応する
         if let Some(result) = adapt_variety_of_spelling(input, &city_name, vec!["ケ", "ヶ", "が"])
         {

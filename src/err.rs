@@ -17,8 +17,8 @@ impl Error {
     }
     pub fn new_api_error(api_error_kind: ApiErrorKind) -> Self {
         let error_message = match api_error_kind {
-            ApiErrorKind::FETCH(url) => format!("{}を取得できませんでした", url),
-            ApiErrorKind::DESERIALIZE(url) => format!("{}のデシリアライズに失敗しました", url),
+            ApiErrorKind::Fetch(url) => format!("{}を取得できませんでした", url),
+            ApiErrorKind::Deserialize(url) => format!("{}のデシリアライズに失敗しました", url),
         };
         Error {
             error_type: "ApiError".to_string(),
@@ -28,23 +28,23 @@ impl Error {
 }
 
 pub enum ParseErrorKind {
-    PREFECTURE,
-    CITY,
-    TOWN,
+    Prefecture,
+    City,
+    Town,
 }
 
 impl Display for ParseErrorKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let label = match *self {
-            Self::PREFECTURE => "都道府県",
-            Self::CITY => "市区町村",
-            Self::TOWN => "町名",
+            Self::Prefecture => "都道府県",
+            Self::City => "市区町村",
+            Self::Town => "町名",
         };
         write!(f, "一致する{}がありませんでした", label)
     }
 }
 
 pub enum ApiErrorKind {
-    FETCH(String),
-    DESERIALIZE(String),
+    Fetch(String),
+    Deserialize(String),
 }

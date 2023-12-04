@@ -10,7 +10,7 @@ impl Api for ApiMock {
     async fn get_prefecture_master(&self, _prefecture_name: &str) -> Result<Prefecture, Error> {
         if self.should_fail {
             Err(Error::new_api_error(
-                ApiErrorKind::FETCH("https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/神奈川県/master.json".to_string())
+                ApiErrorKind::Fetch("https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/神奈川県/master.json".to_string())
             ))
         } else {
             Ok(Prefecture::new(
@@ -26,7 +26,7 @@ impl Api for ApiMock {
         _city_name: &str,
     ) -> Result<City, Error> {
         if self.should_fail {
-            Err(Error::new_api_error(ApiErrorKind::FETCH(
+            Err(Error::new_api_error(ApiErrorKind::Fetch(
                 "https://geolonia.github.io/japanese-addresses/api/ja/神奈川県/平塚市.json"
                     .to_string(),
             )))

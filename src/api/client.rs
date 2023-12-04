@@ -12,15 +12,15 @@ impl Api for ApiImpl {
         );
         let response = match reqwest::get(&endpoint).await {
             Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
         };
         if response.status() == 200 {
             match response.json::<Prefecture>().await {
                 Ok(result) => Ok(result),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
             }
         } else {
-            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
+            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
         }
     }
 
@@ -31,7 +31,7 @@ impl Api for ApiImpl {
         );
         let response = match reqwest::get(&endpoint).await {
             Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
         };
         if response.status() == 200 {
             match response.json::<Vec<Town>>().await {
@@ -39,10 +39,10 @@ impl Api for ApiImpl {
                     name: city_name.to_string(),
                     towns: result,
                 }),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
             }
         } else {
-            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
+            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
         }
     }
 }
