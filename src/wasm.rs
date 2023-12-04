@@ -10,6 +10,7 @@ impl Parser {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Parser {}
+
     }
 
     pub async fn parse(&self, address: &str) -> String {
