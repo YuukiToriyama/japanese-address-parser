@@ -16,7 +16,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         None => {
             return ParseResult {
                 address: Address::new("", "", "", input),
-                error: Some(Error::new_parse_error(ParseErrorKind::PREFECTURE)),
+                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
             }
         }
         Some(result) => result,
@@ -108,7 +108,7 @@ mod parser_tests {
         assert_eq!(result.address.rest, "神奈側県平塚市桜ケ丘100-1".to_string());
         assert_eq!(
             result.error.unwrap().error_message,
-            ParseErrorKind::PREFECTURE.to_string()
+            ParseErrorKind::Prefecture.to_string()
         );
     }
 
@@ -176,7 +176,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
         None => {
             return ParseResult {
                 address: Address::new("", "", "", input),
-                error: Some(Error::new_parse_error(ParseErrorKind::PREFECTURE)),
+                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
             };
         }
         Some(result) => result,
