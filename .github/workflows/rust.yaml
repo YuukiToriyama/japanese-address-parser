@@ -26,6 +26,13 @@ jobs:
         continue-on-error: true
       - name: Code style check
         run: cargo fmt --check
+      - name: Set up clippy
+        run: rustup component add clippy
+      - name: Code review with clippy
+        uses: giraffate/clippy-action@v1
+        with:
+          reporter: 'clippy-pr-review'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build check
         run: cargo build --verbose
       - name: Unit Testing
