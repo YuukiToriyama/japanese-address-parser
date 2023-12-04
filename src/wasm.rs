@@ -21,7 +21,7 @@ impl Parser {
     }
 }
 
-const hoge: &str = "hogehoge";
+const HOGE: &str = "hogehoge";
 
 #[cfg(test)]
 mod integration_tests {
