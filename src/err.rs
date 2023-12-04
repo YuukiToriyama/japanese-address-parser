@@ -29,7 +29,7 @@ impl Error {
 
 pub enum ParseErrorKind {
     Prefecture,
-    CITY,
+    City,
     TOWN,
 }
 
@@ -37,7 +37,7 @@ impl Display for ParseErrorKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let label = match *self {
             Self::Prefecture => "都道府県",
-            Self::CITY => "市区町村",
+            Self::City => "市区町村",
             Self::TOWN => "町名",
         };
         write!(f, "一致する{}がありませんでした", label)
