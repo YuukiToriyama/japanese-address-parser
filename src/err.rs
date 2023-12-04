@@ -17,7 +17,7 @@ impl Error {
     }
     pub fn new_api_error(api_error_kind: ApiErrorKind) -> Self {
         let error_message = match api_error_kind {
-            ApiErrorKind::FETCH(url) => format!("{}を取得できませんでした", url),
+            ApiErrorKind::Fetch(url) => format!("{}を取得できませんでした", url),
             ApiErrorKind::DESERIALIZE(url) => format!("{}のデシリアライズに失敗しました", url),
         };
         Error {
@@ -45,6 +45,6 @@ impl Display for ParseErrorKind {
 }
 
 pub enum ApiErrorKind {
-    FETCH(String),
+    Fetch(String),
     DESERIALIZE(String),
 }

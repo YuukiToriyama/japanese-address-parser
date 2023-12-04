@@ -12,7 +12,7 @@ impl BlockingApi for Client {
         );
         let response = match reqwest::blocking::get(&endpoint) {
             Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
         };
         if response.status() == 200 {
             match response.json::<Prefecture>() {
@@ -20,7 +20,7 @@ impl BlockingApi for Client {
                 Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
             }
         } else {
-            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
+            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
         }
     }
 
@@ -31,7 +31,7 @@ impl BlockingApi for Client {
         );
         let response = match reqwest::blocking::get(&endpoint) {
             Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint))),
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
         };
         if response.status() == 200 {
             match response.json::<Vec<Town>>() {
@@ -42,7 +42,7 @@ impl BlockingApi for Client {
                 Err(_) => Err(Error::new_api_error(ApiErrorKind::DESERIALIZE(endpoint))),
             }
         } else {
-            Err(Error::new_api_error(ApiErrorKind::FETCH(endpoint)))
+            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
         }
     }
 }
