@@ -1,3 +1,4 @@
+use wasm_bindgen::JsValue;
 use crate::api::client::ApiImpl;
 use crate::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -12,11 +13,11 @@ impl Parser {
         Parser {}
     }
 
-    pub async fn parse(&self, address: &str) -> String {
+    pub async fn parse(&self, address: &str) -> Result<JsValue, serde_wasm_bindgen::Error> {
         console_error_panic_hook::set_once();
         let api = ApiImpl {};
         let result = parser::parse(api, address).await;
-        serde_json::to_string(&result).unwrap()
+        serde_wasm_bindgen::to_value(&result)
     }
 }
 
