@@ -46,7 +46,7 @@ impl Town {
     }
 }
 
-#[derive(Serialize, Tsify)]
+#[derive(Serialize, Tsify, PartialEq, Debug)]
 #[tsify(into_wasm_abi)]
 pub struct Address {
     pub prefecture: String,
@@ -66,7 +66,7 @@ impl Address {
     }
 }
 
-#[derive(Serialize, Tsify)]
+#[derive(Serialize, Tsify, PartialEq, Debug)]
 #[tsify(into_wasm_abi)]
 pub struct ParseResult {
     pub address: Address,

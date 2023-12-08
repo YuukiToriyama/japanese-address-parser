@@ -1,8 +1,8 @@
-use wasm_bindgen::JsValue;
 use crate::api::client::ApiImpl;
+use crate::entity::ParseResult;
 use crate::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
-use crate::entity::ParseResult;
+use wasm_bindgen::JsValue;
 
 #[wasm_bindgen]
 pub struct Parser();
@@ -29,6 +29,8 @@ impl From<ParseResult> for JsValue {
 
 #[cfg(test)]
 mod integration_tests {
+    use crate::entity::{Address, ParseResult};
+    use crate::err::{Error, ParseErrorKind};
     use crate::wasm::Parser;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
@@ -39,7 +41,10 @@ mod integration_tests {
         let parser = Parser();
         assert_eq!(
             parser.parse("岩手県盛岡市内丸10番1号").await,
-            "{\"address\":{\"prefecture\":\"岩手県\",\"city\":\"盛岡市\",\"town\":\"内丸\",\"rest\":\"10番1号\"},\"error\":null}".to_string()
+            ParseResult {
+                address: Address::new("岩手県", "盛岡市", "内丸", "10番1号"),
+                error: None,
+            }
         )
     }
 
@@ -48,7 +53,10 @@ mod integration_tests {
         let parser = Parser();
         assert_eq!(
             parser.parse("東京都中央区銀座九丁目").await,
-            "{\"address\":{\"prefecture\":\"東京都\",\"city\":\"中央区\",\"town\":\"\",\"rest\":\"銀座九丁目\"},\"error\":{\"error_type\":\"ParseError\",\"error_message\":\"一致する町名がありませんでした\"}}".to_string()
+            ParseResult {
+                address: Address::new("東京都", "中央区", "", "銀座九丁目"),
+                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
+            }
         )
     }
 }
