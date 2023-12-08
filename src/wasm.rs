@@ -2,6 +2,7 @@ use wasm_bindgen::JsValue;
 use crate::api::client::ApiImpl;
 use crate::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
+use crate::entity::ParseResult;
 
 #[wasm_bindgen]
 pub struct Parser();
@@ -13,11 +14,16 @@ impl Parser {
         Parser {}
     }
 
-    pub async fn parse(&self, address: &str) -> Result<JsValue, serde_wasm_bindgen::Error> {
+    pub async fn parse(&self, address: &str) -> ParseResult {
         console_error_panic_hook::set_once();
         let api = ApiImpl {};
-        let result = parser::parse(api, address).await;
-        serde_wasm_bindgen::to_value(&result)
+        parser::parse(api, address).await
+    }
+}
+
+impl From<ParseResult> for JsValue {
+    fn from(value: ParseResult) -> Self {
+        serde_wasm_bindgen::to_value(&value).unwrap()
     }
 }
 
