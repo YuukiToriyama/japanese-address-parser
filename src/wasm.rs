@@ -32,11 +32,8 @@ mod integration_tests {
     use crate::entity::{Address, ParseResult};
     use crate::err::{Error, ParseErrorKind};
     use crate::wasm::Parser;
-    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
-    wasm_bindgen_test_configure!(run_in_browser);
-
-    #[wasm_bindgen_test]
+    #[tokio::test]
     async fn parse_success() {
         let parser = Parser();
         assert_eq!(
@@ -48,7 +45,7 @@ mod integration_tests {
         )
     }
 
-    #[wasm_bindgen_test]
+    #[tokio::test]
     async fn parse_fail_unknown_town_name() {
         let parser = Parser();
         assert_eq!(
