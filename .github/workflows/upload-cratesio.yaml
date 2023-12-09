@@ -1,0 +1,26 @@
+name: Upload artifact to crates.io
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build check
+        run: cargo build --verbose
+      - name: Unit Testing
+        run: cargo test --verbose
+
+      - name: Try packaging
+        run: cargo publish --dry-run
+      - name: Show files will be included
+        run: cargo package --list
+      - name: Upload artifact to crates.io
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
