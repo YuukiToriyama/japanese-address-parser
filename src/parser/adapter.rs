@@ -6,7 +6,7 @@ use std::ops::Not;
 
 pub fn adapt_variety_of_spelling(
     input: &str,
-    region_name: &String,
+    region_name: &str,
     variety_of_spelling: Vec<&str>,
 ) -> Option<(String, String)> {
     if variety_of_spelling
