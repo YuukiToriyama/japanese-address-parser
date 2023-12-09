@@ -103,4 +103,25 @@ mod parser_tests {
             ],
         }
     }
+
+    #[test]
+    fn read_town_異字体_岐阜県岐阜市薮田南二丁目() {
+        let (_, town) = read_town("薮田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+        let (_, town) = read_town("藪田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+        let (_, town) = read_town("籔田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+    }
+
+    fn generate_city_岐阜県岐阜市() -> City {
+        City {
+            name: "岐阜県岐阜市".to_string(),
+            towns: vec![
+                Town::new("薮田南一丁目", "", 35.394373, 136.723208),
+                Town::new("薮田南二丁目", "", 35.391964, 136.723151),
+                Town::new("薮田南三丁目", "", 35.3896, 136.723086),
+            ],
+        }
+    }
 }
