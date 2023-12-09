@@ -28,16 +28,13 @@ impl From<ParseResult> for JsValue {
 }
 
 #[cfg(test)]
-mod integration_tests {
+mod parser_tests {
     use crate::entity::{Address, ParseResult};
     use crate::err::{Error, ParseErrorKind};
     use crate::wasm::Parser;
-    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
-    wasm_bindgen_test_configure!(run_in_browser);
-
-    #[wasm_bindgen_test]
-    async fn parse_success() {
+    #[tokio::test]
+    async fn parse_成功_実在する住所() {
         let parser = Parser();
         assert_eq!(
             parser.parse("岩手県盛岡市内丸10番1号").await,
@@ -48,8 +45,8 @@ mod integration_tests {
         )
     }
 
-    #[wasm_bindgen_test]
-    async fn parse_fail_unknown_town_name() {
+    #[tokio::test]
+    async fn parse_失敗_実在しない町名() {
         let parser = Parser();
         assert_eq!(
             parser.parse("東京都中央区銀座九丁目").await,
