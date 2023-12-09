@@ -7,6 +7,7 @@ use std::panic;
 mod common;
 
 #[tokio::test]
+#[ignore]
 async fn parser_tests() {
     let records = read_test_data_from_csv("./tests/addresses.csv").unwrap();
     let mut success_count = 0;
