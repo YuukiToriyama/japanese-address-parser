@@ -1,8 +1,10 @@
 use std::fmt::{Display, Formatter};
 
 use serde::Serialize;
+use tsify::Tsify;
 
-#[derive(Serialize, Debug, PartialEq)]
+#[derive(Serialize, Debug, PartialEq, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct Error {
     pub error_type: String,
     pub error_message: String,

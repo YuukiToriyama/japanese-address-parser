@@ -9,7 +9,7 @@ init().then(() => {
         alert("input: " + input)
         const parser = new Parser()
         parser.parse(input).then(result => {
-            outputTextArea.value = result
+            outputTextArea.value = JSON.stringify(result, null, "\t")
         })
     })
 })
