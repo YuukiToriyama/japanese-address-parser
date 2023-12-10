@@ -6,7 +6,7 @@ use std::ops::Not;
 
 pub fn adapt_variety_of_spelling(
     input: &str,
-    region_name: &String,
+    region_name: &str,
     variety_of_spelling: Vec<&str>,
 ) -> Option<(String, String)> {
     if variety_of_spelling
@@ -26,4 +26,23 @@ pub fn adapt_variety_of_spelling(
         }
     }
     None
+}
+
+#[cfg(test)]
+mod adapter_tests {
+    use crate::parser::adapter::adapt_variety_of_spelling;
+
+    #[test]
+    fn adapt_variety_of_spelling_異字体への対応_薮田() {
+        let correct_town_name = "薮田南二丁目";
+        let variety_of_spelling = vec!["薮", "藪", "籔"];
+        assert_eq!(
+            adapt_variety_of_spelling("藪田南二丁目", correct_town_name, variety_of_spelling.clone()).unwrap().1,
+            correct_town_name
+        );
+        assert_eq!(
+            adapt_variety_of_spelling("籔田南二丁目", correct_town_name, variety_of_spelling.clone()).unwrap().1,
+            correct_town_name
+        );
+    }
 }
