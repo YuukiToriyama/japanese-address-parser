@@ -320,7 +320,7 @@ function __wbg_get_imports() {
         const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbg_set_8761474ad72b9bf1 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbg_set_481e03e499ca29ab = function(arg0, arg1, arg2) {
         getObject(arg0)[takeObject(arg1)] = takeObject(arg2);
     };
     imports.wbg.__wbg_new_abda76e883ba8a5f = function() {
