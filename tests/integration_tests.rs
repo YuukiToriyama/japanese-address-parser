@@ -7,5 +7,5 @@ mod common;
 #[tokio::test]
 #[ignore]
 async fn parser_tests() {
-    run_data_driven_tests("./tests/addresses.csv").await
+    run_data_driven_tests("./tests/test_data/県庁所在地の住所データ.csv").await
 }
