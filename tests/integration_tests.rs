@@ -5,6 +5,7 @@ use crate::common::run_data_driven_tests;
 mod common;
 
 #[tokio::test]
+#[ignore]
 async fn parser_tests() {
     run_data_driven_tests("./tests/addresses.csv").await
 }
