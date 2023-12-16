@@ -6,6 +6,6 @@ mod common;
 
 #[tokio::test]
 #[ignore]
-async fn parser_tests() {
+async fn 県庁所在地のデータテスト() {
     run_data_driven_tests("./tests/test_data/県庁所在地の住所データ.csv").await
 }
