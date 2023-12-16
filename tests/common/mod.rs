@@ -13,7 +13,7 @@ pub struct Record {
     pub rest: String,
 }
 
-pub fn read_test_data_from_csv(file_path: &str) -> Result<Vec<Record>, &str> {
+fn read_test_data_from_csv(file_path: &str) -> Result<Vec<Record>, &str> {
     let file = File::open(file_path).unwrap();
     let mut reader = Reader::from_reader(file);
     let mut records: Vec<Record> = vec![];
