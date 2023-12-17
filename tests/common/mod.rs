@@ -1,8 +1,8 @@
 use csv::Reader;
+use japanese_address_parser::Parser;
 use serde::Deserialize;
 use std::fs::File;
 use std::panic;
-use japanese_address_parser::Parser;
 
 #[derive(Deserialize)]
 pub struct Record {
