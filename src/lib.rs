@@ -1,9 +1,9 @@
 #![feature(async_fn_in_trait)]
 
-use wasm_bindgen::JsValue;
-use wasm_bindgen::prelude::wasm_bindgen;
 use crate::api::client::ApiImpl;
 use crate::entity::ParseResult;
+use wasm_bindgen::prelude::wasm_bindgen;
+use wasm_bindgen::JsValue;
 
 mod api;
 pub mod entity;

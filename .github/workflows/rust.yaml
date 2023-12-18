@@ -1,6 +1,8 @@
 name: Unit test & Code format check
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
 
 env:
