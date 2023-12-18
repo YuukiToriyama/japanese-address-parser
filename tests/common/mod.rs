@@ -1,4 +1,4 @@
-use csv::Reader;
+use csv::ReaderBuilder;
 use serde::Deserialize;
 use std::fs::File;
 use std::panic;
@@ -15,7 +15,7 @@ pub struct Record {
 
 fn read_test_data_from_csv(file_path: &str) -> Result<Vec<Record>, &str> {
     let file = File::open(file_path).unwrap();
-    let mut reader = Reader::from_reader(file);
+    let mut reader = ReaderBuilder::new().comment(Some(b'#')).from_reader(file);
     let mut records: Vec<Record> = vec![];
     for result in reader.deserialize() {
         let record: Record = result.unwrap();

@@ -28,6 +28,10 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
         if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["薮", "藪", "籔"]) {
             return Some(result);
         }
+        // 「崎」「﨑」の表記ゆれに対応する
+        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["崎", "﨑"]) {
+            return Some(result);
+        }
     }
     None
 }
