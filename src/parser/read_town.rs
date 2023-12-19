@@ -1,5 +1,5 @@
 use crate::entity::City;
-use crate::parser::adapter::adapt_variety_of_spelling;
+use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
@@ -11,27 +11,18 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
         {
             return Some((rest.to_string(), town_name.to_string()));
         }
-        // 「の」「ノ」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["の", "ノ"]) {
+        let adapter = OrthographicalVariantAdapter {
+            variant_list: vec![
+                vec!["の", "ノ"],
+                vec!["ツ", "ッ"],
+                vec!["ケ", "ヶ", "が"],
+                vec!["薮", "藪", "籔"],
+                vec!["崎", "﨑"],
+            ],
+        };
+        if let Some(result) = adapter.apply(input, &town.name) {
             return Some(result);
-        }
-        // 「ツ」「ッ」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ツ", "ッ"]) {
-            return Some(result);
-        }
-        // 「ケ」「ヶ」「が」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ケ", "ヶ", "が"])
-        {
-            return Some(result);
-        }
-        // 「薮」「藪」「籔」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["薮", "藪", "籔"]) {
-            return Some(result);
-        }
-        // 「崎」「﨑」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["崎", "﨑"]) {
-            return Some(result);
-        }
+        };
     }
     None
 }
