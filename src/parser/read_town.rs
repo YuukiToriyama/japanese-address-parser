@@ -1,5 +1,5 @@
 use crate::entity::City;
-use crate::parser::adapter::adapt_variety_of_spelling;
+use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
@@ -11,18 +11,18 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
         {
             return Some((rest.to_string(), town_name.to_string()));
         }
-        let patterns = vec![
-            vec!["の", "ノ"],
-            vec!["ツ", "ッ"],
-            vec!["ケ", "ヶ", "が"],
-            vec!["薮", "藪", "籔"],
-            vec!["崎", "﨑"],
-        ];
-        for pattern in patterns {
-            if let Some(result) = adapt_variety_of_spelling(input, &town.name, pattern) {
-                return Some(result);
-            }
-        }
+        let adapter = OrthographicalVariantAdapter {
+            variant_list: vec![
+                vec!["の", "ノ"],
+                vec!["ツ", "ッ"],
+                vec!["ケ", "ヶ", "が"],
+                vec!["薮", "藪", "籔"],
+                vec!["崎", "﨑"],
+            ],
+        };
+        if let Some(result) = adapter.apply(input, &town.name) {
+            return Some(result);
+        };
     }
     None
 }
