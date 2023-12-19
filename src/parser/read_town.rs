@@ -1,5 +1,5 @@
 use crate::entity::City;
-use crate::parser::adapter::adapt_variety_of_spelling;
+use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
@@ -11,19 +11,18 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
         {
             return Some((rest.to_string(), town_name.to_string()));
         }
-        // 「の」「ノ」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["の", "ノ"]) {
+        let adapter = OrthographicalVariantAdapter {
+            variant_list: vec![
+                vec!["の", "ノ"],
+                vec!["ツ", "ッ"],
+                vec!["ケ", "ヶ", "が", "ガ"],
+                vec!["薮", "藪", "籔"],
+                vec!["崎", "﨑"],
+            ],
+        };
+        if let Some(result) = adapter.apply(input, &town.name) {
             return Some(result);
-        }
-        // 「ツ」「ッ」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ツ", "ッ"]) {
-            return Some(result);
-        }
-        // 「ケ」「ヶ」「が」の表記ゆれに対応する
-        if let Some(result) = adapt_variety_of_spelling(input, &town.name, vec!["ケ", "ヶ", "が"])
-        {
-            return Some(result);
-        }
+        };
     }
     None
 }
@@ -100,6 +99,27 @@ mod parser_tests {
                 Town::new("松ケ崎杉ケ海道町", "", 35.047438, 135.779877),
                 Town::new("松ケ崎西池ノ内町", "", 35.054046, 135.773686),
                 Town::new("松ケ崎井出ケ鼻町", "", 35.056292, 135.790852),
+            ],
+        }
+    }
+
+    #[test]
+    fn read_town_異字体_岐阜県岐阜市薮田南二丁目() {
+        let (_, town) = read_town("薮田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+        let (_, town) = read_town("藪田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+        let (_, town) = read_town("籔田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+    }
+
+    fn generate_city_岐阜県岐阜市() -> City {
+        City {
+            name: "岐阜県岐阜市".to_string(),
+            towns: vec![
+                Town::new("薮田南一丁目", "", 35.394373, 136.723208),
+                Town::new("薮田南二丁目", "", 35.391964, 136.723151),
+                Town::new("薮田南三丁目", "", 35.3896, 136.723086),
             ],
         }
     }
