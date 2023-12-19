@@ -15,7 +15,7 @@ pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
             variant_list: vec![
                 vec!["の", "ノ"],
                 vec!["ツ", "ッ"],
-                vec!["ケ", "ヶ", "が"],
+                vec!["ケ", "ヶ", "が", "ガ"],
                 vec!["薮", "藪", "籔"],
                 vec!["崎", "﨑"],
             ],
