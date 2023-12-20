@@ -1,0 +1,51 @@
+.input {
+    display: flex;
+}
+
+.address {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 48px;
+    flex: 1;
+    width: 300px;
+    max-width: 410px;
+    background: #eaedf2;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.button {
+    border-radius: 6px;
+    height: 48px;
+    width: 180px;
+    display: block;
+    letter-spacing: 0.05em;
+    background: #5bc8ac;
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.button:hover {
+    background: #82dcc4;
+}
+
+.output thead {
+    background: #5bc8ac;
+}
+
+.output thead tr th {
+    font-weight: bold;
+    padding: 12px 30px 12px 42px;
+}
+
+.output tbody tr td {
+    background: #eaedf2;
+    padding: 15px 10px;
+}
+
+.output tbody tr td:hover {
+    background: #8eeacd;
+}
