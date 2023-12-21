@@ -205,7 +205,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_24(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h845fd83586466800(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h67189205345b4f9e(arg0, arg1, addHeapObject(arg2));
 }
 
 function handleError(f, args) {
@@ -216,7 +216,7 @@ function handleError(f, args) {
     }
 }
 function __wbg_adapter_83(arg0, arg1, arg2, arg3) {
-    wasm.wasm_bindgen__convert__closures__invoke2_mut__h9bf4078fa5813631(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
+    wasm.wasm_bindgen__convert__closures__invoke2_mut__h43af7f204ab95bee(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
 /**
