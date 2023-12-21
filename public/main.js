@@ -34,5 +34,10 @@ const createRow = (input, parseResult) => {
 const createCell = (innerHtml) => {
     const td = document.createElement("td")
     td.innerHTML = innerHtml
+    td.addEventListener("click", () => {
+        navigator.clipboard.writeText(td.innerText).then(() => {
+            console.log(td.innerText)
+        })
+    })
     return td
 }
