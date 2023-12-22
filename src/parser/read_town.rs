@@ -29,6 +29,8 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
 
 #[cfg(test)]
 mod parser_tests {
+    use crate::api::blocking::Client;
+    use crate::api::BlockingApi;
     use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
 
@@ -119,5 +121,13 @@ mod parser_tests {
         assert_eq!(town, "薮田南二丁目");
         let (_, town) = read_town("籔田南二丁目", &city).unwrap();
         assert_eq!(town, "薮田南二丁目");
+    }
+
+    #[test]
+    fn read_town_丁目が算用数字の場合_京都府京都市東山区n丁目() {
+        let client = Client {};
+        let city = client.get_city_master("京都府", "京都市東山区").unwrap();
+        let (_, town) = read_town("本町1丁目45番", &city).unwrap();
+        assert_eq!(town, "本町一丁目");
     }
 }
