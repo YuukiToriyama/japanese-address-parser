@@ -1,11 +1,24 @@
 use crate::entity::City;
 use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
+use crate::util::converter::JapaneseNumber;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
+use regex::Regex;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();
+    if input.contains("丁目") {
+        let expression = Regex::new(r"(\D+)(?<block_number>\d+)(丁目)").unwrap();
+        if let Some(captures) = expression.captures(&input) {
+            let capture_block_number = &captures.name("block_number").unwrap().as_str();
+            let block_number = capture_block_number.parse::<i32>().unwrap();
+            input = input.replace(
+                capture_block_number,
+                block_number.to_japanese_form().unwrap().as_str(),
+            );
+        }
+    }
     for town in &city.towns {
         if let Ok((rest, town_name)) =
             tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(&input)
