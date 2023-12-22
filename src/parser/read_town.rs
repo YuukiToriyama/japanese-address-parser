@@ -127,7 +127,17 @@ mod parser_tests {
     fn read_town_丁目が算用数字の場合_京都府京都市東山区n丁目() {
         let client = Client {};
         let city = client.get_city_master("京都府", "京都市東山区").unwrap();
-        let (_, town) = read_town("本町1丁目45番", &city).unwrap();
-        assert_eq!(town, "本町一丁目");
+        let test_cases = vec![
+            ("本町1丁目45番", "本町一丁目"),
+            ("本町2丁目64番", "本町二丁目"),
+            ("本町10丁目169番", "本町十丁目"),
+            ("本町12丁目224番", "本町十二丁目"),
+            ("本町20丁目435番", "本町二十丁目"),
+            ("本町22丁目489番", "本町二十二丁目"),
+        ];
+        for (input, town_name) in test_cases {
+            let (_, town) = read_town(input, &city).unwrap();
+            assert_eq!(town, town_name);
+        }
     }
 }
