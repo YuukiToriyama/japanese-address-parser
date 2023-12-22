@@ -4,8 +4,8 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-pub fn read_town(input: &str, city: City) -> Option<(String, String)> {
-    for town in city.towns {
+pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
+    for town in &city.towns {
         if let Ok((rest, town_name)) =
             tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input)
         {
@@ -41,7 +41,7 @@ mod parser_tests {
                 Town::new("新丹谷", "", 35.072403, 138.474199),
             ],
         };
-        let (rest, town) = read_town("旭町6-8", city).unwrap();
+        let (rest, town) = read_town("旭町6-8", &city).unwrap();
         assert_eq!(rest, "6-8");
         assert_eq!(town, "旭町".to_string());
     }
@@ -52,13 +52,13 @@ mod parser_tests {
             name: "静岡市清水区".to_string(),
             towns: vec![],
         };
-        assert_eq!(read_town("旭町6-8", city), None);
+        assert_eq!(read_town("旭町6-8", &city), None);
     }
 
     #[test]
     fn read_town_表記ゆれ_東京都千代田区丸の内() {
         let city = generate_city_東京都千代田区();
-        let (rest, town) = read_town("丸ノ内一丁目9", city).unwrap();
+        let (rest, town) = read_town("丸ノ内一丁目9", &city).unwrap();
         assert_eq!(rest, "9");
         assert_eq!(town, "丸の内一丁目");
     }
@@ -66,7 +66,7 @@ mod parser_tests {
     #[test]
     fn read_town_表記ゆれ_東京都千代田区一ツ橋() {
         let city = generate_city_東京都千代田区();
-        let (rest, town) = read_town("一ッ橋二丁目1番", city).unwrap();
+        let (rest, town) = read_town("一ッ橋二丁目1番", &city).unwrap();
         assert_eq!(rest, "1番");
         assert_eq!(town, "一ツ橋二丁目");
     }
@@ -87,7 +87,7 @@ mod parser_tests {
     #[test]
     fn read_town_表記ゆれ_京都府京都市左京区松ケ崎杉ケ海道町() {
         let city = generate_city_京都府京都市左京区();
-        let (rest, town) = read_town("松ヶ崎杉ヶ海道町1", city).unwrap();
+        let (rest, town) = read_town("松ヶ崎杉ヶ海道町1", &city).unwrap();
         assert_eq!(rest, "1");
         assert_eq!(town, "松ケ崎杉ケ海道町");
     }
@@ -105,22 +105,19 @@ mod parser_tests {
 
     #[test]
     fn read_town_異字体_岐阜県岐阜市薮田南二丁目() {
-        let (_, town) = read_town("薮田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
-        assert_eq!(town, "薮田南二丁目");
-        let (_, town) = read_town("藪田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
-        assert_eq!(town, "薮田南二丁目");
-        let (_, town) = read_town("籔田南二丁目", generate_city_岐阜県岐阜市()).unwrap();
-        assert_eq!(town, "薮田南二丁目");
-    }
-
-    fn generate_city_岐阜県岐阜市() -> City {
-        City {
+        let city = City {
             name: "岐阜県岐阜市".to_string(),
             towns: vec![
                 Town::new("薮田南一丁目", "", 35.394373, 136.723208),
                 Town::new("薮田南二丁目", "", 35.391964, 136.723151),
                 Town::new("薮田南三丁目", "", 35.3896, 136.723086),
             ],
-        }
+        };
+        let (_, town) = read_town("薮田南二丁目", &city).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+        let (_, town) = read_town("藪田南二丁目", &city).unwrap();
+        assert_eq!(town, "薮田南二丁目");
+        let (_, town) = read_town("籔田南二丁目", &city).unwrap();
+        assert_eq!(town, "薮田南二丁目");
     }
 }
