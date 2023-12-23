@@ -1,13 +1,20 @@
-use crate::entity::City;
-use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
+use regex::Regex;
+
+use crate::entity::City;
+use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
+use crate::util::converter::JapaneseNumber;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
+    let mut input: String = input.to_string();
+    if input.contains("丁目") {
+        input = normalize_block_number(input);
+    }
     for town in &city.towns {
         if let Ok((rest, town_name)) =
-            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input)
+            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(&input)
         {
             return Some((rest.to_string(), town_name.to_string()));
         }
@@ -20,15 +27,33 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
                 vec!["崎", "﨑"],
             ],
         };
-        if let Some(result) = adapter.apply(input, &town.name) {
+        if let Some(result) = adapter.apply(&input, &town.name) {
             return Some(result);
         };
     }
     None
 }
 
+fn normalize_block_number(input: String) -> String {
+    let expression = Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
+    match expression.captures(&input) {
+        Some(captures) => {
+            let capture_block_number = &captures.name("block_number").unwrap().as_str();
+            let block_number = capture_block_number.parse::<i32>().unwrap();
+            input.replace(
+                capture_block_number,
+                block_number.to_japanese_form().unwrap().as_str(),
+            )
+        }
+        None => input
+    }
+}
+
 #[cfg(test)]
+#[cfg(not(target_arch = "wasm32"))]
 mod parser_tests {
+    use crate::api::blocking::Client;
+    use crate::api::BlockingApi;
     use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
 
@@ -119,5 +144,23 @@ mod parser_tests {
         assert_eq!(town, "薮田南二丁目");
         let (_, town) = read_town("籔田南二丁目", &city).unwrap();
         assert_eq!(town, "薮田南二丁目");
+    }
+
+    #[test]
+    fn read_town_丁目が算用数字の場合_京都府京都市東山区n丁目() {
+        let client = Client {};
+        let city = client.get_city_master("京都府", "京都市東山区").unwrap();
+        let test_cases = vec![
+            ("本町1丁目45番", "本町一丁目"),
+            ("本町2丁目64番", "本町二丁目"),
+            ("本町10丁目169番", "本町十丁目"),
+            ("本町12丁目224番", "本町十二丁目"),
+            ("本町20丁目435番", "本町二十丁目"),
+            ("本町22丁目489番", "本町二十二丁目"),
+        ];
+        for (input, town_name) in test_cases {
+            let (_, town) = read_town(input, &city).unwrap();
+            assert_eq!(town, town_name);
+        }
     }
 }
