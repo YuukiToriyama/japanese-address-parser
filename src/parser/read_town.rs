@@ -10,7 +10,7 @@ use crate::util::converter::JapaneseNumber;
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();
     if input.contains("丁目") {
-        let expression = Regex::new(r"(\D+)(?<block_number>\d+)(丁目)").unwrap();
+        let expression = Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
         if let Some(captures) = expression.captures(&input) {
             let capture_block_number = &captures.name("block_number").unwrap().as_str();
             let block_number = capture_block_number.parse::<i32>().unwrap();
