@@ -10,15 +10,7 @@ use crate::util::converter::JapaneseNumber;
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();
     if input.contains("丁目") {
-        let expression = Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
-        if let Some(captures) = expression.captures(&input) {
-            let capture_block_number = &captures.name("block_number").unwrap().as_str();
-            let block_number = capture_block_number.parse::<i32>().unwrap();
-            input = input.replace(
-                capture_block_number,
-                block_number.to_japanese_form().unwrap().as_str(),
-            );
-        }
+        input = normalize_block_number(input);
     }
     for town in &city.towns {
         if let Ok((rest, town_name)) =
@@ -40,6 +32,21 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
         };
     }
     None
+}
+
+fn normalize_block_number(input: String) -> String {
+    let expression = Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
+    match expression.captures(&input) {
+        Some(captures) => {
+            let capture_block_number = &captures.name("block_number").unwrap().as_str();
+            let block_number = capture_block_number.parse::<i32>().unwrap();
+            input.replace(
+                capture_block_number,
+                block_number.to_japanese_form().unwrap().as_str(),
+            )
+        }
+        None => input
+    }
 }
 
 #[cfg(test)]
