@@ -1,10 +1,11 @@
-use crate::entity::City;
-use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
-use crate::util::converter::JapaneseNumber;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 use regex::Regex;
+
+use crate::entity::City;
+use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
+use crate::util::converter::JapaneseNumber;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();
