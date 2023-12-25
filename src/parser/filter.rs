@@ -8,9 +8,7 @@ pub struct FullwidthCharacterFilter {}
 
 impl Filter for FullwidthCharacterFilter {
     fn apply(self, input: String) -> String {
-        input.chars().map(|c| {
-            convert_zenkaku_to_hankaku(c)
-        }).join("")
+        input.chars().map(|c| convert_zenkaku_to_hankaku(c)).join("")
     }
 }
 
