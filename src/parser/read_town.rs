@@ -4,9 +4,9 @@ use nom::Parser;
 
 use crate::entity::City;
 use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
-use crate::parser::filter::Filter;
 use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
+use crate::parser::filter::Filter;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();

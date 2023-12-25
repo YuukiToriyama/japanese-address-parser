@@ -1,5 +1,5 @@
-use itertools::Itertools;
 use crate::parser::filter::Filter;
+use itertools::Itertools;
 
 pub struct FullwidthCharacterFilter {}
 

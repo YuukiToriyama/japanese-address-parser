@@ -18,7 +18,7 @@ impl Filter for NonKanjiBlockNumberFilter {
                     1,
                 )
             }
-            None => input
+            None => input,
         }
     }
 }
