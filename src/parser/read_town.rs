@@ -5,7 +5,8 @@ use regex::Regex;
 
 use crate::entity::City;
 use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
-use crate::parser::filter::{Filter, FullwidthCharacterFilter};
+use crate::parser::filter::Filter;
+use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::util::converter::JapaneseNumber;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
