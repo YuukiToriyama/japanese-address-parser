@@ -5,11 +5,13 @@ use regex::Regex;
 
 use crate::entity::City;
 use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
+use crate::parser::filter::{Filter, FullwidthCharacterFilter};
 use crate::util::converter::JapaneseNumber;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();
     if input.contains("丁目") {
+        input = FullwidthCharacterFilter {}.apply(input);
         input = normalize_block_number(input);
     }
     for town in &city.towns {
