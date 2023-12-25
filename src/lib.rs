@@ -9,6 +9,7 @@ mod api;
 pub mod entity;
 mod err;
 pub mod parser;
+mod util;
 
 #[wasm_bindgen]
 pub struct Parser();
