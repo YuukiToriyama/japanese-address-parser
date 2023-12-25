@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
@@ -6,14 +5,13 @@ use regex::Regex;
 
 use crate::entity::City;
 use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
-use crate::util::converter::{convert_zenkaku_to_hankaku, JapaneseNumber};
+use crate::parser::filter::{Filter, FullwidthCharacterFilter};
+use crate::util::converter::JapaneseNumber;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = input.to_string();
     if input.contains("丁目") {
-        input = input.as_str().chars().map(|c| {
-            convert_zenkaku_to_hankaku(c)
-        }).join("");
+        input = FullwidthCharacterFilter {}.apply(input);
         input = normalize_block_number(input);
     }
     for town in &city.towns {

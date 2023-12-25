@@ -9,6 +9,7 @@ mod adapter;
 mod read_city;
 mod read_prefecture;
 mod read_town;
+mod filter;
 
 pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     // 都道府県を特定
