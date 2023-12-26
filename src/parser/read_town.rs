@@ -13,6 +13,13 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     if input.contains("丁目") {
         input = NonKanjiBlockNumberFilter {}.apply(input);
     }
+    if let Some(result) = find_town(&mut input, city) {
+        return Some(result);
+    }
+    None
+}
+
+fn find_town(input: &String, city: &City) -> Option<(String, String)> {
     for town in &city.towns {
         if let Ok((rest, town_name)) =
             tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(&input)
