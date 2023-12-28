@@ -47,7 +47,7 @@ fn extract_town_name(input: &str) -> Option<(String, String)> {
     ), rest.to_string()))
 }
 
-fn extract_house_number(input: &String) -> Option<(String, String)> {
+fn extract_house_number(input: &str) -> Option<(String, String)> {
     let expression = Regex::new(
         r"\D+(?<house_number>\d+)\D*(?<rest>.*)$"
     ).unwrap();
