@@ -9,9 +9,8 @@ use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
 use crate::parser::filter::Filter;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
-    let mut input: String = input.to_string();
+    let mut input: String = FullwidthCharacterFilter {}.apply(input.to_string());
     if input.contains("丁目") {
-        input = FullwidthCharacterFilter {}.apply(input);
         input = NonKanjiBlockNumberFilter {}.apply(input);
     }
     for town in &city.towns {
