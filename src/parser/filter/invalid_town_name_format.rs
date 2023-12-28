@@ -6,7 +6,17 @@ pub struct InvalidTownNameFormatFilter {}
 
 impl Filter for InvalidTownNameFormatFilter {
     fn apply(self, input: String) -> String {
-        todo!()
+        let (town_name, rest) = if let Some(result) = extract_town_name(&input) {
+            result
+        } else {
+            return input;
+        };
+        let (house_number, rest) = if let Some(result) = extract_house_number(&rest) {
+            result
+        } else {
+            return format!("{}{}", town_name, rest);
+        };
+        format!("{}{}{}", town_name, house_number, rest)
     }
 }
 
@@ -64,8 +74,8 @@ fn extract_house_number(input: &String) -> Option<(String, String)> {
 
 #[cfg(test)]
 mod invalid_town_name_format_test {
-    use crate::parser::filter::Filter;
     use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
+    use crate::parser::filter::Filter;
 
     #[test]
     fn 有楽町一丁目() {
