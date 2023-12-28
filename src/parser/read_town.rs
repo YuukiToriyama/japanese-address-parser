@@ -7,12 +7,18 @@ use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVarian
 use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
 use crate::parser::filter::Filter;
+use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = FullwidthCharacterFilter {}.apply(input.to_string());
     if input.contains("丁目") {
         input = NonKanjiBlockNumberFilter {}.apply(input);
     }
+    if let Some(result) = find_town(&mut input, city) {
+        return Some(result);
+    }
+    // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
+    input = InvalidTownNameFormatFilter {}.apply(input);
     if let Some(result) = find_town(&mut input, city) {
         return Some(result);
     }
