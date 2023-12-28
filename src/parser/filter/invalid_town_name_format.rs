@@ -62,7 +62,7 @@ fn extract_house_number(input: &str) -> Option<(String, String)> {
     } else {
         ""
     };
-    Some((format!("{}番", house_number,), rest.to_string()))
+    Some((format!("{}番", house_number), rest.to_string()))
 }
 
 #[cfg(test)]
