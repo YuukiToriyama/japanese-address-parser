@@ -22,7 +22,7 @@ impl Filter for InvalidTownNameFormatFilter {
 
 fn extract_town_name(input: &str) -> Option<(String, String)> {
     let expression = Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)(?<rest>.*)$").unwrap();
-    let captures = expression.captures(input).unwrap();
+    let captures = expression.captures(input)?;
     let town_name = if let Some(matched) = captures.name("town_name") {
         matched.as_str()
     } else {
@@ -33,8 +33,7 @@ fn extract_town_name(input: &str) -> Option<(String, String)> {
             .as_str()
             .parse::<i32>()
             .unwrap()
-            .to_japanese_form()
-            .unwrap()
+            .to_japanese_form()?
     } else {
         return None;
     };
