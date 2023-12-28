@@ -51,11 +51,7 @@ fn extract_house_number(input: &str) -> Option<(String, String)> {
     let expression = Regex::new(
         r"\D+(?<house_number>\d+)\D*(?<rest>.*)$"
     ).unwrap();
-    let captures = if let Some(captures) = expression.captures(input) {
-        captures
-    } else {
-        return None;
-    };
+    let captures = expression.captures(input)?;
     let house_number = if let Some(matched) = captures.name("house_number") {
         matched.as_str()
     } else {
