@@ -20,7 +20,7 @@ impl Filter for InvalidTownNameFormatFilter {
     }
 }
 
-fn extract_town_name(input: &String) -> Option<(String, String)> {
+fn extract_town_name(input: &str) -> Option<(String, String)> {
     let expression = Regex::new(
         r"^(?<town_name>\D+)(?<block_number>\d+)(?<rest>.*)$"
     ).unwrap();
