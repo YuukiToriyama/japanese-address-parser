@@ -1,5 +1,3 @@
-#![feature(async_closure)]
-
 use crate::common::run_data_driven_tests;
 
 mod common;
