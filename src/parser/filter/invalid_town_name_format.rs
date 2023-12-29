@@ -12,7 +12,7 @@ impl Filter for InvalidTownNameFormatFilter {
 
 fn extract_town_name(input: &str) -> Option<String> {
     let expression =
-        Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー]*(?<rest>.*)$").unwrap();
+        Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
     let town_name = if let Some(matched) = captures.name("town_name") {
         matched.as_str()
