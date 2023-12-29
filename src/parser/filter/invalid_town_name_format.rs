@@ -48,22 +48,6 @@ fn extract_town_name(input: &str) -> Option<(String, String)> {
     ))
 }
 
-fn extract_house_number(input: &str) -> Option<(String, String)> {
-    let expression = Regex::new(r"\D+(?<house_number>\d+)\D*(?<rest>.*)$").unwrap();
-    let captures = expression.captures(input)?;
-    let house_number = if let Some(matched) = captures.name("house_number") {
-        matched.as_str()
-    } else {
-        return None;
-    };
-    let rest = if let Some(matched) = captures.name("rest") {
-        matched.as_str()
-    } else {
-        ""
-    };
-    Some((format!("{}番", house_number), rest.to_string()))
-}
-
 #[cfg(test)]
 mod invalid_town_name_format_test {
     use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;

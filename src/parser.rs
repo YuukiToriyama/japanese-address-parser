@@ -8,6 +8,7 @@ use crate::parser::read_town::read_town;
 mod adapter;
 mod filter;
 mod read_city;
+mod read_house_number;
 mod read_prefecture;
 mod read_town;
 
