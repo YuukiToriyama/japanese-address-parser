@@ -6,7 +6,7 @@ pub struct InvalidTownNameFormatFilter {}
 
 impl Filter for InvalidTownNameFormatFilter {
     fn apply(self, input: String) -> String {
-        extract_town_name(&input).unwrap_or_else(|| input)
+        extract_town_name(&input).unwrap_or(input)
     }
 }
 
