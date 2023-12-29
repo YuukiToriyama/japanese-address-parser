@@ -14,12 +14,12 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     if input.contains("丁目") {
         input = NonKanjiBlockNumberFilter {}.apply(input);
     }
-    if let Some(result) = find_town(&mut input, city) {
+    if let Some(result) = find_town(&input, city) {
         return Some(result);
     }
     // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
     input = InvalidTownNameFormatFilter {}.apply(input);
-    if let Some(result) = find_town(&mut input, city) {
+    if let Some(result) = find_town(&input, city) {
         return Some(result);
     }
     None
