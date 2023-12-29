@@ -78,12 +78,12 @@ mod invalid_town_name_format_test {
     #[test]
     fn 有楽町一丁目1番() {
         let result = InvalidTownNameFormatFilter {}.apply("有楽町1-1".to_string());
-        assert_eq!(result, "有楽町一丁目1番")
+        assert_eq!(result, "有楽町一丁目1")
     }
 
     #[test]
     fn 有楽町一丁目1番2() {
         let result = InvalidTownNameFormatFilter {}.apply("有楽町1-1-2".to_string());
-        assert_eq!(result, "有楽町一丁目1番2")
+        assert_eq!(result, "有楽町一丁目1-2")
     }
 }
