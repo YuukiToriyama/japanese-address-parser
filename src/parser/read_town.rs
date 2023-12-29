@@ -28,7 +28,7 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
 fn find_town(input: &String, city: &City) -> Option<(String, String)> {
     for town in &city.towns {
         if let Ok((rest, town_name)) =
-            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(&input)
+            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input)
         {
             return Some((rest.to_string(), town_name.to_string()));
         }
@@ -41,7 +41,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
                 vec!["崎", "﨑"],
             ],
         };
-        if let Some(result) = adapter.apply(&input, &town.name) {
+        if let Some(result) = adapter.apply(input, &town.name) {
             return Some(result);
         };
     }
