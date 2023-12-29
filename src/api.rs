@@ -1,7 +1,6 @@
 #[cfg(not(target_arch = "wasm32"))]
 pub mod blocking;
 pub mod client;
-pub mod mock;
 
 use std::future::Future;
 use crate::entity::{City, Prefecture};
