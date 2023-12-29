@@ -11,17 +11,13 @@ impl Filter for InvalidTownNameFormatFilter {
         } else {
             return input;
         };
-        let (house_number, rest) = if let Some(result) = extract_house_number(&rest) {
-            result
-        } else {
-            return format!("{}{}", town_name, rest);
-        };
-        format!("{}{}{}", town_name, house_number, rest)
+        format!("{}{}", town_name, rest)
     }
 }
 
 fn extract_town_name(input: &str) -> Option<(String, String)> {
-    let expression = Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)(?<rest>.*)$").unwrap();
+    let expression =
+        Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー]*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
     let town_name = if let Some(matched) = captures.name("town_name") {
         matched.as_str()
