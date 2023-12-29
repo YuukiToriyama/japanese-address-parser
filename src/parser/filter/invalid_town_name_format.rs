@@ -6,16 +6,11 @@ pub struct InvalidTownNameFormatFilter {}
 
 impl Filter for InvalidTownNameFormatFilter {
     fn apply(self, input: String) -> String {
-        let (town_name, rest) = if let Some(result) = extract_town_name(&input) {
-            result
-        } else {
-            return input;
-        };
-        format!("{}{}", town_name, rest)
+        extract_town_name(&input).unwrap_or_else(|| input)
     }
 }
 
-fn extract_town_name(input: &str) -> Option<(String, String)> {
+fn extract_town_name(input: &str) -> Option<String> {
     let expression =
         Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー]*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
@@ -38,10 +33,7 @@ fn extract_town_name(input: &str) -> Option<(String, String)> {
     } else {
         ""
     };
-    Some((
-        format!("{}{}丁目", town_name, block_number),
-        rest.to_string(),
-    ))
+    Some(format!("{}{}丁目{}", town_name, block_number, rest))
 }
 
 #[cfg(test)]
