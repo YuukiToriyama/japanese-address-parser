@@ -1,5 +1,3 @@
-#![feature(async_fn_in_trait)]
-
 use crate::api::client::ApiImpl;
 use crate::entity::ParseResult;
 use wasm_bindgen::prelude::wasm_bindgen;
