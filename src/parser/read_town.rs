@@ -7,16 +7,28 @@ use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVarian
 use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
 use crate::parser::filter::Filter;
+use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
-    let mut input: String = input.to_string();
+    let mut input: String = FullwidthCharacterFilter {}.apply(input.to_string());
     if input.contains("丁目") {
-        input = FullwidthCharacterFilter {}.apply(input);
         input = NonKanjiBlockNumberFilter {}.apply(input);
     }
+    if let Some(result) = find_town(&input, city) {
+        return Some(result);
+    }
+    // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
+    input = InvalidTownNameFormatFilter {}.apply(input);
+    if let Some(result) = find_town(&input, city) {
+        return Some(result);
+    }
+    None
+}
+
+fn find_town(input: &String, city: &City) -> Option<(String, String)> {
     for town in &city.towns {
         if let Ok((rest, town_name)) =
-            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(&input)
+            tag::<&str, &str, VerboseError<&str>>(town.name.as_str()).parse(input)
         {
             return Some((rest.to_string(), town_name.to_string()));
         }
@@ -29,7 +41,7 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
                 vec!["崎", "﨑"],
             ],
         };
-        if let Some(result) = adapter.apply(&input, &town.name) {
+        if let Some(result) = adapter.apply(input, &town.name) {
             return Some(result);
         };
     }
