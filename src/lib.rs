@@ -3,7 +3,7 @@ use crate::entity::ParseResult;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
 
-mod api;
+pub mod api;
 pub mod entity;
 mod err;
 pub mod parser;
