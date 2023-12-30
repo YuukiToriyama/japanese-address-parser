@@ -20,5 +20,8 @@ async fn 丁目が算用数字の場合への対応テスト() {
 
 #[tokio::test]
 async fn 住居表示実施済みの住所において正式でない表記への対応テスト() {
-    run_data_driven_tests("./tests/test_data/住居表示実施済みの住所において正式でない表記への対応.csv").await
+    run_data_driven_tests(
+        "./tests/test_data/住居表示実施済みの住所において正式でない表記への対応.csv",
+    )
+    .await
 }

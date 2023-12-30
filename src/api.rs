@@ -2,13 +2,20 @@
 pub mod blocking;
 pub mod client;
 
-use std::future::Future;
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
+use std::future::Future;
 
 pub trait Api {
-    fn get_prefecture_master(&self, prefecture_name: &str) -> impl Future<Output=Result<Prefecture, Error>>;
-    fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> impl Future<Output=Result<City, Error>>;
+    fn get_prefecture_master(
+        &self,
+        prefecture_name: &str,
+    ) -> impl Future<Output = Result<Prefecture, Error>>;
+    fn get_city_master(
+        &self,
+        prefecture_name: &str,
+        city_name: &str,
+    ) -> impl Future<Output = Result<City, Error>>;
 }
 
 pub trait BlockingApi {
