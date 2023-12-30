@@ -11,7 +11,7 @@ impl JapaneseNumber for i32 {
             (0, 1) => Some("十".to_string()),
             (0, _) => Some(format!(
                 "{}十",
-                associate_arabic_number_to_japanese_number(second_digit).unwrap()
+                associate_arabic_number_to_japanese_number(second_digit)?
             )),
             (_, 0) => Some(
                 associate_arabic_number_to_japanese_number(first_digit)
