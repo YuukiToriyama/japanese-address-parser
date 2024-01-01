@@ -1,0 +1,85 @@
+name: Run free test
+
+on:
+  issue_comment:
+    types: [ created ]
+
+jobs:
+  run_free_test:
+    if: github.event.issue.pull_request == null && startsWith(github.event.comment.body, '```text:freetest')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get head commit
+        uses: actions/github-script@v7.0.1
+        id: get-head-commit
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            const commit = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: "heads/main"
+            })
+            return commit.data.object.sha
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Build wasm module
+        run: wasm-pack build --target nodejs --scope toriyama
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run free test
+        id: run-free-test
+        continue-on-error: true
+        run: echo '${{ github.event.comment.body }}' | grep -v '```' | node .github/scripts/free_test.js
+
+      - name: Read test result
+        id: read-test-result
+        uses: juliangruber/read-file-action@v1.1.6
+        with:
+          path: ./test_result.md
+
+      - name: Comment
+        uses: actions/github-script@v7.0.1
+        if: steps.run-free-test.outcome == 'success'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `${{ steps.read-test-result.outputs.content }}\n### テストに使用したリビジョン\n${{ steps.get-head-commit.outputs.result }}` 
+            })
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: ${{ github.event.comment.id }},
+              content: "rocket"
+            })
+
+      - name: Comment(on error)
+        uses: actions/github-script@v7.0.1
+        if: steps.run-free-test.outcome == 'failure'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `:bomb: テストが失敗しました\n\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}` 
+            })
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: ${{ github.event.comment.id }},
+              content: "eyes"
+            })
