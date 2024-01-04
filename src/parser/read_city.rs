@@ -22,12 +22,12 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
 }
 
 #[cfg(test)]
-mod parser_tests {
+mod tests {
     use crate::entity::Prefecture;
     use crate::parser::read_city::read_city;
 
     #[test]
-    fn read_city_成功_京都市山科区() {
+    fn 京都市山科区_成功() {
         let prefecture = Prefecture::new(
             "京都府",
             vec!["京都市北区", "京都市上京区", "京都市山科区", "京都市西京区"],
@@ -38,7 +38,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn read_city_失敗_市区町村名が誤っている() {
+    fn 市区町村名が誤っている_失敗() {
         let prefecture = Prefecture::new(
             "京都府",
             vec!["京都市北区", "京都市上京区", "京都市山科区", "京都市西京区"],
@@ -47,7 +47,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn read_city_表記ゆれ_茅ヶ崎市() {
+    fn 表記ゆれ_茅ヶ崎市() {
         let prefecture = Prefecture::new(
             "神奈川県",
             vec!["鎌倉市", "藤沢市", "小田原市", "茅ヶ崎市", "逗子市"],
@@ -58,7 +58,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn read_city_表記ゆれ_横浜市保土ケ谷区() {
+    fn 表記ゆれ_横浜市保土ケ谷区() {
         let prefecture = Prefecture::new(
             "神奈川県",
             vec![
@@ -74,7 +74,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn read_city_表記ゆれ_不破郡関ケ原町() {
+    fn 表記ゆれ_不破郡関ケ原町() {
         let prefecture = Prefecture::new(
             "岐阜県",
             vec![
