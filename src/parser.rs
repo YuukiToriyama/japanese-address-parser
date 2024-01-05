@@ -73,7 +73,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 }
 
 #[cfg(test)]
-mod parser_tests {
+mod non_blocking_tests {
     use crate::api::client::ApiImpl;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
@@ -147,7 +147,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
 }
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
-mod parse_blocking_tests {
+mod blocking_tests {
     use crate::api;
     use crate::err::ParseErrorKind;
     use crate::parser::parse_blocking;
