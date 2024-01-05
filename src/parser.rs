@@ -72,9 +72,9 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 #[cfg(test)]
 mod non_blocking_tests {
     use crate::api::client::ApiImpl;
+    use crate::err::ParseErrorKind;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
-    use crate::err::ParseErrorKind;
 
     #[tokio::test]
     async fn 都道府県名が誤っている場合() {
@@ -85,7 +85,10 @@ mod non_blocking_tests {
         assert_eq!(result.address.town, "");
         assert_eq!(result.address.rest, "青盛県青森市長島１丁目１−１");
         assert_eq!(result.error.is_some(), true);
-        assert_eq!(result.error.unwrap().error_message, ParseErrorKind::Prefecture.to_string());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::Prefecture.to_string()
+        );
     }
 
     #[tokio::test]
@@ -97,7 +100,10 @@ mod non_blocking_tests {
         assert_eq!(result.address.town, "");
         assert_eq!(result.address.rest, "青盛市長島１丁目１−１");
         assert_eq!(result.error.is_some(), true);
-        assert_eq!(result.error.unwrap().error_message, ParseErrorKind::City.to_string());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::City.to_string()
+        );
     }
 
     #[tokio::test]
@@ -109,7 +115,10 @@ mod non_blocking_tests {
         assert_eq!(result.address.town, "");
         assert_eq!(result.address.rest, "永嶋１丁目１−１");
         assert_eq!(result.error.is_some(), true);
-        assert_eq!(result.error.unwrap().error_message, ParseErrorKind::Town.to_string());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::Town.to_string()
+        );
     }
 
     wasm_bindgen_test_configure!(run_in_browser);
