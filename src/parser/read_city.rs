@@ -12,7 +12,7 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             return Some((rest.to_string(), city_name.to_string()));
         }
         let adapter = OrthographicalVariantAdapter {
-            variant_list: vec![vec!["ケ", "ヶ", "が"]],
+            variant_list: vec![vec!["ケ", "ヶ", "が"], vec!["龍", "竜"]],
         };
         if let Some(result) = adapter.apply(input, &city_name) {
             return Some(result);
@@ -35,6 +35,10 @@ mod tests {
     #[test_case("神奈川県", "横浜市保土ヶ谷区川辺町2番地9", "横浜市保土ケ谷区"; "success_横浜市保土ヶ谷区_表記ゆれ")]
     #[test_case("岐阜県", "不破郡関ケ原町大字関ケ原894番地の58", "不破郡関ケ原町"; "success_不破郡関ケ原町")]
     #[test_case("岐阜県", "不破郡関が原町大字関ケ原894番地の58", "不破郡関ケ原町"; "success_不破郡関が原町_表記ゆれ")]
+    #[test_case("茨城県", "龍ヶ崎市佐貫町647", "龍ヶ崎市"; "success_龍ヶ崎市")]
+    #[test_case("茨城県", "龍ケ崎市佐貫町647", "龍ヶ崎市"; "success_龍ケ崎市_表記ゆれ")]
+    #[test_case("茨城県", "竜ヶ崎市佐貫町647", "龍ヶ崎市"; "success_竜ヶ崎市_表記ゆれ")]
+    #[test_case("茨城県", "竜ケ崎市佐貫町647", "龍ヶ崎市"; "success_竜ケ崎市_表記ゆれ")]
     fn test_read_city(prefecture_name: &str, input: &str, expected: &str) {
         let api = Client {};
         let prefecture = api.get_prefecture_master(prefecture_name).unwrap();
