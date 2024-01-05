@@ -16,14 +16,13 @@ mod read_town;
 
 pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     // 都道府県を特定
-    let (rest, prefecture_name) = match read_prefecture(input) {
-        None => {
-            return ParseResult {
-                address: Address::new("", "", "", input),
-                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-            };
-        }
-        Some(result) => result,
+    let (rest, prefecture_name) = if let Some(result) = read_prefecture(input) {
+        result
+    } else {
+        return ParseResult {
+            address: Address::new("", "", "", input),
+            error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
+        };
     };
     // その都道府県の市町村名リストを取得
     let prefecture = match api.get_prefecture_master(prefecture_name).await {
