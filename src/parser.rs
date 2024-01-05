@@ -21,7 +21,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new("", "", "", input),
                 error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-            }
+            };
         }
         Some(result) => result,
     };
@@ -31,7 +31,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new(prefecture_name, "", "", rest),
                 error: Some(error),
-            }
+            };
         }
         Ok(result) => result,
     };
@@ -41,7 +41,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new(prefecture_name, "", "", rest),
                 error: Some(Error::new_parse_error(ParseErrorKind::City)),
-            }
+            };
         }
         Some(result) => result,
     };
@@ -51,7 +51,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new(prefecture_name, &city_name, "", &rest),
                 error: Some(error),
-            }
+            };
         }
         Ok(result) => result,
     };
@@ -61,7 +61,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new(prefecture_name, &city_name, "", &rest),
                 error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-            }
+            };
         }
         Some(result) => result,
     };
@@ -101,6 +101,18 @@ mod non_blocking_tests {
         assert_eq!(result.address.rest, "青盛市長島１丁目１−１");
         assert_eq!(result.error.is_some(), true);
         assert_eq!(result.error.unwrap().error_message, ParseErrorKind::City.to_string());
+    }
+
+    #[tokio::test]
+    async fn 町名が誤っている場合() {
+        let api = ApiImpl {};
+        let result = parse(api, "青森県青森市永嶋１丁目１−１").await;
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "青森市");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "永嶋１丁目１−１");
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(result.error.unwrap().error_message, ParseErrorKind::Town.to_string());
     }
 
     wasm_bindgen_test_configure!(run_in_browser);
