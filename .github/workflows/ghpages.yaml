@@ -19,7 +19,7 @@ jobs:
       - name: Unit Testing for Wasm module
         run: wasm-pack test --firefox --headless
       - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
+        run: wasm-pack build --target web --scope toriyama --features debug
       - name: Move files
         run: |
           mkdir ./publish

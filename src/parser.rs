@@ -1,4 +1,6 @@
-use crate::api::{Api, BlockingApi};
+use crate::api::Api;
+#[cfg(not(target_arch = "wasm32"))]
+use crate::api::BlockingApi;
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
 use crate::parser::read_city::read_city;
@@ -14,14 +16,13 @@ mod read_town;
 
 pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
     // 都道府県を特定
-    let (rest, prefecture_name) = match read_prefecture(input) {
-        None => {
-            return ParseResult {
-                address: Address::new("", "", "", input),
-                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-            }
-        }
-        Some(result) => result,
+    let (rest, prefecture_name) = if let Some(result) = read_prefecture(input) {
+        result
+    } else {
+        return ParseResult {
+            address: Address::new("", "", "", input),
+            error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
+        };
     };
     // その都道府県の市町村名リストを取得
     let prefecture = match api.get_prefecture_master(prefecture_name).await {
@@ -29,19 +30,18 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new(prefecture_name, "", "", rest),
                 error: Some(error),
-            }
+            };
         }
         Ok(result) => result,
     };
     // 市町村名を特定
-    let (rest, city_name) = match read_city(rest, prefecture) {
-        None => {
-            return ParseResult {
-                address: Address::new(prefecture_name, "", "", rest),
-                error: Some(Error::new_parse_error(ParseErrorKind::City)),
-            }
-        }
-        Some(result) => result,
+    let (rest, city_name) = if let Some(result) = read_city(rest, prefecture) {
+        result
+    } else {
+        return ParseResult {
+            address: Address::new(prefecture_name, "", "", rest),
+            error: Some(Error::new_parse_error(ParseErrorKind::City)),
+        };
     };
     // その市町村の町名リストを取得
     let city = match api.get_city_master(prefecture_name, &city_name).await {
@@ -49,19 +49,18 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
             return ParseResult {
                 address: Address::new(prefecture_name, &city_name, "", &rest),
                 error: Some(error),
-            }
+            };
         }
         Ok(result) => result,
     };
     // 町名を特定
-    let (rest, town_name) = match read_town(&rest, &city) {
-        None => {
-            return ParseResult {
-                address: Address::new(prefecture_name, &city_name, "", &rest),
-                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-            }
-        }
-        Some(result) => result,
+    let (rest, town_name) = if let Some(result) = read_town(&rest, &city) {
+        result
+    } else {
+        return ParseResult {
+            address: Address::new(prefecture_name, &city_name, "", &rest),
+            error: Some(Error::new_parse_error(ParseErrorKind::Town)),
+        };
     };
 
     ParseResult {
@@ -71,10 +70,56 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 }
 
 #[cfg(test)]
-mod parser_tests {
+mod non_blocking_tests {
     use crate::api::client::ApiImpl;
+    use crate::err::ParseErrorKind;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+
+    #[tokio::test]
+    async fn 都道府県名が誤っている場合() {
+        let api = ApiImpl {};
+        let result = parse(api, "青盛県青森市長島１丁目１−１").await;
+        assert_eq!(result.address.prefecture, "");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青盛県青森市長島１丁目１−１");
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::Prefecture.to_string()
+        );
+    }
+
+    #[tokio::test]
+    async fn 市区町村名が誤っている場合() {
+        let api = ApiImpl {};
+        let result = parse(api, "青森県青盛市長島１丁目１−１").await;
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青盛市長島１丁目１−１");
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::City.to_string()
+        );
+    }
+
+    #[tokio::test]
+    async fn 町名が誤っている場合() {
+        let api = ApiImpl {};
+        let result = parse(api, "青森県青森市永嶋１丁目１−１").await;
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "青森市");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "永嶋１丁目１−１");
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::Town.to_string()
+        );
+    }
 
     wasm_bindgen_test_configure!(run_in_browser);
 
@@ -145,7 +190,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
 }
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
-mod parse_blocking_tests {
+mod blocking_tests {
     use crate::api;
     use crate::err::ParseErrorKind;
     use crate::parser::parse_blocking;
