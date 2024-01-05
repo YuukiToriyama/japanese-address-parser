@@ -1,4 +1,6 @@
-use crate::api::{Api, BlockingApi};
+use crate::api::Api;
+#[cfg(not(target_arch = "wasm32"))]
+use crate::api::BlockingApi;
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
 use crate::parser::read_city::read_city;
