@@ -54,14 +54,13 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 町名を特定
-    let (rest, town_name) = match read_town(&rest, &city) {
-        None => {
-            return ParseResult {
-                address: Address::new(prefecture_name, &city_name, "", &rest),
-                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-            };
-        }
-        Some(result) => result,
+    let (rest, town_name) = if let Some(result) = read_town(&rest, &city) {
+        result
+    } else {
+        return ParseResult {
+            address: Address::new(prefecture_name, &city_name, "", &rest),
+            error: Some(Error::new_parse_error(ParseErrorKind::Town)),
+        };
     };
 
     ParseResult {
