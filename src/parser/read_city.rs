@@ -4,8 +4,8 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)> {
-    for city_name in prefecture.cities {
+pub fn read_city(input: &str, prefecture: &Prefecture) -> Option<(String, String)> {
+    for city_name in &prefecture.cities {
         if let Ok((rest, city_name)) =
             tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input)
         {
@@ -42,7 +42,7 @@ mod tests {
     fn test_read_city(prefecture_name: &str, input: &str, expected: &str) {
         let api = Client {};
         let prefecture = api.get_prefecture_master(prefecture_name).unwrap();
-        let (_, city_name) = read_city(input, prefecture).unwrap();
+        let (_, city_name) = read_city(input, &prefecture).unwrap();
         assert_eq!(city_name, expected);
     }
 }

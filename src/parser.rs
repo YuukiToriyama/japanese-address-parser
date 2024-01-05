@@ -35,7 +35,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 市町村名を特定
-    let (rest, city_name) = if let Some(result) = read_city(rest, prefecture) {
+    let (rest, city_name) = if let Some(result) = read_city(rest, &prefecture) {
         result
     } else {
         return ParseResult {
@@ -155,7 +155,7 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
         }
         Ok(result) => result,
     };
-    let (rest, city_name) = match read_city(rest, prefecture) {
+    let (rest, city_name) = match read_city(rest, &prefecture) {
         None => {
             return ParseResult {
                 address: Address::new(prefecture_name, "", "", rest),
