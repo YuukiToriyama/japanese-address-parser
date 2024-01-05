@@ -77,6 +77,19 @@ mod non_blocking_tests {
     use crate::api::client::ApiImpl;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+    use crate::err::ParseErrorKind;
+
+    #[tokio::test]
+    async fn 都道府県名が誤っている場合() {
+        let api = ApiImpl {};
+        let result = parse(api, "青盛県青森市長島１丁目１−１").await;
+        assert_eq!(result.address.prefecture, "");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青盛県青森市長島１丁目１−１");
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(result.error.unwrap().error_message, ParseErrorKind::Prefecture.to_string());
+    }
 
     wasm_bindgen_test_configure!(run_in_browser);
 
