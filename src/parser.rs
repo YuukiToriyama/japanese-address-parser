@@ -91,6 +91,18 @@ mod non_blocking_tests {
         assert_eq!(result.error.unwrap().error_message, ParseErrorKind::Prefecture.to_string());
     }
 
+    #[tokio::test]
+    async fn 市区町村名が誤っている場合() {
+        let api = ApiImpl {};
+        let result = parse(api, "青森県青盛市長島１丁目１−１").await;
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青盛市長島１丁目１−１");
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(result.error.unwrap().error_message, ParseErrorKind::City.to_string());
+    }
+
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
