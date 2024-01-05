@@ -20,6 +20,7 @@ impl Parser {
     }
 
     pub async fn parse(&self, address: &str) -> ParseResult {
+        #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
         let api = ApiImpl {};
         parser::parse(api, address).await
