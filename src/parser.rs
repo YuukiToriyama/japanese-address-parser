@@ -35,14 +35,13 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 市町村名を特定
-    let (rest, city_name) = match read_city(rest, prefecture) {
-        None => {
-            return ParseResult {
-                address: Address::new(prefecture_name, "", "", rest),
-                error: Some(Error::new_parse_error(ParseErrorKind::City)),
-            };
-        }
-        Some(result) => result,
+    let (rest, city_name) = if let Some(result) = read_city(rest, prefecture) {
+        result
+    } else {
+        return ParseResult {
+            address: Address::new(prefecture_name, "", "", rest),
+            error: Some(Error::new_parse_error(ParseErrorKind::City)),
+        };
     };
     // その市町村の町名リストを取得
     let city = match api.get_city_master(prefecture_name, &city_name).await {
