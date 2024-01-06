@@ -19,5 +19,10 @@
   "types": "japanese_address_parser.d.ts",
   "sideEffects": [
     "./snippets/*"
+  ],
+  "keywords": [
+    "parser",
+    "geo",
+    "wasm"
   ]
 }
