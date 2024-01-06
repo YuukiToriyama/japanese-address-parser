@@ -66,3 +66,10 @@ init().then(() => {
 
 This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).
 If you have questions, please create an issue.
+
+## Acknowledgements
+
+This software was developed inspired
+by [@geolonia/normalize-japanese-addresses](https://github.com/geolonia/normalize-japanese-addresses).  
+Also, the parsing process uses [Geolonia 住所データ](https://github.com/geolonia/japanese-addresses) provided
+by [株式会社Geolonia](https://www.geolonia.com/company/).
