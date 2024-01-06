@@ -61,3 +61,8 @@ init().then(() => {
     })
 })
 ```
+
+## Support
+
+This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).
+If you have questions, please create an issue.
