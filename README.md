@@ -73,3 +73,7 @@ This software was developed inspired
 by [@geolonia/normalize-japanese-addresses](https://github.com/geolonia/normalize-japanese-addresses).  
 Also, the parsing process uses [Geolonia 住所データ](https://github.com/geolonia/japanese-addresses) provided
 by [株式会社Geolonia](https://www.geolonia.com/company/).
+
+## License
+
+This crate is distributed under the terms of the MIT license.
