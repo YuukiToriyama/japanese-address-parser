@@ -2,7 +2,7 @@
 name = "japanese-address-parser"
 version = "0.1.0-beta.2"
 edition = "2021"
-description = "日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです"
+description = "A Rust Library to parse japanses addresses."
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 license = "MIT"
