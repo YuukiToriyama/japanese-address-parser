@@ -6,3 +6,38 @@
 [![Unit test & Code format check](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/rust.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/rust.yaml)
 
 A Rust Library to parse japanses addresses.
+
+## Usage
+
+Add this to your `Cargo.toml`
+
+```bash
+cargo add japanese-address-parser
+```
+
+### Async Api
+
+```rust
+use japanese_address_parser::api::client::ApiImpl;
+use japanese_address_parser::parser::parse;
+
+#[tokio::main]
+async fn main() {
+    let async_api = ApiImpl {};
+    let parse_result = parse(async_api, "東京都千代田区丸の内1-1-1").await;
+    println!("{:?}", parse_result);
+}
+```
+
+### Blocking Api
+
+```rust
+use japanese_address_parser::api::blocking::Client;
+use japanese_address_parser::parser::parse_blocking;
+
+fn main() {
+    let blocking_api = Client {};
+    let parse_result = parse_blocking(blocking_api, "東京都千代田区丸の内1-1-1");
+    println!("{:?}", parse_result);
+}
+```
