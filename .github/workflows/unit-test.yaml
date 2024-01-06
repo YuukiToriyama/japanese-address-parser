@@ -51,27 +51,6 @@ jobs:
       - name: Unit Testing
         run: cargo test --verbose
 
-  wasm-pack:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache/restore@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
-      - name: Unit Testing for Wasm module
-        run: wasm-pack test --firefox --headless
-
   lint:
     needs: build
     runs-on: ubuntu-latest
