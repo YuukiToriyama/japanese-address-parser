@@ -44,6 +44,8 @@ fn main() {
 
 ## Wasm support
 
+[![npmjs](https://img.shields.io/npm/v/%40toriyama/japanese-address-parser)](https://www.npmjs.com/package/@toriyama/japanese-address-parser)
+
 This crate is designed to be buildable for `wasm32-unknown-unknown` with `wasm-pack`.
 Pre-compiled wasm module is available npmjs.com
 
