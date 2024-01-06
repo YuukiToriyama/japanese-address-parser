@@ -10,12 +10,21 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build check
+        run: cargo build --verbose
+      - uses: actions/cache/save@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -25,6 +34,49 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+  unit-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Unit Testing
+        run: cargo test --verbose
+
+  wasm-pack:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Build wasm module
+        run: wasm-pack build --target web --scope toriyama
+      - name: Unit Testing for Wasm module
+        run: wasm-pack test --firefox --headless
+
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Set up rustfmt
         run: rustup component add rustfmt
       - name: Code formatting
@@ -38,6 +90,21 @@ jobs:
         continue-on-error: true
       - name: Code style check
         run: cargo fmt --check
+
+  clippy:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Set up clippy
         run: rustup component add clippy
       - name: Code review with clippy
@@ -46,13 +113,3 @@ jobs:
           reporter: 'github-pr-review'
           filter_mode: 'nofilter'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build check
-        run: cargo build --verbose
-      - name: Unit Testing
-        run: cargo test --verbose
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
-      - name: Unit Testing for Wasm module
-        run: wasm-pack test --firefox --headless
