@@ -3,8 +3,8 @@
   "collaborators": [
     "Yuuki Toriyama <github@toriyama.dev>"
   ],
-  "description": "日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです",
-  "version": "0.1.0-beta.1",
+  "description": "A Rust Library to parse japanses addresses.",
+  "version": "0.1.0-beta.2",
   "license": "MIT",
   "repository": {
     "type": "git",
