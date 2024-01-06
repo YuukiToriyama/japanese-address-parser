@@ -5,4 +5,4 @@
 ![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.75.0-orange)
 [![Unit test & Code format check](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/rust.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/rust.yaml)
 
-日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです
+A Rust Library to parse japanses addresses.
