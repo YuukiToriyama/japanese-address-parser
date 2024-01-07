@@ -26,6 +26,21 @@ impl CityMasterApi {
     }
     #[cfg(not(target_arch = "wasm32"))]
     fn get_blocking(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
-        todo!()
+        let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
+        let response = match reqwest::blocking::get(&endpoint) {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
+        };
+        if response.status() == 200 {
+            match response.json::<Vec<Town>>() {
+                Ok(result) => Ok(City {
+                    name: city_name.to_string(),
+                    towns: result,
+                }),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
+            }
+        } else {
+            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
+        }
     }
 }
