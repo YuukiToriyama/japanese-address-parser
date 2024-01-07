@@ -23,6 +23,18 @@ impl PrefectureMasterApi {
     }
     #[cfg(not(target_arch = "wasm32"))]
     fn get_blocking(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
-        todo!()
+        let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
+        let response = match reqwest::blocking::get(&endpoint) {
+            Ok(result) => result,
+            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
+        };
+        if response.status() == 200 {
+            match response.json::<Prefecture>() {
+                Ok(result) => Ok(result),
+                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
+            }
+        } else {
+            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
+        }
     }
 }
