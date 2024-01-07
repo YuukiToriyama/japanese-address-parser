@@ -1,8 +1,8 @@
 #[cfg(not(target_arch = "wasm32"))]
 pub mod blocking;
-mod city_master_api;
+pub mod city_master_api;
 pub mod client;
-mod prefecture_master_api;
+pub mod prefecture_master_api;
 
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
