@@ -6,7 +6,7 @@ pub struct CityMasterApi {
 }
 
 impl CityMasterApi {
-    async fn get(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
+    pub async fn get(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
         let response = match reqwest::get(&endpoint).await {
             Ok(result) => result,
@@ -25,7 +25,7 @@ impl CityMasterApi {
         }
     }
     #[cfg(not(target_arch = "wasm32"))]
-    fn get_blocking(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
+    pub fn get_blocking(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
         let response = match reqwest::blocking::get(&endpoint) {
             Ok(result) => result,
