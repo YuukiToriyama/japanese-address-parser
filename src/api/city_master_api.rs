@@ -2,7 +2,7 @@ use crate::entity::{City, Town};
 use crate::err::{ApiErrorKind, Error};
 
 pub struct CityMasterApi {
-    server_url: &'static str,
+    pub server_url: &'static str,
 }
 
 impl CityMasterApi {
