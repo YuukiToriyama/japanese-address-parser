@@ -1,7 +1,4 @@
-#[cfg(not(target_arch = "wasm32"))]
-pub mod blocking;
 pub mod city_master_api;
-pub mod client;
 pub mod prefecture_master_api;
 
 use crate::api::city_master_api::CityMasterApi;
