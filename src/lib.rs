@@ -1,4 +1,4 @@
-use crate::api::client::ApiImpl;
+use crate::api::{Api, ApiImpl};
 use crate::entity::ParseResult;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
@@ -22,7 +22,7 @@ impl Parser {
     pub async fn parse(&self, address: &str) -> ParseResult {
         #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
-        let api = ApiImpl {};
+        let api = ApiImpl::new();
         parser::parse(api, address).await
     }
 }
