@@ -2,7 +2,7 @@ use crate::entity::Prefecture;
 use crate::err::{ApiErrorKind, Error};
 
 pub struct PrefectureMasterApi {
-    server_url: &'static str,
+    pub server_url: &'static str,
 }
 
 impl PrefectureMasterApi {
