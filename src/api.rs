@@ -47,7 +47,28 @@ impl Api for ApiImpl {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 pub trait BlockingApi {
     fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error>;
     fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error>;
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub struct BlockingApiImpl {}
+
+#[cfg(not(target_arch = "wasm32"))]
+impl BlockingApi for BlockingApiImpl {
+    fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
+        let prefecture_master_api = PrefectureMasterApi {
+            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
+        };
+        prefecture_master_api.get_blocking(prefecture_name)
+    }
+
+    fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
+        let city_master_api = CityMasterApi {
+            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
+        };
+        city_master_api.get_blocking(prefecture_name, city_name)
+    }
 }
