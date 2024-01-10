@@ -23,8 +23,7 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
-    use crate::api::blocking::Client;
-    use crate::api::BlockingApi;
+    use crate::api::{BlockingApi, BlockingApiImpl};
     use crate::parser::read_city::read_city;
     use test_case::test_case;
 
@@ -40,7 +39,7 @@ mod tests {
     #[test_case("茨城県", "竜ヶ崎市佐貫町647", "龍ヶ崎市"; "success_竜ヶ崎市_表記ゆれ")]
     #[test_case("茨城県", "竜ケ崎市佐貫町647", "龍ヶ崎市"; "success_竜ケ崎市_表記ゆれ")]
     fn test_read_city(prefecture_name: &str, input: &str, expected: &str) {
-        let api = Client {};
+        let api = BlockingApiImpl::new();
         let prefecture = api.get_prefecture_master(prefecture_name).unwrap();
         let (_, city_name) = read_city(input, prefecture).unwrap();
         assert_eq!(city_name, expected);
