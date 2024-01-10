@@ -11,6 +11,7 @@ use crate::err::Error;
 use std::future::Future;
 
 pub trait Api {
+    fn new() -> Self;
     fn get_prefecture_master(
         &self,
         prefecture_name: &str,
@@ -22,17 +23,29 @@ pub trait Api {
     ) -> impl Future<Output = Result<City, Error>>;
 }
 
-pub struct ApiImpl {}
+pub struct ApiImpl {
+    prefecture_master_api: PrefectureMasterApi,
+    city_master_api: CityMasterApi,
+}
 
 impl Api for ApiImpl {
+    fn new() -> Self {
+        ApiImpl {
+            prefecture_master_api: PrefectureMasterApi {
+                server_url:
+                    "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
+            },
+            city_master_api: CityMasterApi {
+                server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
+            },
+        }
+    }
+
     fn get_prefecture_master(
         &self,
         prefecture_name: &str,
     ) -> impl Future<Output = Result<Prefecture, Error>> {
-        let prefecture_master_api = PrefectureMasterApi {
-            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-        };
-        prefecture_master_api.get(prefecture_name)
+        self.prefecture_master_api.get(prefecture_name)
     }
 
     fn get_city_master(
@@ -40,10 +53,7 @@ impl Api for ApiImpl {
         prefecture_name: &str,
         city_name: &str,
     ) -> impl Future<Output = Result<City, Error>> {
-        let city_master_api = CityMasterApi {
-            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-        };
-        city_master_api.get(prefecture_name, city_name)
+        self.city_master_api.get(prefecture_name, city_name)
     }
 }
 
