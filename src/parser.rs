@@ -71,6 +71,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod non_blocking_tests {
+    use crate::api::prefecture_master_api::PrefectureMasterApi;
     use crate::api::{Api, ApiImpl};
     use crate::err::ParseErrorKind;
     use crate::parser::parse;
@@ -89,6 +90,21 @@ mod non_blocking_tests {
             result.error.unwrap().error_message,
             ParseErrorKind::Prefecture.to_string()
         );
+    }
+
+    #[tokio::test]
+    async fn 都道府県マスタが取得できない場合() {
+        let mut api = ApiImpl::new();
+        api.prefecture_master_api = PrefectureMasterApi {
+            server_url: "https://example.com/invalid_url/api/",
+        };
+
+        let result = parse(api, "青森県青森市長島１丁目１−１").await;
+        assert_eq!(result.error.is_some(), true);
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青森市長島１丁目１−１");
     }
 
     #[tokio::test]
