@@ -39,6 +39,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
                 vec!["ケ", "ヶ", "が", "ガ"],
                 vec!["薮", "藪", "籔"],
                 vec!["崎", "﨑"],
+                vec!["桧", "檜"],
             ],
         };
         if let Some(result) = adapter.apply(input, &town.name) {
@@ -51,8 +52,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
 #[cfg(test)]
 #[cfg(not(target_arch = "wasm32"))]
 mod parser_tests {
-    use crate::api::blocking::Client;
-    use crate::api::BlockingApi;
+    use crate::api::{BlockingApi, BlockingApiImpl};
     use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
 
@@ -147,7 +147,7 @@ mod parser_tests {
 
     #[test]
     fn read_town_丁目が算用数字の場合_京都府京都市東山区n丁目() {
-        let client = Client {};
+        let client = BlockingApiImpl::new();
         let city = client.get_city_master("京都府", "京都市東山区").unwrap();
         let test_cases = vec![
             ("本町1丁目45番", "本町一丁目"),
