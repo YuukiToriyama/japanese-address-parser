@@ -18,12 +18,12 @@ cargo add japanese-address-parser
 ### Async Api
 
 ```rust
-use japanese_address_parser::api::client::ApiImpl;
+use japanese_address_parser::api::{Api, ApiImpl};
 use japanese_address_parser::parser::parse;
 
 #[tokio::main]
 async fn main() {
-    let async_api = ApiImpl {};
+    let async_api = ApiImpl::new();
     let parse_result = parse(async_api, "東京都千代田区丸の内1-1-1").await;
     println!("{:?}", parse_result);
 }
