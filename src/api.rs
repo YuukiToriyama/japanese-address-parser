@@ -21,8 +21,8 @@ pub trait Api {
 }
 
 pub struct ApiImpl {
-    prefecture_master_api: PrefectureMasterApi,
-    city_master_api: CityMasterApi,
+    pub prefecture_master_api: PrefectureMasterApi,
+    pub city_master_api: CityMasterApi,
 }
 
 impl Api for ApiImpl {
@@ -72,7 +72,8 @@ impl BlockingApi for BlockingApiImpl {
     fn new() -> Self {
         BlockingApiImpl {
             prefecture_master_api: PrefectureMasterApi {
-                server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
+                server_url:
+                    "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
             },
             city_master_api: CityMasterApi {
                 server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
@@ -85,6 +86,7 @@ impl BlockingApi for BlockingApiImpl {
     }
 
     fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
-        self.city_master_api.get_blocking(prefecture_name, city_name)
+        self.city_master_api
+            .get_blocking(prefecture_name, city_name)
     }
 }
