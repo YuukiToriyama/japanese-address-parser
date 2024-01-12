@@ -32,11 +32,11 @@ async fn main() {
 ### Blocking Api
 
 ```rust
-use japanese_address_parser::api::blocking::Client;
+use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};
 use japanese_address_parser::parser::parse_blocking;
 
 fn main() {
-    let blocking_api = Client {};
+    let blocking_api = BlockingApiImpl::new();
     let parse_result = parse_blocking(blocking_api, "東京都千代田区丸の内1-1-1");
     println!("{:?}", parse_result);
 }
