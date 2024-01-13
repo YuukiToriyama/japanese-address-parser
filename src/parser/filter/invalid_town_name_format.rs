@@ -36,7 +36,7 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
 }
 
 #[cfg(test)]
-mod invalid_town_name_format_test {
+mod tests {
     use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
     use crate::parser::filter::Filter;
 
