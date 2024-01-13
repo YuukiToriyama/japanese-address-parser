@@ -5,11 +5,11 @@ pub struct InvalidTownNameFormatFilter {}
 
 impl Filter for InvalidTownNameFormatFilter {
     fn apply(self, input: String) -> String {
-        extract_town_name(&input).unwrap_or(input)
+        extract_town_name_with_regex(&input).unwrap_or(input)
     }
 }
 
-fn extract_town_name(input: &str) -> Option<String> {
+fn extract_town_name_with_regex(input: &str) -> Option<String> {
     let expression =
         regex::Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
