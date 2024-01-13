@@ -16,7 +16,7 @@ pub fn read_house_number_with_regex(input: &str) -> Option<(String, String)> {
 }
 
 #[cfg(test)]
-mod read_house_number_tests {
+mod tests {
     use crate::parser::read_house_number::read_house_number_with_regex;
 
     #[test]
