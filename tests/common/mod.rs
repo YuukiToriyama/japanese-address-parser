@@ -13,9 +13,12 @@ pub struct Record {
     pub rest: String,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn read_test_data_from_csv(file_path: &str) -> Result<Vec<Record>, &str> {
     let file = File::open(file_path).unwrap();
-    let mut reader = ReaderBuilder::new().comment(Some(b'#')).from_reader(file);
+    let mut reader = ReaderBuilder::new()
+        .comment(Some(b'#'))
+        .from_reader(file);
     let mut records: Vec<Record> = vec![];
     for result in reader.deserialize() {
         let record: Record = result.unwrap();
@@ -24,8 +27,26 @@ fn read_test_data_from_csv(file_path: &str) -> Result<Vec<Record>, &str> {
     Ok(records)
 }
 
-pub async fn run_data_driven_tests(file_path: &str) {
-    let records = read_test_data_from_csv(file_path).unwrap();
+#[cfg(target_arch = "wasm32")]
+async fn read_test_data_from_csv(file_url: &str) -> Result<Vec<Record>, &str> {
+    let response = reqwest::get(file_url).await.unwrap();
+    let file = response.bytes().await.unwrap();
+        let mut reader = ReaderBuilder::new()
+        .comment(Some(b'#'))
+        .from_reader(file.as_bytes());
+    let mut records: Vec<Record> = vec![];
+    for result in reader.deserialize() {
+        let record: Record = result.unwrap();
+        records.push(record)
+    }
+    Ok(records)
+}
+
+pub async fn run_data_driven_tests(file_location: &str) {
+    #[cfg(not(target_arch = "wasm32"))]
+    let records = read_test_data_from_csv(file_location).unwrap();
+    #[cfg(target_arch = "wasm32")]
+    let records = read_test_data_from_csv(file_location).await.unwrap();
     let mut success_count = 0;
     for record in &records {
         let parser = Parser();
