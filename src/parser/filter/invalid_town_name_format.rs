@@ -82,3 +82,26 @@ mod tests {
         assert_eq!(result.unwrap(), "有楽町一丁目1-2");
     }
 }
+
+#[cfg(all(test, target_arch = "wasm32"))]
+mod wasm_tests {
+    use crate::parser::filter::invalid_town_name_format::extract_town_name_with_js_sys_regexp;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_regexp_success() {
+        let result = extract_town_name_with_js_sys_regexp("有楽町1");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目");
+
+        let result = extract_town_name_with_js_sys_regexp("有楽町1-1");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目1");
+
+        let result = extract_town_name_with_js_sys_regexp("有楽町1-1-2");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目1-2");
+    }
+}
