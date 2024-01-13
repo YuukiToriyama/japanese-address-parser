@@ -47,3 +47,20 @@ fn filter_with_js_sys_regexp(input: String) -> String {
         None => input,
     }
 }
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod tests {
+    use crate::parser::filter::non_kanji_block_number::filter_with_regex;
+
+    #[test]
+    fn filter_with_regex_成功() {
+        let result = filter_with_regex("銀座1丁目".to_string());
+        assert_eq!(result, "銀座一丁目");
+    }
+
+    #[test]
+    fn filter_with_regex_失敗() {
+        let result = filter_with_regex("銀座１丁目".to_string());
+        assert_ne!(result, "銀座一丁目");
+    }
+}
