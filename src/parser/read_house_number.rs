@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-pub fn read_house_number_with_regex(input: &str) -> Option<(String, String)> {
+fn read_house_number_with_regex(input: &str) -> Option<(String, String)> {
     let expression = regex::Regex::new(r"(?<house_number>\d+)\D*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
     let house_number = if let Some(matched) = captures.name("house_number") {
