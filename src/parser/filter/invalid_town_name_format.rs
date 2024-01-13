@@ -1,6 +1,5 @@
 use crate::parser::filter::Filter;
 use crate::util::converter::JapaneseNumber;
-use regex::Regex;
 
 pub struct InvalidTownNameFormatFilter {}
 
@@ -12,7 +11,7 @@ impl Filter for InvalidTownNameFormatFilter {
 
 fn extract_town_name(input: &str) -> Option<String> {
     let expression =
-        Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
+        regex::Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
     let town_name = if let Some(matched) = captures.name("town_name") {
         matched.as_str()
