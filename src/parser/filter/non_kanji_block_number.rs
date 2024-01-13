@@ -1,5 +1,3 @@
-use regex::Regex;
-
 use crate::parser::filter::Filter;
 use crate::util::converter::JapaneseNumber;
 
@@ -7,7 +5,7 @@ pub struct NonKanjiBlockNumberFilter {}
 
 impl Filter for NonKanjiBlockNumberFilter {
     fn apply(self, input: String) -> String {
-        let expression = Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
+        let expression = regex::Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
         match expression.captures(&input) {
             Some(captures) => {
                 let capture_block_number = &captures.name("block_number").unwrap().as_str();
