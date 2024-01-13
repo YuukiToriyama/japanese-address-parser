@@ -64,3 +64,23 @@ mod tests {
         assert_ne!(result, "銀座一丁目");
     }
 }
+
+#[cfg(all(test, target_arch = "wasm32"))]
+mod wasm_tests {
+    use crate::parser::filter::non_kanji_block_number::filter_with_js_sys_regexp;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn filter_with_js_sys_regexp_success() {
+        let result = filter_with_js_sys_regexp("銀座1丁目".to_string());
+        assert_eq!(result, "銀座一丁目");
+    }
+
+    #[wasm_bindgen_test]
+    fn filter_with_js_sys_regexp_fail() {
+        let result = filter_with_js_sys_regexp("銀座１丁目".to_string());
+        assert_ne!(result, "銀座一丁目");
+    }
+}
