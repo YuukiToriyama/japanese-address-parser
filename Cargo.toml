@@ -19,6 +19,7 @@ crate-type = ["rlib", "cdylib"]
 
 [features]
 debug = []
+use-js-sys = []
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
