@@ -35,6 +35,27 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
     Some(format!("{}{}丁目{}", town_name, block_number, rest))
 }
 
+fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
+    let expression = js_sys::RegExp::new(
+        r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$",
+        "",
+    );
+    let captures = expression.exec(input)?;
+    let town_name = match captures.get(1).as_string() {
+        Some(matched) => matched,
+        None => return None,
+    };
+    let block_number = match captures.get(2).as_string() {
+        Some(matched) => matched.parse::<i32>().unwrap().to_japanese_form()?,
+        None => return None,
+    };
+    let rest = captures
+        .get(3)
+        .as_string()
+        .unwrap_or_else(|| "".to_string());
+    Some(format!("{}{}丁目{}", town_name, block_number, rest))
+}
+
 #[cfg(test)]
 mod tests {
     use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
