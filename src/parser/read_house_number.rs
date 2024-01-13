@@ -1,4 +1,5 @@
 #[allow(dead_code)]
+#[cfg(not(target_arch = "wasm32"))]
 fn read_house_number_with_regex(input: &str) -> Option<(String, String)> {
     let expression = regex::Regex::new(r"(?<house_number>\d+)\D*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
@@ -16,6 +17,7 @@ fn read_house_number_with_regex(input: &str) -> Option<(String, String)> {
 }
 
 #[allow(dead_code)]
+#[cfg(target_arch = "wasm32")]
 fn read_house_number_with_js_sys_regexp(input: &str) -> Option<(String, String)> {
     let expression = js_sys::RegExp::new(r"(?<house_number>\d+)\D*(?<rest>.*)$", "");
     let captures = expression.exec(input)?;
@@ -27,7 +29,7 @@ fn read_house_number_with_js_sys_regexp(input: &str) -> Option<(String, String)>
     Some((rest, format!("{}番", house_number)))
 }
 
-#[cfg(test)]
+#[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use crate::parser::read_house_number::read_house_number_with_regex;
 
