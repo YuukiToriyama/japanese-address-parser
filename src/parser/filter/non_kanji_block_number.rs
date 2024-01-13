@@ -4,11 +4,17 @@ use crate::util::converter::JapaneseNumber;
 pub struct NonKanjiBlockNumberFilter {}
 
 impl Filter for NonKanjiBlockNumberFilter {
+    #[cfg(not(target_arch = "wasm32"))]
     fn apply(self, input: String) -> String {
         filter_with_regex(input)
     }
+    #[cfg(target_arch = "wasm32")]
+    fn apply(self, input: String) -> String {
+        filter_with_js_sys_regexp(input)
+    }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn filter_with_regex(input: String) -> String {
     let expression = regex::Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
     match expression.captures(&input) {
@@ -25,6 +31,7 @@ fn filter_with_regex(input: String) -> String {
     }
 }
 
+#[cfg(target_arch = "wasm32")]
 fn filter_with_js_sys_regexp(input: String) -> String {
     let expression = js_sys::RegExp::new(r"\D+(?<block_number>\d+)丁目", "");
     match expression.exec(&input) {
