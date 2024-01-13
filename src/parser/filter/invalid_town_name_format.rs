@@ -4,11 +4,17 @@ use crate::util::converter::JapaneseNumber;
 pub struct InvalidTownNameFormatFilter {}
 
 impl Filter for InvalidTownNameFormatFilter {
+    #[cfg(not(target_arch = "wasm32"))]
     fn apply(self, input: String) -> String {
         extract_town_name_with_regex(&input).unwrap_or(input)
     }
+    #[cfg(target_arch = "wasm32")]
+    fn apply(self, input: String) -> String {
+        extract_town_name_with_js_sys_regexp(&input).unwrap_or(input)
+    }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn extract_town_name_with_regex(input: &str) -> Option<String> {
     let expression =
         regex::Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
@@ -35,6 +41,7 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
     Some(format!("{}{}丁目{}", town_name, block_number, rest))
 }
 
+#[cfg(target_arch = "wasm32")]
 fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
     let expression = js_sys::RegExp::new(
         r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$",
