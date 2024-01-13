@@ -43,6 +43,6 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
+        run: wasm-pack build --target web --scope toriyama --features use-js-sys
       - name: Unit Testing for Wasm module
-        run: wasm-pack test --firefox --headless
+        run: wasm-pack test --firefox --headless --features use-js-sys
