@@ -39,8 +39,14 @@ fn filter_with_js_sys_regexp(input: String) -> String {
     let expression = js_sys::RegExp::new(r"\D+(?<block_number>\d+)丁目", "");
     match expression.exec(&input) {
         Some(result) => {
-            let capture_block_number = result.get(1).as_string().unwrap();
-            let block_number = capture_block_number.parse::<i32>().unwrap();
+            let capture_block_number = match result.get(1).as_string() {
+                Some(x) => x,
+                None => return input,
+            };
+            let block_number = match capture_block_number.parse::<i32>() {
+                Ok(x) => x,
+                Err(_) => return input,
+            };
             input.replacen(
                 &capture_block_number,
                 block_number.to_japanese_form().unwrap().as_str(),
