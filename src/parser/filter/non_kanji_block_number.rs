@@ -20,7 +20,10 @@ fn filter_with_regex(input: String) -> String {
     match expression.captures(&input) {
         Some(captures) => {
             let capture_block_number = &captures.name("block_number").unwrap().as_str();
-            let block_number = capture_block_number.parse::<i32>().unwrap();
+            let block_number = match capture_block_number.parse::<i32>() {
+                Ok(x) => x,
+                Err(_) => return input,
+            };
             input.replacen(
                 capture_block_number,
                 block_number.to_japanese_form().unwrap().as_str(),
