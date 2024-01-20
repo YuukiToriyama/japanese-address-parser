@@ -47,11 +47,11 @@ fn filter_with_js_sys_regexp(input: String) -> String {
                 Ok(x) => x,
                 Err(_) => return input,
             };
-            input.replacen(
-                &capture_block_number,
-                block_number.to_japanese_form().unwrap().as_str(),
-                1,
-            )
+            let block_number_in_japanese_form = match block_number.to_japanese_form() {
+                Some(x) => x,
+                None => return input,
+            };
+            input.replacen(&capture_block_number, &block_number_in_japanese_form, 1)
         }
         None => input,
     }
