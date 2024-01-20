@@ -1,18 +1,23 @@
 use crate::parser::filter::Filter;
 use crate::util::converter::JapaneseNumber;
-use regex::Regex;
 
 pub struct InvalidTownNameFormatFilter {}
 
 impl Filter for InvalidTownNameFormatFilter {
+    #[cfg(not(target_arch = "wasm32"))]
     fn apply(self, input: String) -> String {
-        extract_town_name(&input).unwrap_or(input)
+        extract_town_name_with_regex(&input).unwrap_or(input)
+    }
+    #[cfg(target_arch = "wasm32")]
+    fn apply(self, input: String) -> String {
+        extract_town_name_with_js_sys_regexp(&input).unwrap_or(input)
     }
 }
 
-fn extract_town_name(input: &str) -> Option<String> {
+#[cfg(not(target_arch = "wasm32"))]
+fn extract_town_name_with_regex(input: &str) -> Option<String> {
     let expression =
-        Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
+        regex::Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
     let town_name = if let Some(matched) = captures.name("town_name") {
         matched.as_str()
@@ -36,26 +41,72 @@ fn extract_town_name(input: &str) -> Option<String> {
     Some(format!("{}{}丁目{}", town_name, block_number, rest))
 }
 
-#[cfg(test)]
-mod invalid_town_name_format_test {
-    use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
-    use crate::parser::filter::Filter;
+#[cfg(target_arch = "wasm32")]
+fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
+    let expression = js_sys::RegExp::new(r"^(\D+)(\d+)[-ー－]*(.*)$", "");
+    let captures = expression.exec(input)?;
+    let town_name = captures.get(1).as_string()?;
+    let block_number = captures
+        .get(2)
+        .as_string()?
+        .parse::<i32>()
+        .ok()?
+        .to_japanese_form()?;
+    let rest = captures
+        .get(3)
+        .as_string()
+        .unwrap_or_else(|| "".to_string());
+    Some(format!("{}{}丁目{}", town_name, block_number, rest))
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod tests {
+    use crate::parser::filter::invalid_town_name_format::extract_town_name_with_regex;
 
     #[test]
-    fn 有楽町一丁目() {
-        let result = InvalidTownNameFormatFilter {}.apply("有楽町1".to_string());
-        assert_eq!(result, "有楽町一丁目")
+    fn extract_town_name_with_regex_success() {
+        let result = extract_town_name_with_regex("有楽町1");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目");
+
+        let result = extract_town_name_with_regex("有楽町1-1");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目1");
+
+        let result = extract_town_name_with_regex("有楽町1-1-2");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目1-2");
+    }
+}
+
+#[cfg(all(test, target_arch = "wasm32"))]
+mod wasm_tests {
+    use crate::parser::filter::invalid_town_name_format::extract_town_name_with_js_sys_regexp;
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_regexp_success() {
+        let result = extract_town_name_with_js_sys_regexp("有楽町1");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目");
+
+        let result = extract_town_name_with_js_sys_regexp("有楽町1-1");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目1");
+
+        let result = extract_town_name_with_js_sys_regexp("有楽町1-1-2");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町一丁目1-2");
     }
 
-    #[test]
-    fn 有楽町一丁目1番() {
-        let result = InvalidTownNameFormatFilter {}.apply("有楽町1-1".to_string());
-        assert_eq!(result, "有楽町一丁目1")
-    }
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_regexp_fail() {
+        let result = extract_town_name_with_js_sys_regexp("1-1");
+        assert!(result.is_none());
 
-    #[test]
-    fn 有楽町一丁目1番2() {
-        let result = InvalidTownNameFormatFilter {}.apply("有楽町1-1-2".to_string());
-        assert_eq!(result, "有楽町一丁目1-2")
+        let result = extract_town_name_with_js_sys_regexp("有楽町");
+        assert!(result.is_none());
     }
 }
