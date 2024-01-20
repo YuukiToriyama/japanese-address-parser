@@ -79,6 +79,28 @@ mod tests {
         assert!(result.is_some());
         assert_eq!(result.unwrap(), "有楽町一丁目1-2");
     }
+
+    #[test]
+    fn extract_town_name_with_regex_hyphen_like_characters() {
+        let test_cases = [
+            ("有楽町1-1-1", "有楽町一丁目1-1"),    // U+002D
+            ("有楽町1‐1‐1", "有楽町一丁目1‐1"),    // U+2010
+            ("有楽町1‑1‑1", "有楽町一丁目1‑1"),    // U+2011
+            ("有楽町1‒1‒1", "有楽町一丁目1‒1"),    // U+2012
+            ("有楽町1–1–1", "有楽町一丁目1–1"),    // U+2013
+            ("有楽町1—1—1", "有楽町一丁目1—1"),    // U+2014
+            ("有楽町1―1―1", "有楽町一丁目1―1"),    // U+2015
+            ("有楽町1−1−1", "有楽町一丁目1−1"),    // U+2212
+            ("有楽町1ー1ー1", "有楽町一丁目1ー1"), // U+30FC
+            ("有楽町1－1－1", "有楽町一丁目1－1"), // U+FF0D
+            ("有楽町1ｰ1ｰ1", "有楽町一丁目1ｰ1"),    // U+FF70
+        ];
+        for (input, expected) in test_cases {
+            let result = extract_town_name_with_regex(input);
+            assert!(result.is_some());
+            assert_eq!(result.unwrap(), expected);
+        }
+    }
 }
 
 #[cfg(all(test, target_arch = "wasm32"))]
@@ -110,5 +132,27 @@ mod wasm_tests {
 
         let result = extract_town_name_with_js_sys_regexp("有楽町");
         assert!(result.is_none());
+    }
+
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_hyphen_like_characters() {
+        let test_cases = [
+            ("有楽町1-1-1", "有楽町一丁目1-1"),    // U+002D
+            ("有楽町1‐1‐1", "有楽町一丁目1‐1"),    // U+2010
+            ("有楽町1‑1‑1", "有楽町一丁目1‑1"),    // U+2011
+            ("有楽町1‒1‒1", "有楽町一丁目1‒1"),    // U+2012
+            ("有楽町1–1–1", "有楽町一丁目1–1"),    // U+2013
+            ("有楽町1—1—1", "有楽町一丁目1—1"),    // U+2014
+            ("有楽町1―1―1", "有楽町一丁目1―1"),    // U+2015
+            ("有楽町1−1−1", "有楽町一丁目1−1"),    // U+2212
+            ("有楽町1ー1ー1", "有楽町一丁目1ー1"), // U+30FC
+            ("有楽町1－1－1", "有楽町一丁目1－1"), // U+FF0D
+            ("有楽町1ｰ1ｰ1", "有楽町一丁目1ｰ1"),    // U+FF70
+        ];
+        for (input, expected) in test_cases {
+            let result = extract_town_name_with_js_sys_regexp(input);
+            assert!(result.is_some());
+            assert_eq!(result.unwrap(), expected);
+        }
     }
 }
