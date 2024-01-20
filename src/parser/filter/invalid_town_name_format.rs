@@ -43,10 +43,7 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
 
 #[cfg(target_arch = "wasm32")]
 fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
-    let expression = js_sys::RegExp::new(
-        r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$",
-        "",
-    );
+    let expression = js_sys::RegExp::new(r"^(\D+)(\d+)[-ー－]*(.*)$", "");
     let captures = expression.exec(input)?;
     let town_name = captures.get(1).as_string()?;
     let block_number = captures
