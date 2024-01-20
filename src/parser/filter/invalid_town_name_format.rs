@@ -48,14 +48,13 @@ fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
         "",
     );
     let captures = expression.exec(input)?;
-    let town_name = match captures.get(1).as_string() {
-        Some(matched) => matched,
-        None => return None,
-    };
-    let block_number = match captures.get(2).as_string() {
-        Some(matched) => matched.parse::<i32>().ok()?.to_japanese_form()?,
-        None => return None,
-    };
+    let town_name = captures.get(1).as_string()?;
+    let block_number = captures
+        .get(2)
+        .as_string()?
+        .parse::<i32>()
+        .ok()?
+        .to_japanese_form()?;
     let rest = captures
         .get(3)
         .as_string()
