@@ -82,13 +82,13 @@ mod wasm_tests {
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
-    fn filter_with_js_sys_regexp_success() {
+    fn filter_with_js_sys_regexp_input_value_will_be_filtered() {
         let result = filter_with_js_sys_regexp("銀座1丁目".to_string());
         assert_eq!(result, "銀座一丁目");
     }
 
     #[wasm_bindgen_test]
-    fn filter_with_js_sys_regexp_fail() {
+    fn filter_with_js_sys_regexp_return_original_value() {
         let result = filter_with_js_sys_regexp("銀座１丁目".to_string());
         assert_ne!(result, "銀座一丁目");
     }
