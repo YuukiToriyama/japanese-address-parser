@@ -36,7 +36,7 @@ fn filter_with_regex(input: String) -> String {
 
 #[cfg(target_arch = "wasm32")]
 fn filter_with_js_sys_regexp(input: String) -> String {
-    let expression = js_sys::RegExp::new(r"\D+(?<block_number>\d+)丁目", "");
+    let expression = js_sys::RegExp::new(r"\D+(\d+)丁目", "");
     match expression.exec(&input) {
         Some(result) => {
             let capture_block_number = match result.get(1).as_string() {
