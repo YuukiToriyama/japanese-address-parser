@@ -161,4 +161,19 @@ mod tests {
             assert_eq!(town, town_name);
         }
     }
+
+    #[test]
+    fn read_town_大字の省略_東京都西多摩郡日の出町大字平井() {
+        let blocking_api = BlockingApiImpl::new();
+        let city = blocking_api
+            .get_city_master("東京都", "西多摩郡日の出町")
+            .unwrap();
+
+        let (rest, town) = read_town("大字平井2780番地", &city).unwrap();
+        assert_eq!(town, "大字平井");
+        assert_eq!(rest, "2780番地");
+        let (rest, town) = read_town("平井2780番地", &city).unwrap();
+        assert_eq!(town, "大字平井");
+        assert_eq!(rest, "2780番地");
+    }
 }
