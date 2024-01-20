@@ -22,6 +22,10 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     if let Some(result) = find_town(&input, city) {
         return Some(result);
     }
+    // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
+    if let Some(result) = find_town(&format!("大字{}", input), city) {
+        return Some(result);
+    }
     None
 }
 
