@@ -104,4 +104,13 @@ mod wasm_tests {
         assert!(result.is_some());
         assert_eq!(result.unwrap(), "有楽町一丁目1-2");
     }
+
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_regexp_fail() {
+        let result = extract_town_name_with_js_sys_regexp("1-1");
+        assert!(result.is_none());
+
+        let result = extract_town_name_with_js_sys_regexp("有楽町");
+        assert!(result.is_none());
+    }
 }
