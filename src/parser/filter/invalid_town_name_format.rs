@@ -53,7 +53,7 @@ fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
         None => return None,
     };
     let block_number = match captures.get(2).as_string() {
-        Some(matched) => matched.parse::<i32>().unwrap().to_japanese_form()?,
+        Some(matched) => matched.parse::<i32>().ok()?.to_japanese_form()?,
         None => return None,
     };
     let rest = captures
