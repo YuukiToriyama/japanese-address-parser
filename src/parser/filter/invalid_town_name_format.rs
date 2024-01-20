@@ -16,8 +16,10 @@ impl Filter for InvalidTownNameFormatFilter {
 
 #[cfg(not(target_arch = "wasm32"))]
 fn extract_town_name_with_regex(input: &str) -> Option<String> {
-    let expression =
-        regex::Regex::new(r"^(?<town_name>\D+)(?<block_number>\d+)[-ー－]*(?<rest>.*)$").unwrap();
+    let expression = regex::Regex::new(
+        r"^(?<town_name>\D+)(?<block_number>\d+)[\u002D\u30FC\uFF0D]*(?<rest>.*)$",
+    )
+    .unwrap();
     let captures = expression.captures(input)?;
     let town_name = if let Some(matched) = captures.name("town_name") {
         matched.as_str()
@@ -43,7 +45,7 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
 
 #[cfg(target_arch = "wasm32")]
 fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
-    let expression = js_sys::RegExp::new(r"^(\D+)(\d+)[-ー－]*(.*)$", "");
+    let expression = js_sys::RegExp::new(r"^(\D+)(\d+)[\u002D\u30FC\uFF0D]*(.*)$", "");
     let captures = expression.exec(input)?;
     let town_name = captures.get(1).as_string()?;
     let block_number = captures
