@@ -83,4 +83,13 @@ mod japanese_number_converter_tests {
         assert_eq!(28.to_japanese_form().unwrap(), "二十八");
         assert_eq!(29.to_japanese_form().unwrap(), "二十九");
     }
+
+    #[test]
+    fn to_japanese_form_3桁() {
+        assert_eq!(100.to_japanese_form().unwrap(), "百");
+        assert_eq!(101.to_japanese_form().unwrap(), "百一");
+        assert_eq!(111.to_japanese_form().unwrap(), "百十一");
+        assert_eq!(120.to_japanese_form().unwrap(), "百二十");
+        assert_eq!(127.to_japanese_form().unwrap(), "百二十七");
+    }
 }
