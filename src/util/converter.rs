@@ -4,44 +4,38 @@ pub trait JapaneseNumber {
 
 impl JapaneseNumber for i8 {
     fn to_japanese_form(self) -> Option<String> {
-        let first_digit = self % 10;
-        let second_digit = (self - self % 10) / 10;
-        match (first_digit, second_digit) {
-            (0, 0) => None,
-            (0, 1) => Some("十".to_string()),
-            (0, _) => Some(format!(
-                "{}十",
-                associate_arabic_number_to_japanese_number(second_digit)?
-            )),
-            (_, 0) => Some(
-                associate_arabic_number_to_japanese_number(first_digit)
-                    .unwrap()
-                    .to_string(),
-            ),
-            (_, 1) => Some(format!(
-                "十{}",
-                associate_arabic_number_to_japanese_number(first_digit).unwrap()
-            )),
-            (_, _) => Some(format!(
-                "{}十{}",
-                associate_arabic_number_to_japanese_number(second_digit).unwrap(),
-                associate_arabic_number_to_japanese_number(first_digit).unwrap()
-            )),
+        if self <= 0 {
+            return None;
         }
+        let first_digit = self % 10;
+        let second_digit = (self / 10) % 10;
+        Some(format!(
+            "{third_digit}{second_digit}{first_digit}",
+            third_digit = if self >= 100 { "百" } else { "" },
+            second_digit = match associate_arabic_number_to_japanese_number(second_digit) {
+                Some('一') => "十".to_string(),
+                Some(character) => format!("{}十", character),
+                None => "".to_string(),
+            },
+            first_digit = match associate_arabic_number_to_japanese_number(first_digit) {
+                Some(character) => character.to_string(),
+                None => "".to_string(),
+            }
+        ))
     }
 }
 
-fn associate_arabic_number_to_japanese_number(input: i8) -> Option<&'static str> {
+fn associate_arabic_number_to_japanese_number(input: i8) -> Option<char> {
     match input {
-        1 => Some("一"),
-        2 => Some("二"),
-        3 => Some("三"),
-        4 => Some("四"),
-        5 => Some("五"),
-        6 => Some("六"),
-        7 => Some("七"),
-        8 => Some("八"),
-        9 => Some("九"),
+        1 => Some('一'),
+        2 => Some('二'),
+        3 => Some('三'),
+        4 => Some('四'),
+        5 => Some('五'),
+        6 => Some('六'),
+        7 => Some('七'),
+        8 => Some('八'),
+        9 => Some('九'),
         _ => None,
     }
 }
@@ -52,6 +46,7 @@ mod japanese_number_converter_tests {
 
     #[test]
     fn to_japanese_form_1桁() {
+        assert!(0.to_japanese_form().is_none());
         assert_eq!(1.to_japanese_form().unwrap(), "一");
         assert_eq!(2.to_japanese_form().unwrap(), "二");
         assert_eq!(3.to_japanese_form().unwrap(), "三");
@@ -86,5 +81,14 @@ mod japanese_number_converter_tests {
         assert_eq!(27.to_japanese_form().unwrap(), "二十七");
         assert_eq!(28.to_japanese_form().unwrap(), "二十八");
         assert_eq!(29.to_japanese_form().unwrap(), "二十九");
+    }
+
+    #[test]
+    fn to_japanese_form_3桁() {
+        assert_eq!(100.to_japanese_form().unwrap(), "百");
+        assert_eq!(101.to_japanese_form().unwrap(), "百一");
+        assert_eq!(111.to_japanese_form().unwrap(), "百十一");
+        assert_eq!(120.to_japanese_form().unwrap(), "百二十");
+        assert_eq!(127.to_japanese_form().unwrap(), "百二十七");
     }
 }
