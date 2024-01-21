@@ -26,17 +26,17 @@ impl JapaneseNumber for i8 {
     }
 }
 
-fn associate_arabic_number_to_japanese_number(input: i8) -> Option<&'static str> {
+fn associate_arabic_number_to_japanese_number(input: i8) -> Option<char> {
     match input {
-        1 => Some("一"),
-        2 => Some("二"),
-        3 => Some("三"),
-        4 => Some("四"),
-        5 => Some("五"),
-        6 => Some("六"),
-        7 => Some("七"),
-        8 => Some("八"),
-        9 => Some("九"),
+        1 => Some('一'),
+        2 => Some('二'),
+        3 => Some('三'),
+        4 => Some('四'),
+        5 => Some('五'),
+        6 => Some('六'),
+        7 => Some('七'),
+        8 => Some('八'),
+        9 => Some('九'),
         _ => None,
     }
 }
