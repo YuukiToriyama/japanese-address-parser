@@ -27,11 +27,7 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
         return None;
     };
     let block_number = if let Some(matched) = captures.name("block_number") {
-        matched
-            .as_str()
-            .parse::<i32>()
-            .unwrap()
-            .to_japanese_form()?
+        matched.as_str().parse::<i8>().ok()?.to_japanese_form()?
     } else {
         return None;
     };
@@ -54,7 +50,7 @@ fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
     let block_number = captures
         .get(2)
         .as_string()?
-        .parse::<i32>()
+        .parse::<i8>()
         .ok()?
         .to_japanese_form()?;
     let rest = captures
@@ -104,6 +100,15 @@ mod tests {
             assert_eq!(result.unwrap(), expected);
         }
     }
+      
+    #[test]
+    fn extract_town_name_with_regex_block_number_boundary_value() {
+        let result = extract_town_name_with_regex("有楽町127");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町百二十七丁目");
+        let result = extract_town_name_with_regex("有楽町128");
+        assert!(result.is_none());
+    }
 }
 
 #[cfg(all(test, target_arch = "wasm32"))]
@@ -129,15 +134,6 @@ mod wasm_tests {
     }
 
     #[wasm_bindgen_test]
-    fn extract_town_name_with_js_sys_regexp_fail() {
-        let result = extract_town_name_with_js_sys_regexp("1-1");
-        assert!(result.is_none());
-
-        let result = extract_town_name_with_js_sys_regexp("有楽町");
-        assert!(result.is_none());
-    }
-
-    #[wasm_bindgen_test]
     fn extract_town_name_with_js_sys_hyphen_like_characters() {
         let test_cases = [
             ("有楽町1-1-1", "有楽町一丁目1-1"),    // U+002D
@@ -157,5 +153,23 @@ mod wasm_tests {
             assert!(result.is_some());
             assert_eq!(result.unwrap(), expected);
         }
+    }
+
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_block_number_boundary_value() {
+        let result = extract_town_name_with_js_sys_regexp("有楽町127");
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), "有楽町百二十七丁目");
+        let result = extract_town_name_with_js_sys_regexp("有楽町128");
+        assert!(result.is_none());
+    }
+
+    #[wasm_bindgen_test]
+    fn extract_town_name_with_js_sys_regexp_fail() {
+        let result = extract_town_name_with_js_sys_regexp("1-1");
+        assert!(result.is_none());
+
+        let result = extract_town_name_with_js_sys_regexp("有楽町");
+        assert!(result.is_none());
     }
 }

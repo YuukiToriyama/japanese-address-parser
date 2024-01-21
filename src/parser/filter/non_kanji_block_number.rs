@@ -20,7 +20,7 @@ fn filter_with_regex(input: String) -> String {
     match expression.captures(&input) {
         Some(captures) => {
             let capture_block_number = &captures.name("block_number").unwrap().as_str();
-            let block_number = match capture_block_number.parse::<i32>() {
+            let block_number = match capture_block_number.parse::<i8>() {
                 Ok(x) => x,
                 Err(_) => return input,
             };
@@ -43,7 +43,7 @@ fn filter_with_js_sys_regexp(input: String) -> String {
                 Some(x) => x,
                 None => return input,
             };
-            let block_number = match capture_block_number.parse::<i32>() {
+            let block_number = match capture_block_number.parse::<i8>() {
                 Ok(x) => x,
                 Err(_) => return input,
             };
