@@ -4,6 +4,9 @@ pub trait JapaneseNumber {
 
 impl JapaneseNumber for i8 {
     fn to_japanese_form(self) -> Option<String> {
+        if self <= 0 {
+            return None;
+        }
         let first_digit = self % 10;
         let second_digit = (self - self % 10) / 10;
         let result = match (second_digit, first_digit) {
