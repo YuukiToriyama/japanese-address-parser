@@ -6,28 +6,20 @@ impl JapaneseNumber for i8 {
     fn to_japanese_form(self) -> Option<String> {
         let first_digit = self % 10;
         let second_digit = (self - self % 10) / 10;
-        match (first_digit, second_digit) {
-            (0, 0) => None,
-            (0, 1) => Some("十".to_string()),
-            (0, _) => Some(format!(
-                "{}十",
-                associate_arabic_number_to_japanese_number(second_digit)?
-            )),
-            (_, 0) => Some(
-                associate_arabic_number_to_japanese_number(first_digit)
-                    .unwrap()
-                    .to_string(),
-            ),
-            (_, 1) => Some(format!(
+        let result = match (second_digit, first_digit) {
+            (0, 0) => return None,
+            (0, f) => associate_arabic_number_to_japanese_number(f)?.to_string(),
+            (1, f) => format!(
                 "十{}",
-                associate_arabic_number_to_japanese_number(first_digit).unwrap()
-            )),
-            (_, _) => Some(format!(
+                associate_arabic_number_to_japanese_number(f).unwrap_or("")
+            ),
+            (s, f) => format!(
                 "{}十{}",
-                associate_arabic_number_to_japanese_number(second_digit).unwrap(),
-                associate_arabic_number_to_japanese_number(first_digit).unwrap()
-            )),
-        }
+                associate_arabic_number_to_japanese_number(s)?,
+                associate_arabic_number_to_japanese_number(f).unwrap_or("")
+            )
+        };
+        Some(result)
     }
 }
 
