@@ -25,11 +25,7 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
         return None;
     };
     let block_number = if let Some(matched) = captures.name("block_number") {
-        matched
-            .as_str()
-            .parse::<i32>()
-            .unwrap()
-            .to_japanese_form()?
+        matched.as_str().parse::<i8>().unwrap().to_japanese_form()?
     } else {
         return None;
     };
@@ -49,7 +45,7 @@ fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
     let block_number = captures
         .get(2)
         .as_string()?
-        .parse::<i32>()
+        .parse::<i8>()
         .ok()?
         .to_japanese_form()?;
     let rest = captures

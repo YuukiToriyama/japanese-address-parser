@@ -2,7 +2,7 @@ pub trait JapaneseNumber {
     fn to_japanese_form(self) -> Option<String>;
 }
 
-impl JapaneseNumber for i32 {
+impl JapaneseNumber for i8 {
     fn to_japanese_form(self) -> Option<String> {
         let first_digit = self % 10;
         let second_digit = (self - self % 10) / 10;
@@ -31,7 +31,7 @@ impl JapaneseNumber for i32 {
     }
 }
 
-fn associate_arabic_number_to_japanese_number(input: i32) -> Option<&'static str> {
+fn associate_arabic_number_to_japanese_number(input: i8) -> Option<&'static str> {
     match input {
         1 => Some("一"),
         2 => Some("二"),
