@@ -100,7 +100,7 @@ mod tests {
             assert_eq!(result.unwrap(), expected);
         }
     }
-      
+
     #[test]
     fn extract_town_name_with_regex_block_number_boundary_value() {
         let result = extract_town_name_with_regex("有楽町127");
