@@ -8,21 +8,20 @@ impl JapaneseNumber for i8 {
             return None;
         }
         let first_digit = self % 10;
-        let second_digit = (self - self % 10) / 10;
-        let result = match (second_digit, first_digit) {
-            (0, 0) => return None,
-            (0, f) => associate_arabic_number_to_japanese_number(f)?.to_string(),
-            (1, f) => format!(
-                "十{}",
-                associate_arabic_number_to_japanese_number(f).unwrap_or("")
-            ),
-            (s, f) => format!(
-                "{}十{}",
-                associate_arabic_number_to_japanese_number(s)?,
-                associate_arabic_number_to_japanese_number(f).unwrap_or("")
-            )
-        };
-        Some(result)
+        let second_digit = (self / 10) % 10;
+        Some(format!(
+            "{third_digit}{second_digit}{first_digit}",
+            third_digit = if self >= 100 { "百" } else { "" },
+            second_digit = match associate_arabic_number_to_japanese_number(second_digit) {
+                Some('一') => "十".to_string(),
+                Some(character) => format!("{}十", character),
+                None => "".to_string(),
+            },
+            first_digit = match associate_arabic_number_to_japanese_number(first_digit) {
+                Some(character) => character.to_string(),
+                None => "".to_string(),
+            }
+        ))
     }
 }
 
