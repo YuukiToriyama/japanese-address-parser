@@ -52,6 +52,7 @@ mod japanese_number_converter_tests {
 
     #[test]
     fn to_japanese_form_1桁() {
+        assert!(0.to_japanese_form().is_none());
         assert_eq!(1.to_japanese_form().unwrap(), "一");
         assert_eq!(2.to_japanese_form().unwrap(), "二");
         assert_eq!(3.to_japanese_form().unwrap(), "三");
