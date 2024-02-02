@@ -26,17 +26,22 @@ fn extract_town_name_with_regex(input: &str) -> Option<String> {
     } else {
         return None;
     };
-    let block_number = if let Some(matched) = captures.name("block_number") {
-        matched.as_str().parse::<i8>().ok()?.to_japanese_form()?
-    } else {
+    let block_number = captures.name("block_number")?.as_str().parse::<i8>().ok()?;
+    // 帯広市西十九条四十二丁目の42が最大なので、43以上の値の場合はNoneを返すようにする
+    if block_number > 42 {
         return None;
-    };
+    }
     let rest = if let Some(matched) = captures.name("rest") {
         matched.as_str()
     } else {
         ""
     };
-    Some(format!("{}{}丁目{}", town_name, block_number, rest))
+    Some(format!(
+        "{}{}丁目{}",
+        town_name,
+        block_number.to_japanese_form()?,
+        rest
+    ))
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -47,17 +52,21 @@ fn extract_town_name_with_js_sys_regexp(input: &str) -> Option<String> {
     );
     let captures = expression.exec(input)?;
     let town_name = captures.get(1).as_string()?;
-    let block_number = captures
-        .get(2)
-        .as_string()?
-        .parse::<i8>()
-        .ok()?
-        .to_japanese_form()?;
+    let block_number = captures.get(2).as_string()?.parse::<i8>().ok()?;
+    // 帯広市西十九条四十二丁目の42が最大なので、43以上の値の場合はNoneを返すようにする
+    if block_number > 42 {
+        return None;
+    }
     let rest = captures
         .get(3)
         .as_string()
         .unwrap_or_else(|| "".to_string());
-    Some(format!("{}{}丁目{}", town_name, block_number, rest))
+    Some(format!(
+        "{}{}丁目{}",
+        town_name,
+        block_number.to_japanese_form()?,
+        rest
+    ))
 }
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
@@ -103,10 +112,10 @@ mod tests {
 
     #[test]
     fn extract_town_name_with_regex_block_number_boundary_value() {
-        let result = extract_town_name_with_regex("有楽町127");
+        let result = extract_town_name_with_regex("西十九条南42");
         assert!(result.is_some());
-        assert_eq!(result.unwrap(), "有楽町百二十七丁目");
-        let result = extract_town_name_with_regex("有楽町128");
+        assert_eq!(result.unwrap(), "西十九条南四十二丁目");
+        let result = extract_town_name_with_regex("西十九条南43");
         assert!(result.is_none());
     }
 }
@@ -157,10 +166,10 @@ mod wasm_tests {
 
     #[wasm_bindgen_test]
     fn extract_town_name_with_js_sys_block_number_boundary_value() {
-        let result = extract_town_name_with_js_sys_regexp("有楽町127");
+        let result = extract_town_name_with_js_sys_regexp("西十九条南42");
         assert!(result.is_some());
-        assert_eq!(result.unwrap(), "有楽町百二十七丁目");
-        let result = extract_town_name_with_js_sys_regexp("有楽町128");
+        assert_eq!(result.unwrap(), "西十九条南四十二丁目");
+        let result = extract_town_name_with_js_sys_regexp("西十九条南43");
         assert!(result.is_none());
     }
 

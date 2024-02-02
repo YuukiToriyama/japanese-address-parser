@@ -22,6 +22,10 @@ pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     if let Some(result) = find_town(&input, city) {
         return Some(result);
     }
+    // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
+    if let Some(result) = find_town(&format!("大字{}", input), city) {
+        return Some(result);
+    }
     None
 }
 
@@ -49,9 +53,8 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
     None
 }
 
-#[cfg(test)]
-#[cfg(not(target_arch = "wasm32"))]
-mod parser_tests {
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod tests {
     use crate::api::{BlockingApi, BlockingApiImpl};
     use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
@@ -161,5 +164,20 @@ mod parser_tests {
             let (_, town) = read_town(input, &city).unwrap();
             assert_eq!(town, town_name);
         }
+    }
+
+    #[test]
+    fn read_town_大字の省略_東京都西多摩郡日の出町大字平井() {
+        let blocking_api = BlockingApiImpl::new();
+        let city = blocking_api
+            .get_city_master("東京都", "西多摩郡日の出町")
+            .unwrap();
+
+        let (rest, town) = read_town("大字平井2780番地", &city).unwrap();
+        assert_eq!(town, "大字平井");
+        assert_eq!(rest, "2780番地");
+        let (rest, town) = read_town("平井2780番地", &city).unwrap();
+        assert_eq!(town, "大字平井");
+        assert_eq!(rest, "2780番地");
     }
 }
