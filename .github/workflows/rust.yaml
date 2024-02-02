@@ -15,19 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up rustfmt
-        run: rustup component add rustfmt
-      - name: Code formatting
-        run: |
-          cargo fmt
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          git add --update
-          git commit -m "cargo fmt"
-          git push
-        continue-on-error: true
-      - name: Code style check
-        run: cargo fmt --check
       - name: Set up clippy
         run: rustup component add clippy
       - name: Code review with clippy
