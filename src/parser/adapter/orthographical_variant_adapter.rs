@@ -3,7 +3,7 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-type OrthographicalVariant = Vec<&'static str>;
+type OrthographicalVariant = &'static [&'static str];
 
 pub struct OrthographicalVariantAdapter {
     pub variant_list: Vec<OrthographicalVariant>,

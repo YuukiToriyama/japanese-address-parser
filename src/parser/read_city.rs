@@ -12,7 +12,7 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             return Some((rest.to_string(), city_name.to_string()));
         }
         let adapter = OrthographicalVariantAdapter {
-            variant_list: vec![vec!["ケ", "ヶ", "が"], vec!["龍", "竜"], vec!["檜", "桧"]],
+            variant_list: vec![&["ケ", "ヶ", "が"], &["龍", "竜"], &["檜", "桧"]],
         };
         if let Some(result) = adapter.apply(input, &city_name) {
             return Some(result);

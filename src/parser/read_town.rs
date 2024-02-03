@@ -38,12 +38,12 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
         }
         let adapter = OrthographicalVariantAdapter {
             variant_list: vec![
-                vec!["の", "ノ"],
-                vec!["ツ", "ッ"],
-                vec!["ケ", "ヶ", "が", "ガ"],
-                vec!["薮", "藪", "籔"],
-                vec!["崎", "﨑"],
-                vec!["桧", "檜"],
+                &["の", "ノ"],
+                &["ツ", "ッ"],
+                &["ケ", "ヶ", "が", "ガ"],
+                &["薮", "藪", "籔"],
+                &["崎", "﨑"],
+                &["桧", "檜"],
             ],
         };
         if let Some(result) = adapter.apply(input, &town.name) {
