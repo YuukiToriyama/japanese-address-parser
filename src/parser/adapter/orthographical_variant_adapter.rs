@@ -3,15 +3,35 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-type OrthographicalVariant = Vec<&'static str>;
+pub type Variant = &'static [&'static str];
+
+pub trait OrthographicalVariants {
+    const の: Variant;
+    const ツ: Variant;
+    const ケ: Variant;
+    const 薮: Variant;
+    const 崎: Variant;
+    const 檜: Variant;
+    const 龍: Variant;
+}
+
+impl OrthographicalVariants for Variant {
+    const の: Variant = &["の", "ノ"];
+    const ツ: Variant = &["ツ", "ッ"];
+    const ケ: Variant = &["ケ", "ヶ", "が", "ガ"];
+    const 薮: Variant = &["薮", "藪", "籔"];
+    const 崎: Variant = &["崎", "﨑"];
+    const 檜: Variant = &["桧", "檜"];
+    const 龍: Variant = &["龍", "竜"];
+}
 
 pub struct OrthographicalVariantAdapter {
-    pub variant_list: Vec<OrthographicalVariant>,
+    pub variant_list: Vec<Variant>,
 }
 
 impl OrthographicalVariantAdapter {
     pub fn apply(self, input: &str, region_name: &str) -> Option<(String, String)> {
-        let mut filtered_variant_list: Vec<OrthographicalVariant> = vec![];
+        let mut filtered_variant_list: Vec<Variant> = vec![];
         // 必要なパターンのみを選別する
         for variant in self.variant_list.clone() {
             if variant.iter().any(|character| input.contains(character)) {
