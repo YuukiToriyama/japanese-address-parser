@@ -1,5 +1,7 @@
 use crate::entity::Prefecture;
-use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
+use crate::parser::adapter::orthographical_variant_adapter::{
+    OrthographicalVariantAdapter, OrthographicalVariants, Variant,
+};
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
@@ -11,9 +13,17 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
         {
             return Some((rest.to_string(), city_name.to_string()));
         }
-        let adapter = OrthographicalVariantAdapter {
-            variant_list: vec![vec!["ケ", "ヶ", "が"], vec!["龍", "竜"], vec!["檜", "桧"]],
-        };
+        let mut variant_list = vec![Variant::ケ];
+        match prefecture.name.as_str() {
+            "茨城県" => {
+                variant_list.push(Variant::龍);
+            }
+            "東京都" => {
+                variant_list.push(Variant::檜);
+            }
+            _ => {}
+        }
+        let adapter = OrthographicalVariantAdapter { variant_list };
         if let Some(result) = adapter.apply(input, &city_name) {
             return Some(result);
         }
