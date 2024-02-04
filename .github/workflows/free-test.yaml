@@ -42,7 +42,7 @@ jobs:
 
       - name: Read test result
         id: read-test-result
-        uses: juliangruber/read-file-action@v1.1.6
+        uses: juliangruber/read-file-action@v1.1.7
         with:
           path: ./test_result.md
 
