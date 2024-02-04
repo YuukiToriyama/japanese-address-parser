@@ -70,7 +70,7 @@ impl OrthographicalVariantAdapter {
                 }
             }
             candidates = semi_candidates;
-            candidates.push(region_name.to_string())
+            candidates.push(region_name.to_string());
         }
         None
     }
