@@ -54,17 +54,14 @@ impl OrthographicalVariantAdapter {
                     // マッチ候補の中でパターンに引っかかるものがあれば文字を置き換えてマッチを試す
                     if candidate.contains(permutation[0]) {
                         let edited_region_name = candidate.replace(permutation[0], permutation[1]);
-                        match tag::<&str, &str, VerboseError<&str>>(&edited_region_name)
-                            .parse(input)
+                        if let Ok((rest, _)) =
+                            tag::<&str, &str, VerboseError<&str>>(&edited_region_name).parse(input)
                         {
                             // マッチすれば早期リターン
-                            Ok((rest, _)) => {
-                                return Some((rest.to_string(), region_name.to_string()))
-                            }
+                            return Some((rest.to_string(), region_name.to_string()));
+                        } else {
                             // マッチしなければsemi_candidatesに置き換え後の文字列をpush
-                            Err(_) => {
-                                semi_candidates.push(edited_region_name.clone());
-                            }
+                            semi_candidates.push(edited_region_name.clone());
                         };
                     }
                 }
