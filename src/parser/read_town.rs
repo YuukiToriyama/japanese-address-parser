@@ -3,7 +3,9 @@ use nom::error::VerboseError;
 use nom::Parser;
 
 use crate::entity::City;
-use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariantAdapter;
+use crate::parser::adapter::orthographical_variant_adapter::{
+    OrthographicalVariantAdapter, OrthographicalVariants, Variant,
+};
 use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
@@ -38,12 +40,12 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
         }
         let adapter = OrthographicalVariantAdapter {
             variant_list: vec![
-                &["の", "ノ"],
-                &["ツ", "ッ"],
-                &["ケ", "ヶ", "が", "ガ"],
-                &["薮", "藪", "籔"],
-                &["崎", "﨑"],
-                &["桧", "檜"],
+                Variant::の,
+                Variant::ツ,
+                Variant::ケ,
+                Variant::薮,
+                Variant::崎,
+                Variant::檜,
             ],
         };
         if let Some(result) = adapter.apply(input, &town.name) {
