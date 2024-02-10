@@ -9,6 +9,11 @@ async fn 県庁所在地のデータテスト() {
 }
 
 #[tokio::test]
+async fn 市区町村名レベルでの表記ゆれ() {
+    run_data_driven_tests("./tests/test_data/市区町村名レベルでの表記ゆれ.csv").await
+}
+
+#[tokio::test]
 async fn 異字体旧字体への対応テスト() {
     run_data_driven_tests("./tests/test_data/異字体旧字体への対応.csv").await
 }
