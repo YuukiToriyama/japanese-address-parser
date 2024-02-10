@@ -6,7 +6,7 @@ on:
 
 jobs:
   run_free_test:
-    if: github.event.issue.pull_request == null && startsWith(github.event.comment.body, '```text:freetest') && github.event.comment.user.login == 'YuukiToriyama'
+    if: github.event.issue.pull_request == null && startsWith(github.event.comment.body, '```text:freetest') && github.event.comment.user.login == 'YuukiToriyama____'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
