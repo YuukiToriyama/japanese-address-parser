@@ -17,6 +17,7 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
         match prefecture.name.as_str() {
             "茨城県" => {
                 variant_list.push(Variant::龍);
+                variant_list.push(Variant::嶋);
             }
             "東京都" => {
                 variant_list.push(Variant::檜);
