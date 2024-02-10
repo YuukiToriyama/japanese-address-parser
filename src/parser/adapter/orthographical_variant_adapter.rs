@@ -13,6 +13,7 @@ pub trait OrthographicalVariants {
     const 崎: Variant;
     const 檜: Variant;
     const 龍: Variant;
+    const 竈: Variant;
 }
 
 impl OrthographicalVariants for Variant {
@@ -23,6 +24,7 @@ impl OrthographicalVariants for Variant {
     const 崎: Variant = &["崎", "﨑"];
     const 檜: Variant = &["桧", "檜"];
     const 龍: Variant = &["龍", "竜"];
+    const 竈: Variant = &["竈", "釜"];
 }
 
 pub struct OrthographicalVariantAdapter {
