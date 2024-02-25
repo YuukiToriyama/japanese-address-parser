@@ -1,8 +1,8 @@
 [package]
 name = "tests"
-version = "0.1.0-beta.8"
-edition = "2021"
-authors = ["Yuuki Toriyama <github@toriyama.dev>"]
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
 publish = false
 
 [[test]]
