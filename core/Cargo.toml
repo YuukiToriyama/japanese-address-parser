@@ -8,11 +8,6 @@ authors.workspace = true
 license = "MIT"
 keywords = ["parser", "geo", "wasm"]
 categories = ["parser-implementations", "wasm"]
-exclude = [
-    "public/*",
-    "tests/*",
-    ".github/*",
-]
 
 [lib]
 crate-type = ["rlib", "cdylib"]
