@@ -32,4 +32,4 @@ jobs:
       - name: Build wasm module
         run: cd core && wasm-pack build --target web --scope toriyama # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
       - name: Unit Testing for Wasm module
-        run: wasm-pack test --firefox --headless
+        run: cd core && wasm-pack test --firefox --headless # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
