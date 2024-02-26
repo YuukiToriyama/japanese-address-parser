@@ -2,13 +2,13 @@
 name = "japanese-address-parser"
 version.workspace = true
 edition.workspace = true
-description = "A Rust Library to parse japanses addresses."
-repository = "https://github.com/YuukiToriyama/japanese-address-parser"
+description.workspace = true
+repository.workspace = true
 authors.workspace = true
-license = "MIT"
+license.workspace = true
 readme = "../README.md"
-keywords = ["parser", "geo", "wasm"]
-categories = ["parser-implementations", "wasm"]
+keywords.workspace = true
+categories.workspace = true
 
 [lib]
 crate-type = ["rlib", "cdylib"]
