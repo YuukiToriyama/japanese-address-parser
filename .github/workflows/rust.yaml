@@ -30,6 +30,6 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
+        run: cd core && wasm-pack build --target web --scope toriyama # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
       - name: Unit Testing for Wasm module
-        run: wasm-pack test --firefox --headless
+        run: cd core && wasm-pack test --firefox --headless # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
