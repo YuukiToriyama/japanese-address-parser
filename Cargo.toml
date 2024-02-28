@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "core",
+    "wasm",
     "tests"
 ]
 resolver = "2"
