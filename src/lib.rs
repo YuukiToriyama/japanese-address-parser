@@ -9,7 +9,33 @@ mod err;
 pub mod parser;
 mod util;
 
-#[wasm_bindgen]
+#[wasm_bindgen(typescript_custom_section)]
+const TYPESCRIPT_TYPE: &'static str = r#"
+export interface ParseResult {
+    address: Address;
+    error: Error | undefined;
+}
+export interface Address {
+    prefecture: string;
+    city: string;
+    town: string;
+    rest: string;
+}
+export interface Error {
+    error_type: string;
+    error_message: string;
+}
+export class Parser {
+  free(): void;
+  constructor();
+  /**
+  * @param {string} address
+  * @returns {Promise<ParseResult>}
+  */
+  parse(address: string): Promise<ParseResult>;
+}"#;
+
+#[wasm_bindgen(skip_typescript)]
 pub struct Parser();
 
 #[wasm_bindgen]
@@ -19,11 +45,12 @@ impl Parser {
         Parser {}
     }
 
-    pub async fn parse(&self, address: &str) -> ParseResult {
+    pub async fn parse(&self, address: &str) -> JsValue {
         #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
         let api = ApiImpl::new();
-        parser::parse(api, address).await
+        let result = parser::parse(api, address).await;
+        serde_wasm_bindgen::to_value(&result).unwrap()
     }
 }
 
