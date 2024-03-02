@@ -1,35 +1,30 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface Error {
-    error_type: string;
-    error_message: string;
-}
 
 export interface ParseResult {
     address: Address;
     error: Error | undefined;
 }
-
 export interface Address {
     prefecture: string;
     city: string;
     town: string;
     rest: string;
 }
-
-/**
-*/
+export interface Error {
+    error_type: string;
+    error_message: string;
+}
 export class Parser {
   free(): void;
-/**
-*/
   constructor();
-/**
-* @param {string} address
-* @returns {Promise<ParseResult>}
-*/
+  /**
+  * @param {string} address
+  * @returns {Promise<ParseResult>}
+  */
   parse(address: string): Promise<ParseResult>;
 }
+
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -41,10 +36,10 @@ export interface InitOutput {
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hbaf384fff87ab5a4: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h3111eb3ec8ce8193: (a: number, b: number, c: number) => void;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
-  readonly wasm_bindgen__convert__closures__invoke2_mut__h47cfdb7ec4403c52: (a: number, b: number, c: number, d: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke2_mut__h17003831462345f7: (a: number, b: number, c: number, d: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
