@@ -1,4 +1,4 @@
-name: Unit test & Code format check
+name: Unit test & Code check
 
 on:
   push:
