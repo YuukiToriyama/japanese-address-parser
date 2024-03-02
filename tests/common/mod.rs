@@ -1,5 +1,6 @@
 use csv::ReaderBuilder;
-use japanese_address_parser::Parser;
+use japanese_address_parser::api::{Api, ApiImpl};
+use japanese_address_parser::parser;
 use serde::Deserialize;
 use std::fs::File;
 use std::panic;
@@ -28,8 +29,8 @@ pub async fn run_data_driven_tests(file_path: &str) {
     let records = read_test_data_from_csv(file_path).unwrap();
     let mut success_count = 0;
     for record in &records {
-        let parser = Parser();
-        let result = parser.parse(&record.address).await;
+        let api = ApiImpl::new();
+        let result = parser::parse(api, &record.address).await;
 
         let test_result = panic::catch_unwind(|| {
             assert_eq!(result.address.prefecture, record.prefecture);
