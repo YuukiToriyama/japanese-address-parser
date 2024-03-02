@@ -1,6 +1,5 @@
 use crate::err::Error;
 use serde::{Deserialize, Serialize};
-use tsify::Tsify;
 
 #[derive(Deserialize, PartialEq, Debug)]
 pub struct Prefecture {
@@ -46,8 +45,7 @@ impl Town {
     }
 }
 
-#[derive(Serialize, Tsify, PartialEq, Debug)]
-#[tsify(into_wasm_abi)]
+#[derive(Serialize, PartialEq, Debug)]
 pub struct Address {
     pub prefecture: String,
     pub city: String,
@@ -66,8 +64,7 @@ impl Address {
     }
 }
 
-#[derive(Serialize, Tsify, PartialEq, Debug)]
-#[tsify(into_wasm_abi)]
+#[derive(Serialize, PartialEq, Debug)]
 pub struct ParseResult {
     pub address: Address,
     pub error: Option<Error>,

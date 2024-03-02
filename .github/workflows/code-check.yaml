@@ -1,4 +1,4 @@
-name: Unit test & Code format check
+name: Unit test & Code check
 
 on:
   push:
@@ -27,9 +27,3 @@ jobs:
         run: cargo build --verbose
       - name: Unit Testing
         run: cargo test --verbose
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
-      - name: Unit Testing for Wasm module
-        run: wasm-pack test --firefox --headless

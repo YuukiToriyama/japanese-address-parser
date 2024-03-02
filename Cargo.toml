@@ -1,6 +1,6 @@
 [package]
 name = "japanese-address-parser"
-version = "0.1.0-beta.8"
+version = "0.1.0-beta.9"
 edition = "2021"
 description = "A Rust Library to parse japanses addresses."
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
@@ -29,7 +29,6 @@ regex = "1.10.2"
 reqwest = { version = "0.11.23", default-features = false, features = ["json", "rustls-tls", "blocking"] }
 serde = { version = "1.0.192", features = ["derive"] }
 serde-wasm-bindgen = "0.6.1"
-tsify = { version = "0.4.5", features = ["js"] }
 wasm-bindgen = "0.2.89"
 wasm-bindgen-futures = "0.4.39"
 
