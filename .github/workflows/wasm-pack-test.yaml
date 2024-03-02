@@ -1,32 +1,15 @@
-name: Unit test & Code format check
+name: wasm-pack build & wasm-pack test
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
-  build:
-
+  wasm-pack:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-      - name: Set up clippy
-        run: rustup component add clippy
-      - name: Code review with clippy
-        uses: giraffate/clippy-action@v1
-        with:
-          reporter: 'github-pr-review'
-          filter_mode: 'nofilter'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build check
-        run: cargo build --verbose
-      - name: Unit Testing
-        run: cargo test --verbose
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm module
