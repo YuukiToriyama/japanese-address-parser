@@ -1,5 +1,4 @@
 use crate::api::{Api, ApiImpl};
-use crate::entity::ParseResult;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
 
@@ -51,11 +50,5 @@ impl Parser {
         let api = ApiImpl::new();
         let result = parser::parse(api, address).await;
         serde_wasm_bindgen::to_value(&result).unwrap()
-    }
-}
-
-impl From<ParseResult> for JsValue {
-    fn from(value: ParseResult) -> Self {
-        serde_wasm_bindgen::to_value(&value).unwrap()
     }
 }
