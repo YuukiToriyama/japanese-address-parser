@@ -8,11 +8,14 @@ on:
 jobs:
   wasm-pack:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: core # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
     steps:
       - uses: actions/checkout@v4
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm module
-        run: cd core && wasm-pack build --target web --scope toriyama # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
+        run: wasm-pack build --target web --scope toriyama
       - name: Unit Testing for Wasm module
-        run: cd core && wasm-pack test --firefox --headless # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
+        run: wasm-pack test --firefox --headless
