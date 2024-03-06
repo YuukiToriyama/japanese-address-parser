@@ -6,6 +6,7 @@ description = "A Rust Library to parse japanses addresses."
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 authors.workspace = true
 license = "MIT"
+readme = "../README.md"
 keywords = ["parser", "geo", "wasm"]
 categories = ["parser-implementations", "wasm"]
 
