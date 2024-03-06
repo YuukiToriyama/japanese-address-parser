@@ -1,4 +1,4 @@
-const {Parser} = require("../../pkg");
+const {Parser} = require("../../wasm/pkg");
 const readline = require("readline");
 const fs = require("fs");
 
