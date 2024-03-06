@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: core # coreモジュールを作成したことで以下のステップの実行がこけるようになったため追加。あとで整理する。
+        working-directory: wasm
     steps:
       - uses: actions/checkout@v4
       - name: Install wasm-pack
