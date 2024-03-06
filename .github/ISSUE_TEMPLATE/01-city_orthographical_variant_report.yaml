@@ -1,0 +1,43 @@
+name: 表記ゆれの報告(市区町村レベル)
+description: 市区町村名の表記ゆれを報告します
+title: "表記ゆれの報告: 「」と「」の表記ゆれ"
+labels: ["表記ゆれ"]
+body:
+  - type: markdown
+    id: introduction
+    attributes:
+      value: "市区町村レベルでの表記ゆれを報告するためのテンプレートです"
+  - type: textarea
+    id: variety-of-notation
+    attributes:
+      label: 対応すべき表記ゆれ
+      description: 対応すべき表記ゆれを箇条書きで記入してください
+      placeholder: "- 茨城県鹿島市"
+    validations:
+      required: true
+  - type: input
+    id: formal-notation
+    attributes:
+      label: 正式な表記
+      description: 市区町村名の正式な表記を https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/都道府県名/master.json で確認し、記入してください。
+      placeholder: "- 茨城県鹿嶋市"
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: 表記ゆれが確認できる資料/URL
+      description: 表記ゆれが確認できる資料についての情報や、ウェブサイトのURLを記載してください。
+      placeholder: "行政機関のHPやタウンページの記載など"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: チェックリスト
+      description: Issueを作成する前に以下の項目を確認してください
+      options:
+        - label: "入力した内容に個人情報が含まれていないことを確認しました。"
+          required: true
+    validations:
+      required: true
