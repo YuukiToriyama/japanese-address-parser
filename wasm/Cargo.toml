@@ -6,6 +6,7 @@ description.workspace = true
 repository.workspace = true
 authors.workspace = true
 license.workspace = true
+readme = "../README.md"
 keywords.workspace = true
 categories.workspace = true
 
