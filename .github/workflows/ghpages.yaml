@@ -17,14 +17,16 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Unit Testing for Wasm module
+        working-directory: core
         run: wasm-pack test --firefox --headless
       - name: Build wasm module
+        working-directory: core
         run: wasm-pack build --target web --scope toriyama --features debug
       - name: Move files
         run: |
           mkdir ./publish
-          rm ./pkg/.gitignore
-          mv ./pkg ./publish
+          rm ./core/pkg/.gitignore
+          mv ./core/pkg ./publish
           mv ./public ./publish
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
