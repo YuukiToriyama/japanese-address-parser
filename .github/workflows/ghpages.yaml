@@ -2,7 +2,7 @@ name: Deploy demo page to GitHub Pages
 
 on:
   push:
-    branches: ["main", "feature/cargo-workspace/*" ] # 動作確認用
+    branches: [ "main" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -28,15 +28,7 @@ jobs:
           rm ./wasm/pkg/.gitignore
           mv ./wasm/pkg ./publish
           mv ./public ./publish
-      # 動作確認用に生成物をアップロードしている
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ghpages-publish-dir
-          path: |
-            publish
       - name: Deploy to GitHub Pages
-        if: ${{ false }} # 動作確認用
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
