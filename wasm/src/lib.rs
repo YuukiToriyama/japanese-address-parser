@@ -1,12 +1,7 @@
-use crate::api::{Api, ApiImpl};
+use japanese_address_parser::api::{Api, ApiImpl};
+use japanese_address_parser::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
-
-pub mod api;
-pub mod entity;
-mod err;
-pub mod parser;
-mod util;
 
 #[wasm_bindgen(typescript_custom_section)]
 const TYPESCRIPT_TYPE: &'static str = r#"
