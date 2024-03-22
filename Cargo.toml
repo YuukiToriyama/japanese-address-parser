@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "core",
+    "wasm",
     "tests"
 ]
 resolver = "2"
@@ -8,5 +9,14 @@ resolver = "2"
 [workspace.package]
 version = "0.1.0-beta.9"
 edition = "2021"
+description = "A Rust Library to parse japanses addresses."
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
+license = "MIT"
+keywords = ["parser", "geo", "wasm"]
+categories = ["parser-implementations", "wasm"]
+
+[workspace.dependencies]
+wasm-bindgen = "0.2.89"
+wasm-bindgen-futures = "0.4.39"
+wasm-bindgen-test = "0.3.38"
