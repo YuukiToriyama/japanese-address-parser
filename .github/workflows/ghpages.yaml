@@ -21,7 +21,7 @@ jobs:
         run: wasm-pack test --firefox --headless
       - name: Build wasm module
         working-directory: wasm
-        run: wasm-pack build --target web --scope toriyama --features debug
+        run: wasm-pack build --target web --scope toriyama --out-name japanese_address_parser --features debug
       - name: Move files
         run: |
           mkdir ./publish
