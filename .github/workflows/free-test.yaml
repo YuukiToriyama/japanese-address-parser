@@ -26,8 +26,10 @@ jobs:
             return commit.data.object.sha
 
       - name: Install wasm-pack
+        working-directory: wasm
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm module
+        working-directory: wasm
         run: wasm-pack build --target nodejs --scope toriyama
 
       - name: Setup Node.js

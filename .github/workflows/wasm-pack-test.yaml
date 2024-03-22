@@ -8,6 +8,9 @@ on:
 jobs:
   wasm-pack:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wasm
     steps:
       - uses: actions/checkout@v4
       - name: Install wasm-pack
