@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: core
+        working-directory: wasm
     steps:
       - uses: actions/checkout@v4
 
@@ -25,7 +25,24 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Build wasm module
-        run: wasm-pack build --release --target web --scope toriyama
+        run: wasm-pack build --release --target web --scope toriyama --out-name japanese_address_parser
+
+      # package.jsonの`name`が`@toriyama/wasm`になっているため、`@toriyama/japanese-address-parser`に書き換える
+      - name: Check if jq command is available
+        run: |
+          which jq
+          jq --version
+
+      - name: Edit package.name
+        run: |
+          cat pkg/package.json | jq '.name = "@toriyama/japanese-address-parser"' > tmp.json
+          mv tmp.json pkg/package.json
+
+      - name: Check if package.name was changed
+        run: |
+          # package.nameが正しく置換されているかを確認している。
+          # 正しく置換されていればJSONファイルを表示し、置換されていなければエラーを返しJobを中断させる。
+          cat pkg/package.json | jq 'if .name == "@toriyama/japanese-address-parser" then . else error("package.nameが正しく置換されていない") end'
 
       - name: Upload wasm to npmjs.com
         run: |
