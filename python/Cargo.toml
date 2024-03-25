@@ -10,3 +10,4 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
+pyo3 = { version = "0.21.0", features = ["abi3-py37"] }
