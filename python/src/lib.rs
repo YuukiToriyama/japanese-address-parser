@@ -1,4 +1,6 @@
+use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};
 use japanese_address_parser::entity::ParseResult;
+use japanese_address_parser::parser::parse_blocking;
 use pyo3::prelude::*;
 use std::collections::HashMap;
 
@@ -26,9 +28,16 @@ impl From<ParseResult> for PyParseResult {
     }
 }
 
+#[pyfunction]
+fn parse(address: &str) -> PyParseResult {
+    let api = BlockingApiImpl::new();
+    parse_blocking(api, address).into()
+}
+
 #[pymodule]
 #[pyo3(name = "japanese_address_parser_py")]
 fn python_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyParseResult>()?;
+    m.add_function(wrap_pyfunction!(parse, m)?)?;
     Ok(())
 }
