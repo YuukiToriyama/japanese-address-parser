@@ -9,5 +9,10 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[lib]
+name = "japanese_address_parser_py"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
 [dependencies]
 pyo3 = { version = "0.21.0", features = ["abi3-py37"] }
