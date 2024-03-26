@@ -15,4 +15,5 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+japanese-address-parser = { path = "../core" }
 pyo3 = { version = "0.21.0", features = ["abi3-py37"] }
