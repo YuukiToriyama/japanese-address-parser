@@ -123,7 +123,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     environment: pypi
-    if: "startsWith(github.ref, 'refs/tags/')"
+    if: true # "startsWith(github.ref, 'refs/tags/')" # TODO: 動作確認用に設定している。`test.pypi.org`へのアップロードの確認が完了したら元に戻す
     needs: [linux, windows, macos, sdist]
     steps:
       - uses: actions/download-artifact@v4
