@@ -4,9 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-    # TODO: 動作確認用に設定している。不要になったら削除する。
-    branches:
-      - feature/python-module/*
 
 permissions:
   contents: read
@@ -123,15 +120,15 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     environment: pypi
-    if: true # "startsWith(github.ref, 'refs/tags/')" # TODO: 動作確認用に設定している。`test.pypi.org`へのアップロードの確認が完了したら元に戻す
+    if: "startsWith(github.ref, 'refs/tags/')"
     needs: [linux, windows, macos, sdist]
     steps:
       - uses: actions/download-artifact@v4
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
         env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }} # ${{ secrets.PYPI_API_TOKEN }}
-          MATURIN_REPOSITORY: "testpypi" # "pypi"
+          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          MATURIN_REPOSITORY: "pypi" # test.pypi.orgにアップロードする際は"testpypi"を設定する
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
