@@ -5,6 +5,10 @@ build-backend = "maturin"
 [project]
 name = "japanese-address-parser-py"
 keywords = ["converter", "utility", "geo", "rust"]
+classifiers = [
+    "Topic :: Text Processing",
+    "Programming Language :: Rust"
+]
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
