@@ -8,6 +8,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: npmjs
     defaults:
       run:
         working-directory: wasm
@@ -49,4 +50,4 @@ jobs:
           cd pkg
           npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_REGISTRY_TOKEN }}
