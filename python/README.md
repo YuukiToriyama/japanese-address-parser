@@ -15,16 +15,45 @@ pip install japanese-address-parser-py
 ```
 
 ## Usage
+
+```python
+import japanese_address_parser_py
+
+address_list = [
+    "埼玉県さいたま市浦和区高砂3-15-1",
+    "千葉県千葉市中央区市場町1-1",
+    "東京都新宿区西新宿2-8-1",
+    "神奈川県横浜市中区日本大通1"
+]
+for address in address_list:
+    parse_result = japanese_address_parser_py.parse(address)
+    print(parse_result.address)
+```
+
+```text
+{'prefecture': '埼玉県', 'town': '高砂三丁目', 'rest': '15-1', 'city': 'さいたま市浦和区'}
+{'rest': '1-1', 'town': '市場町', 'prefecture': '千葉県', 'city': '千葉市中央区'}
+{'prefecture': '東京都', 'rest': '8-1', 'town': '西新宿二丁目', 'city': '新宿区'}
+{'town': '日本大通', 'city': '横浜市中区', 'prefecture': '神奈川県', 'rest': '1'}
+```
+
+
 ```python
 import japanese_address_parser_py
 
 address = "神奈川県横浜市中区本町6丁目50-10"
 parse_result = japanese_address_parser_py.parse(address)
-print(parse_result.address) # {'rest': '50-10', 'prefecture': '神奈川県', 'town': '本町六丁目', 'city': '横浜市中区'}
-print(parse_result.address["prefecture"]) # 神奈川県
-print(parse_result.address["city"]) # 横浜市中区
-print(parse_result.address["town"]) # 本町六丁目
-print(parse_result.address["rest"]) # 50-10
+print(parse_result.address["prefecture"])
+print(parse_result.address["city"])
+print(parse_result.address["town"])
+print(parse_result.address["rest"])
+```
+
+```text
+神奈川県
+横浜市中区
+本町六丁目
+50-10
 ```
 
 ## Development
