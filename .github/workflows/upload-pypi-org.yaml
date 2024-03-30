@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    working-directory: python
+
 jobs:
   linux:
     runs-on: ${{ matrix.platform.runner }}
