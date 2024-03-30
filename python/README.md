@@ -1,7 +1,8 @@
 # japanese-address-parser-py
 A python toolkit for processing japanese addresses
 
-<!-- pypiにパッケージをアップロードしたらバッヂを表示する -->
+[![PyPI - Version](https://img.shields.io/pypi/v/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/#history)
 [![Unit test & Code check](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml/badge.svg)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml)
 
 ## What is it?
