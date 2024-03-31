@@ -1,0 +1,20 @@
+[package]
+name = "python"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+authors.workspace = true
+license.workspace = true
+readme = "README.md"
+keywords.workspace = true
+categories.workspace = true
+
+[lib]
+name = "japanese_address_parser_py"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+japanese-address-parser = { path = "../core" }
+pyo3 = { version = "0.21.0", features = ["abi3-py37"] }
