@@ -64,6 +64,12 @@ init().then(() => {
 })
 ```
 
+## Python support(experimental)
+
+[![PyPI - Version](https://img.shields.io/pypi/v/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/)
+
+This library can be called from Python world. For more detail, see [python module's README](python/README.md).
+
 ## Support
 
 This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).
