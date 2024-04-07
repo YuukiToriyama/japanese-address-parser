@@ -5,7 +5,7 @@
 ![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.75.0-orange)
 [![Unit test & Code check](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml/badge.svg)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml)
 
-A Rust Library to parse japanses addresses.
+A Rust Library to parse japanese addresses.
 
 ## Usage
 
