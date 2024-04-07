@@ -17,7 +17,7 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Unit Testing for Wasm module
-        working-directory: wasm
+        working-directory: core
         run: wasm-pack test --firefox --headless
       - name: Build wasm module
         working-directory: wasm
