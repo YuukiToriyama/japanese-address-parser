@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Unit Testing for wasm module
+      - name: Unit test for core module
         working-directory: core
         run: wasm-pack test --firefox --headless
       - name: Build test for wasm module
