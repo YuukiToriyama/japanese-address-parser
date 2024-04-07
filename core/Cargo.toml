@@ -23,5 +23,5 @@ serde = { version = "1.0.192", features = ["derive"] }
 
 [dev-dependencies]
 test-case = "3.3.1"
-tokio = { version = "1.35.1", features = ["rt", "macros"] }
+tokio = { version = "1.37.0", features = ["rt", "macros"] }
 wasm-bindgen-test = { workspace = true }
