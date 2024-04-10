@@ -7,7 +7,8 @@ name = "japanese-address-parser-py"
 keywords = ["converter", "utility", "geo", "rust"]
 classifiers = [
     "Topic :: Text Processing",
-    "Programming Language :: Rust"
+    "Programming Language :: Rust",
+    "Typing :: Typed",
 ]
 
 [tool.maturin]
