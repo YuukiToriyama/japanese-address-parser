@@ -8,14 +8,13 @@ on:
 jobs:
   wasm-pack:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: wasm
     steps:
       - uses: actions/checkout@v4
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: Build wasm module
-        run: wasm-pack build --target web --scope toriyama
-      - name: Unit Testing for Wasm module
+      - name: Unit test for core module
+        working-directory: core
         run: wasm-pack test --firefox --headless
+      - name: Build test for wasm module
+        working-directory: wasm
+        run: wasm-pack build --target web --scope toriyama
