@@ -33,3 +33,9 @@ async fn 住居表示実施済みの住所において正式でない表記へ�
 async fn 大字表記省略への対応テスト() {
     run_data_driven_tests("./test_data/大字表記省略への対応.csv").await
 }
+
+#[tokio::test]
+#[ignore = "not yet implemented"]
+async fn 郡が省略されている場合への対応テスト() {
+    run_data_driven_tests("./test_data/郡が省略されている場合への対応.csv").await
+}
