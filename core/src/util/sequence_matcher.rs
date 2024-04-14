@@ -6,8 +6,16 @@ impl SequenceMatcher {
     pub fn get_most_similar_match(input: &str, possibilities: &Vec<String>) -> String {
         let mut highest_similarity: f64 = 0.0;
         let mut highest_match: String = "".to_string();
+        let length_of_longest_possibility = possibilities.iter().map(|x| x.len()).max().unwrap();
         for possibility in possibilities {
-            let similarity = Self::evaluate_match_ratio(possibility, input);
+            let similarity = Self::evaluate_match_ratio(
+                possibility,
+                if input.len() > length_of_longest_possibility {
+                    input.get(0..length_of_longest_possibility).unwrap()
+                } else {
+                    input
+                },
+            );
             if similarity > highest_similarity {
                 highest_similarity = similarity;
                 highest_match = possibility.clone();
