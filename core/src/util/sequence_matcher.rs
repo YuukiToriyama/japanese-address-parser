@@ -2,18 +2,45 @@ use rapidfuzz::distance::lcs_seq;
 
 pub struct SequenceMatcher;
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum Error {
+    MoreThanOneCandidateExist(Vec<String>),
+    NoCandidateExist,
+}
+
 impl SequenceMatcher {
-    pub fn get_most_similar_match(input: &str, possibilities: &Vec<String>) -> String {
+    pub fn get_most_similar_match(
+        input: &str,
+        possibilities: &Vec<String>,
+        threshold: Option<f64>,
+    ) -> Result<String, Error> {
         let mut highest_similarity: f64 = 0.0;
-        let mut highest_match: String = "".to_string();
+        let mut highest_matches: Vec<String> = vec![];
+        let length_of_longest_possibility = possibilities.iter().map(|x| x.len()).max().unwrap();
         for possibility in possibilities {
-            let similarity = Self::evaluate_match_ratio(possibility, input);
-            if similarity > highest_similarity {
+            let similarity = Self::evaluate_match_ratio(
+                possibility,
+                if input.len() > length_of_longest_possibility {
+                    input.get(0..length_of_longest_possibility).unwrap()
+                } else {
+                    input
+                },
+            );
+            if similarity >= highest_similarity {
+                if similarity > highest_similarity {
+                    highest_matches.clear();
+                }
+                if threshold.is_none() || similarity > threshold.unwrap() {
+                    highest_matches.push(possibility.clone());
+                }
                 highest_similarity = similarity;
-                highest_match = possibility.clone();
             }
         }
-        highest_match
+        match &highest_matches.len() {
+            0 => Err(Error::NoCandidateExist),
+            1 => Ok(highest_matches.first().unwrap().clone()),
+            _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
+        }
     }
 
     fn evaluate_match_ratio(left: &str, right: &str) -> f64 {
@@ -26,6 +53,7 @@ impl SequenceMatcher {
 
 #[cfg(test)]
 mod tests {
+    use crate::util::sequence_matcher::Error::{MoreThanOneCandidateExist, NoCandidateExist};
     use crate::util::sequence_matcher::SequenceMatcher;
 
     #[test]
@@ -115,17 +143,52 @@ mod tests {
             "相馬郡新地町".to_string(),
             "相馬郡飯舘村".to_string(),
         ];
-        assert_eq!(
-            SequenceMatcher::get_most_similar_match("西郷村大字熊倉字折口原40番地", &possibilities),
-            "西白河郡西郷村"
+        let result = SequenceMatcher::get_most_similar_match(
+            "西郷村大字熊倉字折口原40番地",
+            &possibilities,
+            None,
         );
-        assert_eq!(
-            SequenceMatcher::get_most_similar_match("小野町大字小野新町字舘廻", &possibilities),
-            "田村郡小野町"
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "西白河郡西郷村");
+        let result = SequenceMatcher::get_most_similar_match(
+            "小野町大字小野新町字舘廻",
+            &possibilities,
+            None,
         );
-        assert_eq!(
-            SequenceMatcher::get_most_similar_match("桑折町大字谷地字道下22番地7", &possibilities),
-            "伊達郡桑折町"
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "田村郡小野町");
+        let result = SequenceMatcher::get_most_similar_match(
+            "桑折町大字谷地字道下22番地7",
+            &possibilities,
+            None,
         );
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "伊達郡桑折町");
+    }
+
+    #[test]
+    fn get_most_similar_match_類似度が同じものが複数ある場合() {
+        let possibilities = vec!["周智郡森町".to_string(), "茅部郡森町".to_string()];
+        assert_eq!(
+            SequenceMatcher::evaluate_match_ratio("森町", &possibilities[0]),
+            SequenceMatcher::evaluate_match_ratio("森町", &possibilities[1])
+        );
+        let result = SequenceMatcher::get_most_similar_match("森町", &possibilities, None);
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap(),
+            MoreThanOneCandidateExist(vec!["周智郡森町".to_string(), "茅部郡森町".to_string()])
+        );
+    }
+
+    #[test]
+    fn get_most_similar_match_マッチ候補が一つもない場合() {
+        let result = SequenceMatcher::get_most_similar_match(
+            "上町",
+            &vec!["上村".to_string(), "下町".to_string()],
+            Some(0.9),
+        );
+        assert!(result.is_err());
+        assert_eq!(result.err().unwrap(), NoCandidateExist);
     }
 }
