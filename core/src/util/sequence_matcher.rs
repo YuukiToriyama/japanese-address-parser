@@ -2,6 +2,12 @@ use rapidfuzz::distance::lcs_seq;
 
 pub struct SequenceMatcher;
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum Error {
+    MoreThanOneCandidateExist(Vec<String>),
+    NoCandidateExist,
+}
+
 impl SequenceMatcher {
     pub fn get_most_similar_match(input: &str, possibilities: &Vec<String>) -> String {
         let mut highest_similarity: f64 = 0.0;
