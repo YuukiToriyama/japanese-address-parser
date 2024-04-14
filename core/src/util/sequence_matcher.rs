@@ -177,7 +177,7 @@ mod tests {
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap(),
-            MoreThanOneCandidateExist(vec!["周智郡森町".to_string(), "茅部郡森町".to_string(),])
+            MoreThanOneCandidateExist(vec!["周智郡森町".to_string(), "茅部郡森町".to_string()])
         );
     }
 
