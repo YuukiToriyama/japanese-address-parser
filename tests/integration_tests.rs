@@ -35,7 +35,6 @@ async fn 大字表記省略への対応テスト() {
 }
 
 #[tokio::test]
-#[ignore = "not yet implemented"]
 async fn 郡が省略されている場合への対応テスト() {
     run_data_driven_tests("./test_data/郡が省略されている場合への対応.csv").await
 }
