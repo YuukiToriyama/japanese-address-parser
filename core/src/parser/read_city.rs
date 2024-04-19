@@ -2,14 +2,14 @@ use crate::entity::Prefecture;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
+use crate::parser::adapter::vague_expression_adapter::VagueExpressionAdapter;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
 pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)> {
-    for city_name in prefecture.cities {
-        if let Ok((rest, city_name)) =
-            tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input)
+    for city_name in &prefecture.cities {
+        if let Ok((rest, city_name)) = tag::<&str, &str, VerboseError<&str>>(city_name).parse(input)
         {
             return Some((rest.to_string(), city_name.to_string()));
         }
@@ -28,10 +28,17 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             _ => {}
         }
         let adapter = OrthographicalVariantAdapter { variant_list };
-        if let Some(result) = adapter.apply(input, &city_name) {
+        if let Some(result) = adapter.apply(input, city_name) {
             return Some(result);
         }
     }
+
+    // ここまでで市町村名の特定ができない場合はVagueExpressionAdapterを使用して市町村名を推測する
+    let vague_expression_adapter = VagueExpressionAdapter {};
+    if let Some(result) = vague_expression_adapter.apply(input, &prefecture.cities) {
+        return Some(result);
+    }
+
     None
 }
 
@@ -52,6 +59,8 @@ mod tests {
     #[test_case("茨城県", "龍ケ崎市佐貫町647", "龍ヶ崎市"; "success_龍ケ崎市_表記ゆれ")]
     #[test_case("茨城県", "竜ヶ崎市佐貫町647", "龍ヶ崎市"; "success_竜ヶ崎市_表記ゆれ")]
     #[test_case("茨城県", "竜ケ崎市佐貫町647", "龍ヶ崎市"; "success_竜ケ崎市_表記ゆれ")]
+    #[test_case("群馬県", "みなかみ町後閑318", "利根郡みなかみ町"; "success_利根郡みなかみ町_郡名が省略されている")]
+    #[test_case("埼玉県", "東秩父村大字御堂634番地", "秩父郡東秩父村"; "success_秩父郡東秩父村_郡名が省略されている")]
     fn test_read_city(prefecture_name: &str, input: &str, expected: &str) {
         let api = BlockingApiImpl::new();
         let prefecture = api.get_prefecture_master(prefecture_name).unwrap();
