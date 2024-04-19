@@ -11,12 +11,12 @@ impl VagueExpressionAdapter {
         if let Ok(highest_match) =
             SequenceMatcher::get_most_similar_match(input, region_name_list, None)
         {
-            if let Ok((_, (_, _, rest))) = tuple((
+            let mut parser = tuple((
                 is_not::<&str, &str, Error<&str>>("町村"),
-                is_a("町村"),
+                is_a::<&str, &str, Error<&str>>("町村"),
                 rest,
-            ))(input)
-            {
+            ));
+            if let Ok((_, (_, _, rest))) = parser(input) {
                 return Some((rest.to_string(), highest_match));
             }
         }
