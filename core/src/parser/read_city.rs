@@ -2,14 +2,14 @@ use crate::entity::Prefecture;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
+use crate::parser::adapter::vague_expression_adapter::VagueExpressionAdapter;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
 pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)> {
-    for city_name in prefecture.cities {
-        if let Ok((rest, city_name)) =
-            tag::<&str, &str, VerboseError<&str>>(&city_name).parse(input)
+    for city_name in &prefecture.cities {
+        if let Ok((rest, city_name)) = tag::<&str, &str, VerboseError<&str>>(city_name).parse(input)
         {
             return Some((rest.to_string(), city_name.to_string()));
         }
@@ -28,10 +28,17 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             _ => {}
         }
         let adapter = OrthographicalVariantAdapter { variant_list };
-        if let Some(result) = adapter.apply(input, &city_name) {
+        if let Some(result) = adapter.apply(input, city_name) {
             return Some(result);
         }
     }
+
+    // ここまでで市町村名の特定ができない場合はVagueExpressionAdapterを使用して市町村名を推測する
+    let vague_expression_adapter = VagueExpressionAdapter {};
+    if let Some(result) = vague_expression_adapter.apply(input, &prefecture.cities) {
+        return Some(result);
+    }
+
     None
 }
 
