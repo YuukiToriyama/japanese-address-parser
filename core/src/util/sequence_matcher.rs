@@ -16,16 +16,10 @@ impl SequenceMatcher {
     ) -> Result<String, Error> {
         let mut highest_similarity: f64 = 0.0;
         let mut highest_matches: Vec<String> = vec![];
-        let length_of_longest_possibility = possibilities.iter().map(|x| x.len()).max().unwrap();
+        let length_of_longest_possibility = Self::get_length_of_longest_one(possibilities).unwrap();
+        let input = Self::cut_text(input, length_of_longest_possibility);
         for possibility in possibilities {
-            let similarity = Self::evaluate_match_ratio(
-                possibility,
-                if input.len() > length_of_longest_possibility {
-                    input.get(0..length_of_longest_possibility).unwrap()
-                } else {
-                    input
-                },
-            );
+            let similarity = Self::evaluate_match_ratio(possibility, &input);
             if similarity >= highest_similarity {
                 if similarity > highest_similarity {
                     highest_matches.clear();
@@ -40,6 +34,18 @@ impl SequenceMatcher {
             0 => Err(Error::NoCandidateExist),
             1 => Ok(highest_matches.first().unwrap().clone()),
             _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
+        }
+    }
+
+    fn get_length_of_longest_one(text_list: &Vec<String>) -> Option<usize> {
+        text_list.iter().map(|x| x.chars().count()).max()
+    }
+
+    fn cut_text(input: &str, length: usize) -> String {
+        if input.chars().count() > length {
+            input.chars().take(length).collect::<String>()
+        } else {
+            input.to_string()
         }
     }
 
