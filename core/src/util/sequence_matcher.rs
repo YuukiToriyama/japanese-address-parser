@@ -63,6 +63,24 @@ mod tests {
     use crate::util::sequence_matcher::SequenceMatcher;
 
     #[test]
+    fn get_length_of_longest_one() {
+        assert_eq!(SequenceMatcher::get_length_of_longest_one(&vec![]), None);
+        assert_eq!(
+            SequenceMatcher::get_length_of_longest_one(&generate_city_name_list()),
+            Some(8)
+        );
+    }
+
+    #[test]
+    fn cut_text() {
+        let city_name = "南会津郡檜枝岐村";
+        assert_eq!(SequenceMatcher::cut_text(city_name, 0), "");
+        assert_eq!(SequenceMatcher::cut_text(city_name, 1), "南");
+        assert_eq!(SequenceMatcher::cut_text(city_name, 8), "南会津郡檜枝岐村");
+        assert_eq!(SequenceMatcher::cut_text(city_name, 9), "南会津郡檜枝岐村");
+    }
+
+    #[test]
     fn evaluate_match_ratio_一致度100() {
         assert_eq!(
             SequenceMatcher::evaluate_match_ratio("相馬郡新地町", "相馬郡新地町"),
@@ -88,7 +106,58 @@ mod tests {
 
     #[test]
     fn get_most_similar_match() {
-        let possibilities = vec![
+        let possibilities = generate_city_name_list();
+        let result = SequenceMatcher::get_most_similar_match(
+            "西郷村大字熊倉字折口原40番地",
+            &possibilities,
+            None,
+        );
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "西白河郡西郷村");
+        let result = SequenceMatcher::get_most_similar_match(
+            "小野町大字小野新町字舘廻",
+            &possibilities,
+            None,
+        );
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "田村郡小野町");
+        let result = SequenceMatcher::get_most_similar_match(
+            "桑折町大字谷地字道下22番地7",
+            &possibilities,
+            None,
+        );
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "伊達郡桑折町");
+    }
+
+    #[test]
+    fn get_most_similar_match_類似度が同じものが複数ある場合() {
+        let possibilities = vec!["周智郡森町".to_string(), "茅部郡森町".to_string()];
+        assert_eq!(
+            SequenceMatcher::evaluate_match_ratio("森町", &possibilities[0]),
+            SequenceMatcher::evaluate_match_ratio("森町", &possibilities[1])
+        );
+        let result = SequenceMatcher::get_most_similar_match("森町", &possibilities, None);
+        assert!(result.is_err());
+        assert_eq!(
+            result.err().unwrap(),
+            MoreThanOneCandidateExist(vec!["周智郡森町".to_string(), "茅部郡森町".to_string()])
+        );
+    }
+
+    #[test]
+    fn get_most_similar_match_マッチ候補が一つもない場合() {
+        let result = SequenceMatcher::get_most_similar_match(
+            "上町",
+            &vec!["上村".to_string(), "下町".to_string()],
+            Some(0.9),
+        );
+        assert!(result.is_err());
+        assert_eq!(result.err().unwrap(), NoCandidateExist);
+    }
+
+    fn generate_city_name_list() -> Vec<String> {
+        vec![
             "福島市".to_string(),
             "会津若松市".to_string(),
             "郡山市".to_string(),
@@ -148,53 +217,6 @@ mod tests {
             "双葉郡葛尾村".to_string(),
             "相馬郡新地町".to_string(),
             "相馬郡飯舘村".to_string(),
-        ];
-        let result = SequenceMatcher::get_most_similar_match(
-            "西郷村大字熊倉字折口原40番地",
-            &possibilities,
-            None,
-        );
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), "西白河郡西郷村");
-        let result = SequenceMatcher::get_most_similar_match(
-            "小野町大字小野新町字舘廻",
-            &possibilities,
-            None,
-        );
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), "田村郡小野町");
-        let result = SequenceMatcher::get_most_similar_match(
-            "桑折町大字谷地字道下22番地7",
-            &possibilities,
-            None,
-        );
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), "伊達郡桑折町");
-    }
-
-    #[test]
-    fn get_most_similar_match_類似度が同じものが複数ある場合() {
-        let possibilities = vec!["周智郡森町".to_string(), "茅部郡森町".to_string()];
-        assert_eq!(
-            SequenceMatcher::evaluate_match_ratio("森町", &possibilities[0]),
-            SequenceMatcher::evaluate_match_ratio("森町", &possibilities[1])
-        );
-        let result = SequenceMatcher::get_most_similar_match("森町", &possibilities, None);
-        assert!(result.is_err());
-        assert_eq!(
-            result.err().unwrap(),
-            MoreThanOneCandidateExist(vec!["周智郡森町".to_string(), "茅部郡森町".to_string()])
-        );
-    }
-
-    #[test]
-    fn get_most_similar_match_マッチ候補が一つもない場合() {
-        let result = SequenceMatcher::get_most_similar_match(
-            "上町",
-            &vec!["上村".to_string(), "下町".to_string()],
-            Some(0.9),
-        );
-        assert!(result.is_err());
-        assert_eq!(result.err().unwrap(), NoCandidateExist);
+        ]
     }
 }
