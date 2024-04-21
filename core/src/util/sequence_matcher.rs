@@ -11,7 +11,7 @@ pub enum Error {
 impl SequenceMatcher {
     pub fn get_most_similar_match(
         input: &str,
-        possibilities: &Vec<String>,
+        possibilities: &[String],
         threshold: Option<f64>,
     ) -> Result<String, Error> {
         let mut highest_similarity: f64 = 0.0;
@@ -37,7 +37,7 @@ impl SequenceMatcher {
         }
     }
 
-    fn get_length_of_longest_one(text_list: &Vec<String>) -> Option<usize> {
+    fn get_length_of_longest_one(text_list: &[String]) -> Option<usize> {
         text_list.iter().map(|x| x.chars().count()).max()
     }
 
