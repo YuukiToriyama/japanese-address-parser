@@ -18,7 +18,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ppc64le
-          args: --release --out dist --zig
+          args: --release --out dist
           working-directory: python
           sccache: 'true'
           manylinux: auto
