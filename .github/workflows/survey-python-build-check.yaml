@@ -9,6 +9,15 @@ permissions:
 jobs:
   linux:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64
+          - x86
+          - aarch64
+          - armv7
+          - s390x
+          - ppc64le
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,7 +28,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: ppc64le
+          target: ${{ matrix.target }}
           args: --release --out dist --zig
           working-directory: python
           sccache: 'true'
