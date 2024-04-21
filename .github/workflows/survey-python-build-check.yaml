@@ -17,7 +17,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: ppc64le
+          target: armv7
           args: --release --out dist --zig
           working-directory: python
           sccache: 'true'
