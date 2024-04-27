@@ -16,21 +16,38 @@ mod read_house_number;
 mod read_prefecture;
 mod read_town;
 
+/// An asynchronous `Parser` to process addresses.
+///
+/// # Example
+/// ```
+/// use japanese_address_parser::parser::Parser;
+///
+/// async fn example() {
+///     let parser = Parser::new();
+///     let result = parser.parse("東京都新宿区西新宿2-8-1").await;
+///     println!("{:?}", result);
+/// }
+/// ```
 pub struct Parser {
     async_api: Arc<AsyncApi>,
 }
 
 impl Parser {
+    /// Constructs a new `Parser`.
     pub fn new() -> Self {
         Parser {
             async_api: Arc::new(AsyncApi::new()),
         }
     }
+    /// Parses the given `address`.
     pub async fn parse(&self, address: &str) -> ParseResult {
         parse(self.async_api.clone(), address).await
     }
 }
 
+/// A function to parse the given address.
+///
+/// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     // 都道府県を特定
     let (rest, prefecture_name) = if let Some(result) = read_prefecture(input) {
