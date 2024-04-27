@@ -1,4 +1,4 @@
-use japanese_address_parser::api::ApiImpl;
+use japanese_address_parser::api::AsyncApi;
 use japanese_address_parser::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
@@ -42,7 +42,7 @@ impl Parser {
     pub async fn parse(&self, address: &str) -> JsValue {
         #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
-        let api = ApiImpl::new();
+        let api = AsyncApi::new();
         let result = parser::parse(api, address).await;
         serde_wasm_bindgen::to_value(&result).unwrap()
     }

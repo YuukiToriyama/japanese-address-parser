@@ -6,14 +6,14 @@ use crate::api::prefecture_master_api::PrefectureMasterApi;
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
 
-pub struct ApiImpl {
+pub struct AsyncApi {
     pub prefecture_master_api: PrefectureMasterApi,
     pub city_master_api: CityMasterApi,
 }
 
-impl ApiImpl {
+impl AsyncApi {
     pub fn new() -> Self {
-        ApiImpl {
+        AsyncApi {
             prefecture_master_api: PrefectureMasterApi {
                 server_url:
                     "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
