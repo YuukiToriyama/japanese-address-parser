@@ -30,7 +30,7 @@ pub async fn run_data_driven_tests(file_path: &str) {
     let mut success_count = 0;
     for record in &records {
         let api = AsyncApi::new();
-        let result = parse(api, &record.address).await;
+        let result = parse(api.into(), &record.address).await;
 
         let test_result = panic::catch_unwind(|| {
             assert_eq!(result.address.prefecture, record.prefecture);
