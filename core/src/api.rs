@@ -5,29 +5,15 @@ use crate::api::city_master_api::CityMasterApi;
 use crate::api::prefecture_master_api::PrefectureMasterApi;
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
-use std::future::Future;
 
-pub trait Api {
-    fn new() -> Self;
-    fn get_prefecture_master(
-        &self,
-        prefecture_name: &str,
-    ) -> impl Future<Output = Result<Prefecture, Error>>;
-    fn get_city_master(
-        &self,
-        prefecture_name: &str,
-        city_name: &str,
-    ) -> impl Future<Output = Result<City, Error>>;
-}
-
-pub struct ApiImpl {
+pub struct AsyncApi {
     pub prefecture_master_api: PrefectureMasterApi,
     pub city_master_api: CityMasterApi,
 }
 
-impl Api for ApiImpl {
-    fn new() -> Self {
-        ApiImpl {
+impl AsyncApi {
+    pub fn new() -> Self {
+        AsyncApi {
             prefecture_master_api: PrefectureMasterApi {
                 server_url:
                     "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
@@ -38,19 +24,16 @@ impl Api for ApiImpl {
         }
     }
 
-    fn get_prefecture_master(
-        &self,
-        prefecture_name: &str,
-    ) -> impl Future<Output = Result<Prefecture, Error>> {
-        self.prefecture_master_api.get(prefecture_name)
+    pub async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
+        self.prefecture_master_api.get(prefecture_name).await
     }
 
-    fn get_city_master(
+    pub async fn get_city_master(
         &self,
         prefecture_name: &str,
         city_name: &str,
-    ) -> impl Future<Output = Result<City, Error>> {
-        self.city_master_api.get(prefecture_name, city_name)
+    ) -> Result<City, Error> {
+        self.city_master_api.get(prefecture_name, city_name).await
     }
 }
 
