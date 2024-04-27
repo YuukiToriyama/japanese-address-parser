@@ -16,6 +16,21 @@ mod read_house_number;
 mod read_prefecture;
 mod read_town;
 
+pub struct Parser {
+    async_api: Arc<AsyncApi>,
+}
+
+impl Parser {
+    pub fn new() -> Self {
+        Parser {
+            async_api: Arc::new(AsyncApi::new()),
+        }
+    }
+    pub async fn parse(&self, address: &str) -> ParseResult {
+        parse(self.async_api.clone(), address).await
+    }
+}
+
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     // 都道府県を特定
     let (rest, prefecture_name) = if let Some(result) = read_prefecture(input) {
