@@ -1,4 +1,4 @@
-use crate::api::Api;
+use crate::api::ApiImpl;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::api::BlockingApi;
 use crate::entity::{Address, ParseResult};
@@ -14,7 +14,7 @@ mod read_house_number;
 mod read_prefecture;
 mod read_town;
 
-pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
+pub async fn parse(api: ApiImpl, input: &str) -> ParseResult {
     // 都道府県を特定
     let (rest, prefecture_name) = if let Some(result) = read_prefecture(input) {
         result
@@ -73,7 +73,7 @@ pub async fn parse<T: Api>(api: T, input: &str) -> ParseResult {
 mod non_blocking_tests {
     use crate::api::city_master_api::CityMasterApi;
     use crate::api::prefecture_master_api::PrefectureMasterApi;
-    use crate::api::{Api, ApiImpl};
+    use crate::api::ApiImpl;
     use crate::err::ParseErrorKind;
     use crate::parser::parse;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};

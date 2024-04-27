@@ -1,5 +1,5 @@
 use csv::ReaderBuilder;
-use japanese_address_parser::api::{Api, ApiImpl};
+use japanese_address_parser::api::ApiImpl;
 use japanese_address_parser::parser::parse;
 use serde::Deserialize;
 use std::fs::File;

@@ -1,4 +1,4 @@
-use japanese_address_parser::api::{Api, ApiImpl};
+use japanese_address_parser::api::ApiImpl;
 use japanese_address_parser::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
