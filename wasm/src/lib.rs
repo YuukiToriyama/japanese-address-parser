@@ -39,14 +39,14 @@ pub struct Parser {
 impl Parser {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
+        #[cfg(feature = "debug")]
+        console_error_panic_hook::set_once();
         Parser {
             async_api: Arc::new(AsyncApi::new()),
         }
     }
 
     pub async fn parse(&self, address: &str) -> JsValue {
-        #[cfg(feature = "debug")]
-        console_error_panic_hook::set_once();
         let result = parser::parse(self.async_api.clone(), address).await;
         serde_wasm_bindgen::to_value(&result).unwrap()
     }
