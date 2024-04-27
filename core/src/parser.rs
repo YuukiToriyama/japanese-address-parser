@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::api::AsyncApi;
 #[cfg(not(target_arch = "wasm32"))]
 use crate::api::BlockingApi;
@@ -14,7 +16,7 @@ mod read_house_number;
 mod read_prefecture;
 mod read_town;
 
-pub async fn parse(api: AsyncApi, input: &str) -> ParseResult {
+pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     // 都道府県を特定
     let (rest, prefecture_name) = if let Some(result) = read_prefecture(input) {
         result
@@ -81,7 +83,7 @@ mod non_blocking_tests {
     #[tokio::test]
     async fn 都道府県名が誤っている場合() {
         let api = AsyncApi::new();
-        let result = parse(api, "青盛県青森市長島１丁目１−１").await;
+        let result = parse(api.into(), "青盛県青森市長島１丁目１−１").await;
         assert_eq!(result.address.prefecture, "");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");
@@ -100,7 +102,7 @@ mod non_blocking_tests {
             server_url: "https://example.com/invalid_url/api/",
         };
 
-        let result = parse(api, "青森県青森市長島１丁目１−１").await;
+        let result = parse(api.into(), "青森県青森市長島１丁目１−１").await;
         assert_eq!(result.error.is_some(), true);
         assert_eq!(result.address.prefecture, "青森県");
         assert_eq!(result.address.city, "");
@@ -111,7 +113,7 @@ mod non_blocking_tests {
     #[tokio::test]
     async fn 市区町村名が誤っている場合() {
         let api = AsyncApi::new();
-        let result = parse(api, "青森県青盛市長島１丁目１−１").await;
+        let result = parse(api.into(), "青森県青盛市長島１丁目１−１").await;
         assert_eq!(result.address.prefecture, "青森県");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");
@@ -130,7 +132,7 @@ mod non_blocking_tests {
             server_url: "https://example.com/invalid_url/api/",
         };
 
-        let result = parse(api, "青森県青森市長島１丁目１−１").await;
+        let result = parse(api.into(), "青森県青森市長島１丁目１−１").await;
         assert_eq!(result.error.is_some(), true);
         assert_eq!(result.address.prefecture, "青森県");
         assert_eq!(result.address.city, "青森市");
@@ -141,7 +143,7 @@ mod non_blocking_tests {
     #[tokio::test]
     async fn 町名が誤っている場合() {
         let api = AsyncApi::new();
-        let result = parse(api, "青森県青森市永嶋１丁目１−１").await;
+        let result = parse(api.into(), "青森県青森市永嶋１丁目１−１").await;
         assert_eq!(result.address.prefecture, "青森県");
         assert_eq!(result.address.city, "青森市");
         assert_eq!(result.address.town, "");
@@ -158,7 +160,7 @@ mod non_blocking_tests {
     #[wasm_bindgen_test]
     async fn parse_wasm_success() {
         let api = AsyncApi::new();
-        let result = parse(api, "兵庫県淡路市生穂新島8番地").await;
+        let result = parse(api.into(), "兵庫県淡路市生穂新島8番地").await;
         assert_eq!(result.address.prefecture, "兵庫県".to_string());
         assert_eq!(result.address.city, "淡路市".to_string());
         assert_eq!(result.address.town, "生穂".to_string());

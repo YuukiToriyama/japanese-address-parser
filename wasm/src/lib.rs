@@ -43,7 +43,7 @@ impl Parser {
         #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
         let api = AsyncApi::new();
-        let result = parser::parse(api, address).await;
+        let result = parser::parse(api.into(), address).await;
         serde_wasm_bindgen::to_value(&result).unwrap()
     }
 }
