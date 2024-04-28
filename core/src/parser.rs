@@ -30,18 +30,37 @@ mod read_town;
 /// ```
 pub struct Parser {
     async_api: Arc<AsyncApi>,
+    #[cfg(feature = "blocking")]
+    blocking_api: Arc<BlockingApi>,
 }
 
 impl Parser {
     /// Constructs a new `Parser`.
+    #[cfg(feature = "blocking")]
+    pub fn new() -> Self {
+        Parser {
+            async_api: Arc::new(AsyncApi::new()),
+            blocking_api: Arc::new(BlockingApi::new()),
+        }
+    }
+
+    /// Constructs a new `Parser`.
+    #[cfg(not(feature = "blocking"))]
     pub fn new() -> Self {
         Parser {
             async_api: Arc::new(AsyncApi::new()),
         }
     }
-    /// Parses the given `address`.
+
+    /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
         parse(self.async_api.clone(), address).await
+    }
+
+    /// Parses the given `address` synchronously.
+    #[cfg(feature = "blocking")]
+    pub fn parse_blocking(&self, address: &str) -> ParseResult {
+        parse_blocking(self.blocking_api.clone(), address)
     }
 }
 
@@ -202,7 +221,7 @@ mod non_blocking_tests {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-pub fn parse_blocking(api: BlockingApi, input: &str) -> ParseResult {
+pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
         None => {
             return ParseResult {
@@ -264,7 +283,7 @@ mod blocking_tests {
     #[test]
     fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
         let client = BlockingApi::new();
-        let result = parse_blocking(client, "埼玉県秩父市熊木町8番15号");
+        let result = parse_blocking(client.into(), "埼玉県秩父市熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "秩父市");
         assert_eq!(result.address.town, "熊木町");
@@ -275,7 +294,7 @@ mod blocking_tests {
     #[test]
     fn parse_blocking_fail_市町村名が間違っている場合() {
         let client = BlockingApi::new();
-        let result = parse_blocking(client, "埼玉県秩父柿熊木町8番15号");
+        let result = parse_blocking(client.into(), "埼玉県秩父柿熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");
