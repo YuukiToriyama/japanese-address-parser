@@ -29,6 +29,25 @@ impl From<ParseResult> for PyParseResult {
     }
 }
 
+#[pyclass(name = "Parser")]
+struct PyParser {
+    parser: Parser,
+}
+
+#[pymethods]
+impl PyParser {
+    #[new]
+    fn default() -> Self {
+        PyParser {
+            parser: Parser::new(),
+        }
+    }
+
+    fn parse(&self, address: &str) -> PyParseResult {
+        self.parser.parse_blocking(address).into()
+    }
+}
+
 #[pyfunction]
 fn parse(address: &str) -> PyParseResult {
     let parser = Parser::new();
@@ -39,6 +58,7 @@ fn parse(address: &str) -> PyParseResult {
 #[pyo3(name = "japanese_address_parser_py")]
 fn python_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyParseResult>()?;
+    m.add_class::<PyParser>()?;
     m.add_function(wrap_pyfunction!(parse, m)?)?;
     Ok(())
 }
