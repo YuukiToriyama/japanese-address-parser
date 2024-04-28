@@ -26,6 +26,10 @@ jobs:
       - name: Build check
         run: cargo build --verbose
       - name: Unit Testing
+        working-directory: core
         run: | 
           cargo test
-          cargo test --features blocking 
+          cargo test --features blocking
+      - name: Integration Testing
+        working-directory: test
+        run: cargo test
