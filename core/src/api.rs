@@ -38,15 +38,15 @@ impl AsyncApi {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-pub struct BlockingApiImpl {
+pub struct BlockingApi {
     prefecture_master_api: PrefectureMasterApi,
     city_master_api: CityMasterApi,
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-impl BlockingApiImpl {
+impl BlockingApi {
     pub fn new() -> Self {
-        BlockingApiImpl {
+        BlockingApi {
             prefecture_master_api: PrefectureMasterApi {
                 server_url:
                     "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
