@@ -58,7 +58,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
-    use crate::api::{BlockingApi, BlockingApiImpl};
+    use crate::api::BlockingApiImpl;
     use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
 

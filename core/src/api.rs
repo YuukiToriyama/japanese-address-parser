@@ -38,14 +38,6 @@ impl AsyncApi {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-#[deprecated]
-pub trait BlockingApi {
-    fn new() -> Self;
-    fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error>;
-    fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error>;
-}
-
-#[cfg(not(target_arch = "wasm32"))]
 pub struct BlockingApiImpl {
     prefecture_master_api: PrefectureMasterApi,
     city_master_api: CityMasterApi,

@@ -1,4 +1,4 @@
-use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};
+use japanese_address_parser::api::BlockingApiImpl;
 use japanese_address_parser::entity::ParseResult;
 use japanese_address_parser::parser::parse_blocking;
 use pyo3::prelude::*;

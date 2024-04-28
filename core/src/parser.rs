@@ -257,7 +257,7 @@ pub fn parse_blocking(api: BlockingApiImpl, input: &str) -> ParseResult {
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod blocking_tests {
-    use crate::api::{BlockingApi, BlockingApiImpl};
+    use crate::api::BlockingApiImpl;
     use crate::err::ParseErrorKind;
     use crate::parser::parse_blocking;
 
