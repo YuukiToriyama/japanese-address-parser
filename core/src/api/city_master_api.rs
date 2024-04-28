@@ -45,7 +45,7 @@ impl CityMasterApi {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, not(feature = "blocking")))]
 mod tests {
     use crate::api::city_master_api::CityMasterApi;
     use crate::entity::Town;
@@ -56,24 +56,6 @@ mod tests {
             server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
         };
         let result = city_master_api.get("石川県", "羽咋郡志賀町").await;
-        let city = result.unwrap();
-        assert_eq!(city.name, "羽咋郡志賀町");
-        let town = Town {
-            name: "末吉".to_string(),
-            koaza: "千古".to_string(),
-            lat: Some(37.006235),
-            lng: Some(136.779155),
-        };
-        assert!(city.towns.contains(&town));
-    }
-
-    #[cfg(not(target_arch = "wasm32"))]
-    #[test]
-    fn 同期_石川県羽咋郡志賀町_成功() {
-        let city_master_api = CityMasterApi {
-            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-        };
-        let result = city_master_api.get_blocking("石川県", "羽咋郡志賀町");
         let city = result.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町");
         let town = Town {
@@ -100,8 +82,30 @@ mod tests {
             )
         );
     }
+}
 
-    #[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(test, feature = "blocking"))]
+mod blocking_tests {
+    use crate::api::city_master_api::CityMasterApi;
+    use crate::entity::Town;
+
+    #[test]
+    fn 同期_石川県羽咋郡志賀町_成功() {
+        let city_master_api = CityMasterApi {
+            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
+        };
+        let result = city_master_api.get_blocking("石川県", "羽咋郡志賀町");
+        let city = result.unwrap();
+        assert_eq!(city.name, "羽咋郡志賀町");
+        let town = Town {
+            name: "末吉".to_string(),
+            koaza: "千古".to_string(),
+            lat: Some(37.006235),
+            lng: Some(136.779155),
+        };
+        assert!(city.towns.contains(&town));
+    }
+
     #[test]
     fn 同期_誤った市区町村名_失敗() {
         let city_master_api = CityMasterApi {
