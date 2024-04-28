@@ -122,8 +122,8 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     }
 }
 
-#[cfg(test)]
-mod non_blocking_tests {
+#[cfg(all(test, not(feature = "blocking")))]
+mod tests {
     use crate::api::city_master_api::CityMasterApi;
     use crate::api::prefecture_master_api::PrefectureMasterApi;
     use crate::api::AsyncApi;
