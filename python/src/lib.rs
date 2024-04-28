@@ -1,4 +1,4 @@
-use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};
+use japanese_address_parser::api::BlockingApi;
 use japanese_address_parser::entity::ParseResult;
 use japanese_address_parser::parser::parse_blocking;
 use pyo3::prelude::*;
@@ -30,7 +30,7 @@ impl From<ParseResult> for PyParseResult {
 
 #[pyfunction]
 fn parse(address: &str) -> PyParseResult {
-    let api = BlockingApiImpl::new();
+    let api = BlockingApi::new();
     parse_blocking(api, address).into()
 }
 
