@@ -24,7 +24,7 @@ impl CityMasterApi {
             Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
         }
     }
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(feature = "blocking")]
     pub fn get_blocking(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
         let response = match reqwest::blocking::get(&endpoint) {
