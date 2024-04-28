@@ -15,21 +15,20 @@ Add this to your `Cargo.toml`
 cargo add japanese-address-parser
 ```
 
-### Async Api
+### Async Version
 
 ```rust
-use japanese_address_parser::api::{Api, ApiImpl};
-use japanese_address_parser::parser::parse;
+use japanese_address_parser::parser::Parser;
 
 #[tokio::main]
 async fn main() {
-    let async_api = ApiImpl::new();
-    let parse_result = parse(async_api, "東京都千代田区丸の内1-1-1").await;
+    let parser = Parser::new();
+    let parse_result = parser.parse("東京都千代田区丸の内1-1-1").await;
     println!("{:?}", parse_result);
 }
 ```
 
-### Blocking Api
+### Blocking Version
 
 ```rust
 use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};

@@ -1,5 +1,6 @@
-use japanese_address_parser::api::{Api, ApiImpl};
+use japanese_address_parser::api::AsyncApi;
 use japanese_address_parser::parser;
+use std::sync::Arc;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
 
@@ -30,20 +31,23 @@ export class Parser {
 }"#;
 
 #[wasm_bindgen(skip_typescript)]
-pub struct Parser();
+pub struct Parser {
+    async_api: Arc<AsyncApi>,
+}
 
 #[wasm_bindgen]
 impl Parser {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        Parser {}
+        #[cfg(feature = "debug")]
+        console_error_panic_hook::set_once();
+        Parser {
+            async_api: Arc::new(AsyncApi::new()),
+        }
     }
 
     pub async fn parse(&self, address: &str) -> JsValue {
-        #[cfg(feature = "debug")]
-        console_error_panic_hook::set_once();
-        let api = ApiImpl::new();
-        let result = parser::parse(api, address).await;
+        let result = parser::parse(self.async_api.clone(), address).await;
         serde_wasm_bindgen::to_value(&result).unwrap()
     }
 }
