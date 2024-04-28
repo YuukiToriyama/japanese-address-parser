@@ -20,7 +20,7 @@ jobs:
       - name: Unit Testing
         run: |
           cargo test
-          cargo test --features blocking 
+          cargo test --features blocking
 
       - name: Try packaging
         run: cargo publish --dry-run
