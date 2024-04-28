@@ -31,7 +31,7 @@ impl From<ParseResult> for PyParseResult {
 #[pyfunction]
 fn parse(address: &str) -> PyParseResult {
     let api = BlockingApi::new();
-    parse_blocking(api, address).into()
+    parse_blocking(api.into(), address).into()
 }
 
 #[pymodule]
