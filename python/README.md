@@ -17,7 +17,7 @@ pip install japanese-address-parser-py
 ## Usage
 
 ```python
-import japanese_address_parser_py
+from japanese_address_parser_py import Parser
 
 address_list = [
     "埼玉県さいたま市浦和区高砂3-15-1",
@@ -25,8 +25,9 @@ address_list = [
     "東京都新宿区西新宿2-8-1",
     "神奈川県横浜市中区日本大通1"
 ]
+parser = Parser()
 for address in address_list:
-    parse_result = japanese_address_parser_py.parse(address)
+    parse_result = parser.parse(address)
     print(parse_result.address)
 ```
 
@@ -39,10 +40,11 @@ for address in address_list:
 
 
 ```python
-import japanese_address_parser_py
+from japanese_address_parser_py import Parser
 
+parser = Parser()
 address = "神奈川県横浜市中区本町6丁目50-10"
-parse_result = japanese_address_parser_py.parse(address)
+parse_result = parser.parse(address)
 print(parse_result.address["prefecture"])
 print(parse_result.address["city"])
 print(parse_result.address["town"])
