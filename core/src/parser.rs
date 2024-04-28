@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::api::AsyncApi;
 #[cfg(not(target_arch = "wasm32"))]
-use crate::api::BlockingApi;
+use crate::api::BlockingApiImpl;
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
 use crate::parser::read_city::read_city;
@@ -202,7 +202,7 @@ mod non_blocking_tests {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
+pub fn parse_blocking(api: BlockingApiImpl, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
         None => {
             return ParseResult {

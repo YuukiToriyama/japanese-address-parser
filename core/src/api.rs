@@ -52,8 +52,8 @@ pub struct BlockingApiImpl {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-impl BlockingApi for BlockingApiImpl {
-    fn new() -> Self {
+impl BlockingApiImpl {
+    pub fn new() -> Self {
         BlockingApiImpl {
             prefecture_master_api: PrefectureMasterApi {
                 server_url:
@@ -65,11 +65,11 @@ impl BlockingApi for BlockingApiImpl {
         }
     }
 
-    fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
+    pub fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_master_api.get_blocking(prefecture_name)
     }
 
-    fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
+    pub fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         self.city_master_api
             .get_blocking(prefecture_name, city_name)
     }
