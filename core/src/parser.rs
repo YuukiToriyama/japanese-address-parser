@@ -64,7 +64,7 @@ impl Parser {
     }
 }
 
-/// A function to parse the given address.
+/// A function to parse the given address asynchronously.
 ///
 /// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
@@ -220,6 +220,9 @@ mod non_blocking_tests {
     }
 }
 
+/// A function to parse the given address synchronously.
+///
+/// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
 #[cfg(not(target_arch = "wasm32"))]
 pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
