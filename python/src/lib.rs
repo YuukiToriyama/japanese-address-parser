@@ -1,8 +1,9 @@
-use japanese_address_parser::api::BlockingApi;
-use japanese_address_parser::entity::ParseResult;
-use japanese_address_parser::parser::parse_blocking;
-use pyo3::prelude::*;
 use std::collections::HashMap;
+
+use pyo3::prelude::*;
+
+use japanese_address_parser::entity::ParseResult;
+use japanese_address_parser::parser::Parser;
 
 #[pyclass(name = "ParseResult")]
 struct PyParseResult {
@@ -30,8 +31,8 @@ impl From<ParseResult> for PyParseResult {
 
 #[pyfunction]
 fn parse(address: &str) -> PyParseResult {
-    let api = BlockingApi::new();
-    parse_blocking(api.into(), address).into()
+    let parser = Parser::new();
+    parser.parse_blocking(address).into()
 }
 
 #[pymodule]
