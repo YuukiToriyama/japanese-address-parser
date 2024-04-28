@@ -30,10 +30,13 @@ mod read_town;
 /// ```
 pub struct Parser {
     async_api: Arc<AsyncApi>,
+    #[cfg(feature = "blocking")]
+    blocking_api: Arc<BlockingApi>,
 }
 
 impl Parser {
     /// Constructs a new `Parser`.
+    #[cfg(not(feature = "blocking"))]
     pub fn new() -> Self {
         Parser {
             async_api: Arc::new(AsyncApi::new()),
