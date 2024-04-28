@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::api::AsyncApi;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
@@ -30,22 +30,41 @@ mod read_town;
 /// ```
 pub struct Parser {
     async_api: Arc<AsyncApi>,
+    #[cfg(feature = "blocking")]
+    blocking_api: Arc<BlockingApi>,
 }
 
 impl Parser {
     /// Constructs a new `Parser`.
+    #[cfg(feature = "blocking")]
+    pub fn new() -> Self {
+        Parser {
+            async_api: Arc::new(AsyncApi::new()),
+            blocking_api: Arc::new(BlockingApi::new()),
+        }
+    }
+
+    /// Constructs a new `Parser`.
+    #[cfg(not(feature = "blocking"))]
     pub fn new() -> Self {
         Parser {
             async_api: Arc::new(AsyncApi::new()),
         }
     }
-    /// Parses the given `address`.
+
+    /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
         parse(self.async_api.clone(), address).await
     }
+
+    /// Parses the given `address` synchronously.
+    #[cfg(feature = "blocking")]
+    pub fn parse_blocking(&self, address: &str) -> ParseResult {
+        parse_blocking(self.blocking_api.clone(), address)
+    }
 }
 
-/// A function to parse the given address.
+/// A function to parse the given address asynchronously.
 ///
 /// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
@@ -103,8 +122,8 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     }
 }
 
-#[cfg(test)]
-mod non_blocking_tests {
+#[cfg(all(test, not(feature = "blocking")))]
+mod tests {
     use crate::api::city_master_api::CityMasterApi;
     use crate::api::prefecture_master_api::PrefectureMasterApi;
     use crate::api::AsyncApi;
@@ -201,8 +220,11 @@ mod non_blocking_tests {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
+/// A function to parse the given address synchronously.
+///
+/// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
+#[cfg(feature = "blocking")]
+pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
         None => {
             return ParseResult {
@@ -255,16 +277,16 @@ pub fn parse_blocking<T: BlockingApi>(api: T, input: &str) -> ParseResult {
     }
 }
 
-#[cfg(all(test, not(target_arch = "wasm32")))]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use crate::api::{BlockingApi, BlockingApiImpl};
+    use crate::api::BlockingApi;
     use crate::err::ParseErrorKind;
     use crate::parser::parse_blocking;
 
     #[test]
     fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
-        let client = BlockingApiImpl::new();
-        let result = parse_blocking(client, "埼玉県秩父市熊木町8番15号");
+        let client = BlockingApi::new();
+        let result = parse_blocking(client.into(), "埼玉県秩父市熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "秩父市");
         assert_eq!(result.address.town, "熊木町");
@@ -274,8 +296,8 @@ mod blocking_tests {
 
     #[test]
     fn parse_blocking_fail_市町村名が間違っている場合() {
-        let client = BlockingApiImpl::new();
-        let result = parse_blocking(client, "埼玉県秩父柿熊木町8番15号");
+        let client = BlockingApi::new();
+        let result = parse_blocking(client.into(), "埼玉県秩父柿熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");

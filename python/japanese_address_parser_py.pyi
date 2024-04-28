@@ -29,3 +29,24 @@ def parse(address: str) -> ParseResult:
     :param address: 住所
     :return: ParseResult
     """
+
+
+class Parser:
+    def __new__(cls) -> Parser:
+        """
+        Construct a parser.
+    
+        パーサーを生成します。
+
+        :return: JapaneseAddressParser
+        """
+
+    def parse(cls, address: str) -> ParseResult:
+        """
+        Format informal address into formal style
+
+        入力された住所を正式な表記に整形します。
+
+        :param address: 住所
+        :return: ParseResult
+        """

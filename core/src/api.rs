@@ -37,23 +37,16 @@ impl AsyncApi {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-pub trait BlockingApi {
-    fn new() -> Self;
-    fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error>;
-    fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error>;
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-pub struct BlockingApiImpl {
+#[cfg(feature = "blocking")]
+pub struct BlockingApi {
     prefecture_master_api: PrefectureMasterApi,
     city_master_api: CityMasterApi,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-impl BlockingApi for BlockingApiImpl {
-    fn new() -> Self {
-        BlockingApiImpl {
+#[cfg(feature = "blocking")]
+impl BlockingApi {
+    pub fn new() -> Self {
+        BlockingApi {
             prefecture_master_api: PrefectureMasterApi {
                 server_url:
                     "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
@@ -64,11 +57,11 @@ impl BlockingApi for BlockingApiImpl {
         }
     }
 
-    fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
+    pub fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_master_api.get_blocking(prefecture_name)
     }
 
-    fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
+    pub fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         self.city_master_api
             .get_blocking(prefecture_name, city_name)
     }

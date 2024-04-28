@@ -13,6 +13,8 @@ Add this to your `Cargo.toml`
 
 ```bash
 cargo add japanese-address-parser
+# or
+cargo add japanese-address-parser -F blocking
 ```
 
 ### Async Version
@@ -31,12 +33,11 @@ async fn main() {
 ### Blocking Version
 
 ```rust
-use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};
-use japanese_address_parser::parser::parse_blocking;
+use japanese_address_parser::parser::Parser;
 
 fn main() {
-    let blocking_api = BlockingApiImpl::new();
-    let parse_result = parse_blocking(blocking_api, "東京都千代田区丸の内1-1-1");
+    let parser = Parser::new();
+    let parse_result = parser.parse_blocking("東京都千代田区丸の内1-1-1"); // `parse_blocking()` is available on `blocking` feature only
     println!("{:?}", parse_result);
 }
 ```
