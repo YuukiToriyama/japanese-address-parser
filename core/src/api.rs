@@ -38,6 +38,7 @@ impl AsyncApi {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
+#[deprecated]
 pub trait BlockingApi {
     fn new() -> Self;
     fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error>;
