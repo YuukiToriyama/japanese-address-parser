@@ -56,7 +56,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
     None
 }
 
-#[cfg(all(test, not(target_arch = "wasm32")))]
+#[cfg(all(test, feature = "blocking"))]
 mod tests {
     use crate::api::BlockingApi;
     use crate::entity::{City, Town};

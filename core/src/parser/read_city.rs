@@ -42,7 +42,7 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
     None
 }
 
-#[cfg(all(test, not(target_arch = "wasm32")))]
+#[cfg(all(test, feature = "blocking"))]
 mod tests {
     use crate::api::BlockingApi;
     use crate::parser::read_city::read_city;
