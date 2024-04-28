@@ -26,4 +26,6 @@ jobs:
       - name: Build check
         run: cargo build --verbose
       - name: Unit Testing
-        run: cargo test --verbose
+        run: | 
+          cargo test
+          cargo test --features blocking 

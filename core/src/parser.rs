@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::api::AsyncApi;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
 use crate::entity::{Address, ParseResult};
 use crate::err::{Error, ParseErrorKind};
@@ -122,8 +122,8 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     }
 }
 
-#[cfg(test)]
-mod non_blocking_tests {
+#[cfg(all(test, not(feature = "blocking")))]
+mod tests {
     use crate::api::city_master_api::CityMasterApi;
     use crate::api::prefecture_master_api::PrefectureMasterApi;
     use crate::api::AsyncApi;
@@ -223,7 +223,7 @@ mod non_blocking_tests {
 /// A function to parse the given address synchronously.
 ///
 /// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(feature = "blocking")]
 pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let (rest, prefecture_name) = match read_prefecture(input) {
         None => {
@@ -277,7 +277,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     }
 }
 
-#[cfg(all(test, not(target_arch = "wasm32")))]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::api::BlockingApi;
     use crate::err::ParseErrorKind;

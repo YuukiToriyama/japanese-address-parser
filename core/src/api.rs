@@ -37,13 +37,13 @@ impl AsyncApi {
     }
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(feature = "blocking")]
 pub struct BlockingApi {
     prefecture_master_api: PrefectureMasterApi,
     city_master_api: CityMasterApi,
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(feature = "blocking")]
 impl BlockingApi {
     pub fn new() -> Self {
         BlockingApi {
