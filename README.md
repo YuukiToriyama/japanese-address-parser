@@ -2,7 +2,7 @@
 
 [![Docs](https://docs.rs/japanese-address-parser/badge.svg)](https://docs.rs/japanese-address-parser)
 [![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser)](https://crates.io/crates/japanese-address-parser)
-![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.64.0-orange)
+![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.73.0-orange)
 [![Unit test & Code check](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml/badge.svg)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml)
 
 A Rust Library to parse japanese addresses.
@@ -13,6 +13,8 @@ Add this to your `Cargo.toml`
 
 ```bash
 cargo add japanese-address-parser
+# or
+cargo add japanese-address-parser -F blocking
 ```
 
 ### Async Version
@@ -31,12 +33,11 @@ async fn main() {
 ### Blocking Version
 
 ```rust
-use japanese_address_parser::api::{BlockingApi, BlockingApiImpl};
-use japanese_address_parser::parser::parse_blocking;
+use japanese_address_parser::parser::Parser;
 
 fn main() {
-    let blocking_api = BlockingApiImpl::new();
-    let parse_result = parse_blocking(blocking_api, "東京都千代田区丸の内1-1-1");
+    let parser = Parser::new();
+    let parse_result = parser.parse_blocking("東京都千代田区丸の内1-1-1"); // `parse_blocking()` is available on `blocking` feature only
     println!("{:?}", parse_result);
 }
 ```

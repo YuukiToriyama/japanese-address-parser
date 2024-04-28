@@ -56,9 +56,9 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
     None
 }
 
-#[cfg(all(test, not(target_arch = "wasm32")))]
+#[cfg(all(test, feature = "blocking"))]
 mod tests {
-    use crate::api::{BlockingApi, BlockingApiImpl};
+    use crate::api::BlockingApi;
     use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
 
@@ -153,7 +153,7 @@ mod tests {
 
     #[test]
     fn read_town_丁目が算用数字の場合_京都府京都市東山区n丁目() {
-        let client = BlockingApiImpl::new();
+        let client = BlockingApi::new();
         let city = client.get_city_master("京都府", "京都市東山区").unwrap();
         let test_cases = vec![
             ("本町1丁目45番", "本町一丁目"),
@@ -171,7 +171,7 @@ mod tests {
 
     #[test]
     fn read_town_大字の省略_東京都西多摩郡日の出町大字平井() {
-        let blocking_api = BlockingApiImpl::new();
+        let blocking_api = BlockingApi::new();
         let city = blocking_api
             .get_city_master("東京都", "西多摩郡日の出町")
             .unwrap();
