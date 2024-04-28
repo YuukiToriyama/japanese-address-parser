@@ -36,6 +36,15 @@ pub struct Parser {
 
 impl Parser {
     /// Constructs a new `Parser`.
+    #[cfg(feature = "blocking")]
+    pub fn new() -> Self {
+        Parser {
+            async_api: Arc::new(AsyncApi::new()),
+            blocking_api: Arc::new(BlockingApi::new()),
+        }
+    }
+
+    /// Constructs a new `Parser`.
     #[cfg(not(feature = "blocking"))]
     pub fn new() -> Self {
         Parser {
