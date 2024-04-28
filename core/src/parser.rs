@@ -51,9 +51,16 @@ impl Parser {
             async_api: Arc::new(AsyncApi::new()),
         }
     }
-    /// Parses the given `address`.
+
+    /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
         parse(self.async_api.clone(), address).await
+    }
+
+    /// Parses the given `address` synchronously.
+    #[cfg(feature = "blocking")]
+    pub fn parse_blocking(&self, address: &str) -> ParseResult {
+        parse_blocking(self.blocking_api.clone(), address)
     }
 }
 
