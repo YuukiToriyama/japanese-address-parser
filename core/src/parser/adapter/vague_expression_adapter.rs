@@ -7,7 +7,7 @@ use nom::sequence::tuple;
 pub struct VagueExpressionAdapter;
 
 impl VagueExpressionAdapter {
-    pub fn apply(self, input: &str, region_name_list: &Vec<String>) -> Option<(String, String)> {
+    pub fn apply(self, input: &str, region_name_list: &[String]) -> Option<(String, String)> {
         if let Ok(highest_match) =
             SequenceMatcher::get_most_similar_match(input, region_name_list, None)
         {

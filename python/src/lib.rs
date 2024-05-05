@@ -39,7 +39,7 @@ impl PyParser {
     #[new]
     fn default() -> Self {
         PyParser {
-            parser: Parser::new(),
+            parser: Default::default(),
         }
     }
 
@@ -50,7 +50,7 @@ impl PyParser {
 
 #[pyfunction]
 fn parse(address: &str) -> PyParseResult {
-    let parser = Parser::new();
+    let parser: Parser = Default::default();
     parser.parse_blocking(address).into()
 }
 
