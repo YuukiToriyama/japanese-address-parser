@@ -6,19 +6,13 @@ use crate::api::prefecture_master_api::PrefectureMasterApi;
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
 
+#[derive(Default)]
 pub struct AsyncApi {
     pub prefecture_master_api: PrefectureMasterApi,
     pub city_master_api: CityMasterApi,
 }
 
 impl AsyncApi {
-    pub fn new() -> Self {
-        AsyncApi {
-            prefecture_master_api: Default::default(),
-            city_master_api: Default::default(),
-        }
-    }
-
     pub async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_master_api.get(prefecture_name).await
     }
@@ -33,6 +27,7 @@ impl AsyncApi {
 }
 
 #[cfg(feature = "blocking")]
+#[derive(Default)]
 pub struct BlockingApi {
     prefecture_master_api: PrefectureMasterApi,
     city_master_api: CityMasterApi,
@@ -40,13 +35,6 @@ pub struct BlockingApi {
 
 #[cfg(feature = "blocking")]
 impl BlockingApi {
-    pub fn new() -> Self {
-        BlockingApi {
-            prefecture_master_api: Default::default(),
-            city_master_api: Default::default(),
-        }
-    }
-
     pub fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_master_api.get_blocking(prefecture_name)
     }

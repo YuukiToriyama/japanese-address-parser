@@ -42,7 +42,7 @@ impl Parser {
         #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
         Parser {
-            async_api: Arc::new(AsyncApi::new()),
+            async_api: Arc::new(Default::default()),
         }
     }
 
