@@ -60,9 +60,7 @@ mod tests {
 
     #[tokio::test]
     async fn 非同期_石川県羽咋郡志賀町_成功() {
-        let city_master_api = CityMasterApi {
-            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-        };
+        let city_master_api: CityMasterApi = Default::default();
         let result = city_master_api.get("石川県", "羽咋郡志賀町").await;
         let city = result.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町");
@@ -77,9 +75,7 @@ mod tests {
 
     #[tokio::test]
     async fn 非同期_誤った市区町村名_失敗() {
-        let city_master_api = CityMasterApi {
-            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-        };
+        let city_master_api: CityMasterApi = Default::default();
         let result = city_master_api.get("石川県", "敦賀市").await;
         assert!(result.is_err());
         assert_eq!(
@@ -99,9 +95,7 @@ mod blocking_tests {
 
     #[test]
     fn 同期_石川県羽咋郡志賀町_成功() {
-        let city_master_api = CityMasterApi {
-            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-        };
+        let city_master_api: CityMasterApi = Default::default();
         let result = city_master_api.get_blocking("石川県", "羽咋郡志賀町");
         let city = result.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町");
@@ -116,9 +110,7 @@ mod blocking_tests {
 
     #[test]
     fn 同期_誤った市区町村名_失敗() {
-        let city_master_api = CityMasterApi {
-            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-        };
+        let city_master_api: CityMasterApi = Default::default();
         let result = city_master_api.get_blocking("石川県", "敦賀市");
         assert!(result.is_err());
         assert_eq!(

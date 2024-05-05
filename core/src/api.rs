@@ -15,9 +15,7 @@ impl AsyncApi {
     pub fn new() -> Self {
         AsyncApi {
             prefecture_master_api: Default::default(),
-            city_master_api: CityMasterApi {
-                server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-            },
+            city_master_api: Default::default(),
         }
     }
 
@@ -45,9 +43,7 @@ impl BlockingApi {
     pub fn new() -> Self {
         BlockingApi {
             prefecture_master_api: Default::default(),
-            city_master_api: CityMasterApi {
-                server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
-            },
+            city_master_api: Default::default(),
         }
     }
 
