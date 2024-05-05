@@ -27,7 +27,7 @@ fn read_test_data_from_csv(file_path: &str) -> Result<Vec<Record>, &str> {
 pub async fn run_data_driven_tests(file_path: &str) {
     let records = read_test_data_from_csv(file_path).unwrap();
     let mut success_count = 0;
-    let parser = Parser::new();
+    let parser: Parser = Default::default();
     for record in &records {
         let result = parser.parse(&record.address).await;
 

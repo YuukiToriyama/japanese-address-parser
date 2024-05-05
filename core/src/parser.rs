@@ -23,7 +23,7 @@ mod read_town;
 /// use japanese_address_parser::parser::Parser;
 ///
 /// async fn example() {
-///     let parser = Parser::new();
+///     let parser : Parser = Default::default();
 ///     let result = parser.parse("東京都新宿区西新宿2-8-1").await;
 ///     println!("{:?}", result);
 /// }
