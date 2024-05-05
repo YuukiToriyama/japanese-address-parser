@@ -35,13 +35,6 @@ pub struct BlockingApi {
 
 #[cfg(feature = "blocking")]
 impl BlockingApi {
-    pub fn new() -> Self {
-        BlockingApi {
-            prefecture_master_api: Default::default(),
-            city_master_api: Default::default(),
-        }
-    }
-
     pub fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_master_api.get_blocking(prefecture_name)
     }
