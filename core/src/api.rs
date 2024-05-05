@@ -6,6 +6,7 @@ use crate::api::prefecture_master_api::PrefectureMasterApi;
 use crate::entity::{City, Prefecture};
 use crate::err::Error;
 
+#[derive(Default)]
 pub struct AsyncApi {
     pub prefecture_master_api: PrefectureMasterApi,
     pub city_master_api: CityMasterApi,
