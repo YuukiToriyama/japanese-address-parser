@@ -14,10 +14,7 @@ pub struct AsyncApi {
 impl AsyncApi {
     pub fn new() -> Self {
         AsyncApi {
-            prefecture_master_api: PrefectureMasterApi {
-                server_url:
-                    "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-            },
+            prefecture_master_api: Default::default(),
             city_master_api: CityMasterApi {
                 server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
             },
@@ -47,10 +44,7 @@ pub struct BlockingApi {
 impl BlockingApi {
     pub fn new() -> Self {
         BlockingApi {
-            prefecture_master_api: PrefectureMasterApi {
-                server_url:
-                    "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-            },
+            prefecture_master_api: Default::default(),
             city_master_api: CityMasterApi {
                 server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
             },
