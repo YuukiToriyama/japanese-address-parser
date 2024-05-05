@@ -5,6 +5,14 @@ pub struct PrefectureMasterApi {
     pub server_url: &'static str,
 }
 
+impl Default for PrefectureMasterApi {
+    fn default() -> Self {
+        Self {
+            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
+        }
+    }
+}
+
 impl PrefectureMasterApi {
     pub async fn get(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
@@ -45,9 +53,7 @@ mod tests {
 
     #[tokio::test]
     async fn 非同期_富山県_成功() {
-        let prefecture_master_api = PrefectureMasterApi {
-            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-        };
+        let prefecture_master_api: PrefectureMasterApi = Default::default();
         let result = prefecture_master_api.get("富山県").await;
         let prefecture = result.unwrap();
         assert_eq!(prefecture.name, "富山県");
@@ -75,9 +81,7 @@ mod tests {
 
     #[tokio::test]
     async fn 非同期_誤った都道府県名_失敗() {
-        let prefecture_master_api = PrefectureMasterApi {
-            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-        };
+        let prefecture_master_api: PrefectureMasterApi = Default::default();
         let result = prefecture_master_api.get("大阪都").await;
         assert!(result.is_err());
         assert_eq!(
@@ -96,9 +100,7 @@ mod blocking_tests {
 
     #[test]
     fn 同期_富山県_成功() {
-        let prefecture_master_api = PrefectureMasterApi {
-            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-        };
+        let prefecture_master_api: PrefectureMasterApi = Default::default();
         let result = prefecture_master_api.get_blocking("富山県");
         let prefecture = result.unwrap();
         assert_eq!(prefecture.name, "富山県");
@@ -126,9 +128,7 @@ mod blocking_tests {
 
     #[test]
     fn 同期_誤った都道府県名_失敗() {
-        let prefecture_master_api = PrefectureMasterApi {
-            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
-        };
+        let prefecture_master_api: PrefectureMasterApi = Default::default();
         let result = prefecture_master_api.get_blocking("大阪都");
         assert!(result.is_err());
         assert_eq!(
