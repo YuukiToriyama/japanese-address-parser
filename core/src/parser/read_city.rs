@@ -62,7 +62,7 @@ mod tests {
     #[test_case("群馬県", "みなかみ町後閑318", "利根郡みなかみ町"; "success_利根郡みなかみ町_郡名が省略されている")]
     #[test_case("埼玉県", "東秩父村大字御堂634番地", "秩父郡東秩父村"; "success_秩父郡東秩父村_郡名が省略されている")]
     fn test_read_city(prefecture_name: &str, input: &str, expected: &str) {
-        let api = BlockingApi::new();
+        let api: BlockingApi = Default::default();
         let prefecture = api.get_prefecture_master(prefecture_name).unwrap();
         let (_, city_name) = read_city(input, prefecture).unwrap();
         assert_eq!(city_name, expected);

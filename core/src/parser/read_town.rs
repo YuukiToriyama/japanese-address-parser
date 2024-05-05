@@ -153,7 +153,7 @@ mod tests {
 
     #[test]
     fn read_town_丁目が算用数字の場合_京都府京都市東山区n丁目() {
-        let client = BlockingApi::new();
+        let client: BlockingApi = Default::default();
         let city = client.get_city_master("京都府", "京都市東山区").unwrap();
         let test_cases = vec![
             ("本町1丁目45番", "本町一丁目"),
@@ -171,7 +171,7 @@ mod tests {
 
     #[test]
     fn read_town_大字の省略_東京都西多摩郡日の出町大字平井() {
-        let blocking_api = BlockingApi::new();
+        let blocking_api: BlockingApi = Default::default();
         let city = blocking_api
             .get_city_master("東京都", "西多摩郡日の出町")
             .unwrap();

@@ -27,6 +27,7 @@ impl AsyncApi {
 }
 
 #[cfg(feature = "blocking")]
+#[derive(Default)]
 pub struct BlockingApi {
     prefecture_master_api: PrefectureMasterApi,
     city_master_api: CityMasterApi,

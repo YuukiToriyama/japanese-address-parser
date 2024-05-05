@@ -40,7 +40,7 @@ impl Parser {
     pub fn new() -> Self {
         Parser {
             async_api: Arc::new(Default::default()),
-            blocking_api: Arc::new(BlockingApi::new()),
+            blocking_api: Arc::new(Default::default()),
         }
     }
 
@@ -285,7 +285,7 @@ mod blocking_tests {
 
     #[test]
     fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
-        let client = BlockingApi::new();
+        let client: BlockingApi = Default::default();
         let result = parse_blocking(client.into(), "埼玉県秩父市熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "秩父市");
@@ -296,7 +296,7 @@ mod blocking_tests {
 
     #[test]
     fn parse_blocking_fail_市町村名が間違っている場合() {
-        let client = BlockingApi::new();
+        let client: BlockingApi = Default::default();
         let result = parse_blocking(client.into(), "埼玉県秩父柿熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "");
