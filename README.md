@@ -24,7 +24,7 @@ use japanese_address_parser::parser::Parser;
 
 #[tokio::main]
 async fn main() {
-    let parser = Parser::new();
+    let parser: Parser = Default::default();
     let parse_result = parser.parse("東京都千代田区丸の内1-1-1").await;
     println!("{:?}", parse_result);
 }
@@ -36,7 +36,7 @@ async fn main() {
 use japanese_address_parser::parser::Parser;
 
 fn main() {
-    let parser = Parser::new();
+    let parser: Parser = Default::default();
     let parse_result = parser.parse_blocking("東京都千代田区丸の内1-1-1"); // `parse_blocking()` is available on `blocking` feature only
     println!("{:?}", parse_result);
 }

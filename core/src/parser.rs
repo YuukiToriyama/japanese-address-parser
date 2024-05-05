@@ -23,7 +23,7 @@ mod read_town;
 /// use japanese_address_parser::parser::Parser;
 ///
 /// async fn example() {
-///     let parser = Parser::new();
+///     let parser : Parser = Default::default();
 ///     let result = parser.parse("東京都新宿区西新宿2-8-1").await;
 ///     println!("{:?}", result);
 /// }
@@ -34,24 +34,25 @@ pub struct Parser {
     blocking_api: Arc<BlockingApi>,
 }
 
-impl Parser {
+impl Default for Parser {
     /// Constructs a new `Parser`.
     #[cfg(feature = "blocking")]
-    pub fn new() -> Self {
-        Parser {
+    fn default() -> Self {
+        Self {
             async_api: Arc::new(Default::default()),
             blocking_api: Arc::new(Default::default()),
         }
     }
-
     /// Constructs a new `Parser`.
     #[cfg(not(feature = "blocking"))]
-    pub fn new() -> Self {
-        Parser {
+    fn default() -> Self {
+        Self {
             async_api: Arc::new(Default::default()),
         }
     }
+}
 
+impl Parser {
     /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
         parse(self.async_api.clone(), address).await
