@@ -5,6 +5,14 @@ pub struct CityMasterApi {
     pub server_url: &'static str,
 }
 
+impl Default for CityMasterApi {
+    fn default() -> Self {
+        Self {
+            server_url: "https://geolonia.github.io/japanese-addresses/api/ja",
+        }
+    }
+}
+
 impl CityMasterApi {
     pub async fn get(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
