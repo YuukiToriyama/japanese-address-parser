@@ -34,6 +34,24 @@ pub struct Parser {
     blocking_api: Arc<BlockingApi>,
 }
 
+impl Default for Parser {
+    /// Constructs a new `Parser`.
+    #[cfg(feature = "blocking")]
+    fn default() -> Self {
+        Self {
+            async_api: Arc::new(Default::default()),
+            blocking_api: Arc::new(Default::default()),
+        }
+    }
+    /// Constructs a new `Parser`.
+    #[cfg(not(feature = "blocking"))]
+    fn default() -> Self {
+        Self {
+            async_api: Arc::new(Default::default()),
+        }
+    }
+}
+
 impl Parser {
     /// Constructs a new `Parser`.
     #[cfg(feature = "blocking")]
