@@ -53,23 +53,6 @@ impl Default for Parser {
 }
 
 impl Parser {
-    /// Constructs a new `Parser`.
-    #[cfg(feature = "blocking")]
-    pub fn new() -> Self {
-        Parser {
-            async_api: Arc::new(Default::default()),
-            blocking_api: Arc::new(Default::default()),
-        }
-    }
-
-    /// Constructs a new `Parser`.
-    #[cfg(not(feature = "blocking"))]
-    pub fn new() -> Self {
-        Parser {
-            async_api: Arc::new(Default::default()),
-        }
-    }
-
     /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
         parse(self.async_api.clone(), address).await
