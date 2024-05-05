@@ -5,6 +5,14 @@ pub struct PrefectureMasterApi {
     pub server_url: &'static str,
 }
 
+impl Default for PrefectureMasterApi {
+    fn default() -> Self {
+        Self {
+            server_url: "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist",
+        }
+    }
+}
+
 impl PrefectureMasterApi {
     pub async fn get(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
