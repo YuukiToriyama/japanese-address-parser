@@ -13,13 +13,6 @@ pub struct AsyncApi {
 }
 
 impl AsyncApi {
-    pub fn new() -> Self {
-        AsyncApi {
-            prefecture_master_api: Default::default(),
-            city_master_api: Default::default(),
-        }
-    }
-
     pub async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_master_api.get(prefecture_name).await
     }
