@@ -35,6 +35,7 @@ pub struct Parser {
     async_api: Arc<AsyncApi>,
 }
 
+#[warn(clippy::new_without_default)]
 #[wasm_bindgen]
 impl Parser {
     #[wasm_bindgen(constructor)]
@@ -42,7 +43,7 @@ impl Parser {
         #[cfg(feature = "debug")]
         console_error_panic_hook::set_once();
         Parser {
-            async_api: Arc::new(AsyncApi::new()),
+            async_api: Arc::new(Default::default()),
         }
     }
 
