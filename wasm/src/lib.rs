@@ -35,6 +35,7 @@ pub struct Parser {
     async_api: Arc<AsyncApi>,
 }
 
+#[warn(clippy::new_without_default)]
 #[wasm_bindgen]
 impl Parser {
     #[wasm_bindgen(constructor)]
