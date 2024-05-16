@@ -70,6 +70,15 @@ init().then(() => {
 
 This library can be called from Python world. For more detail, see [python module's README](python/README.md).
 
+## Road to v1
+
+The goals that this library aims to achieve are below.
+
+- Supports not only wasm target but also various platforms and architectures.
+- Enables more advanced normalization. For example, provides more detailed analysis than town level.
+- Provides latlng of the given address.
+- Enables processing of town names that have ceased to exist as a result of municipal mergers.
+
 ## Support
 
 This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).
