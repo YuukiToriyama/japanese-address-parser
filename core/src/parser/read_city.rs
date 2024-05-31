@@ -15,6 +15,9 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
         }
         let mut variant_list = vec![Variant::ケ];
         match prefecture.name.as_str() {
+            "青森県" => {
+                variant_list.push(Variant::舘);
+            }
             "宮城県" => {
                 variant_list.push(Variant::竈);
             }
