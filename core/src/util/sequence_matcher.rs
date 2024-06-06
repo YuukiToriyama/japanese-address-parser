@@ -59,6 +59,7 @@ impl SequenceMatcher {
 
 #[cfg(test)]
 mod tests {
+    use crate::entity::Prefecture;
     use crate::util::sequence_matcher::Error::{MoreThanOneCandidateExist, NoCandidateExist};
     use crate::util::sequence_matcher::SequenceMatcher;
 
@@ -154,6 +155,75 @@ mod tests {
         );
         assert!(result.is_err());
         assert_eq!(result.err().unwrap(), NoCandidateExist);
+    }
+
+    impl Prefecture {
+        fn fukushima() -> Self {
+            Prefecture {
+                name: "福島県".to_string(),
+                cities: vec![
+                    "福島市".to_string(),
+                    "会津若松市".to_string(),
+                    "郡山市".to_string(),
+                    "いわき市".to_string(),
+                    "白河市".to_string(),
+                    "須賀川市".to_string(),
+                    "喜多方市".to_string(),
+                    "相馬市".to_string(),
+                    "二本松市".to_string(),
+                    "田村市".to_string(),
+                    "南相馬市".to_string(),
+                    "伊達市".to_string(),
+                    "本宮市".to_string(),
+                    "伊達郡桑折町".to_string(),
+                    "伊達郡国見町".to_string(),
+                    "伊達郡川俣町".to_string(),
+                    "安達郡大玉村".to_string(),
+                    "岩瀬郡鏡石町".to_string(),
+                    "岩瀬郡天栄村".to_string(),
+                    "南会津郡下郷町".to_string(),
+                    "南会津郡檜枝岐村".to_string(),
+                    "南会津郡只見町".to_string(),
+                    "南会津郡南会津町".to_string(),
+                    "耶麻郡北塩原村".to_string(),
+                    "耶麻郡西会津町".to_string(),
+                    "耶麻郡磐梯町".to_string(),
+                    "耶麻郡猪苗代町".to_string(),
+                    "河沼郡会津坂下町".to_string(),
+                    "河沼郡湯川村".to_string(),
+                    "河沼郡柳津町".to_string(),
+                    "大沼郡三島町".to_string(),
+                    "大沼郡金山町".to_string(),
+                    "大沼郡昭和村".to_string(),
+                    "大沼郡会津美里町".to_string(),
+                    "西白河郡西郷村".to_string(),
+                    "西白河郡泉崎村".to_string(),
+                    "西白河郡中島村".to_string(),
+                    "西白河郡矢吹町".to_string(),
+                    "東白川郡棚倉町".to_string(),
+                    "東白川郡矢祭町".to_string(),
+                    "東白川郡塙町".to_string(),
+                    "東白川郡鮫川村".to_string(),
+                    "石川郡石川町".to_string(),
+                    "石川郡玉川村".to_string(),
+                    "石川郡平田村".to_string(),
+                    "石川郡浅川町".to_string(),
+                    "石川郡古殿町".to_string(),
+                    "田村郡三春町".to_string(),
+                    "田村郡小野町".to_string(),
+                    "双葉郡広野町".to_string(),
+                    "双葉郡楢葉町".to_string(),
+                    "双葉郡富岡町".to_string(),
+                    "双葉郡川内村".to_string(),
+                    "双葉郡大熊町".to_string(),
+                    "双葉郡双葉町".to_string(),
+                    "双葉郡浪江町".to_string(),
+                    "双葉郡葛尾村".to_string(),
+                    "相馬郡新地町".to_string(),
+                    "相馬郡飯舘村".to_string(),
+                ],
+            }
+        }
     }
 
     fn generate_city_name_list() -> Vec<String> {
