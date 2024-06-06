@@ -26,6 +26,7 @@ impl VagueExpressionAdapter {
 
 #[cfg(test)]
 mod tests {
+    use crate::entity::Prefecture;
     use crate::parser::adapter::vague_expression_adapter::VagueExpressionAdapter;
 
     #[test]
@@ -75,5 +76,32 @@ mod tests {
             "大飯郡おおい町".to_string(),
             "三方上中郡若狭町".to_string(),
         ]
+    }
+
+    impl Prefecture {
+        fn hukui() -> Self {
+            Prefecture {
+                name: "福井県".to_string(),
+                cities: vec![
+                    "福井市".to_string(),
+                    "敦賀市".to_string(),
+                    "小浜市".to_string(),
+                    "大野市".to_string(),
+                    "勝山市".to_string(),
+                    "鯖江市".to_string(),
+                    "あわら市".to_string(),
+                    "越前市".to_string(),
+                    "坂井市".to_string(),
+                    "吉田郡永平寺町".to_string(),
+                    "今立郡池田町".to_string(),
+                    "南条郡南越前町".to_string(),
+                    "丹生郡越前町".to_string(),
+                    "三方郡美浜町".to_string(),
+                    "大飯郡高浜町".to_string(),
+                    "大飯郡おおい町".to_string(),
+                    "三方上中郡若狭町".to_string(),
+                ],
+            }
+        }
     }
 }
