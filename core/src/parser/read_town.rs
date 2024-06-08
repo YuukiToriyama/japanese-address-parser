@@ -53,6 +53,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
                 Variant::槇,
                 Variant::治,
                 Variant::佛,
+                Variant::澤,
             ],
         };
         if let Some(result) = adapter.apply(input, &town.name) {
