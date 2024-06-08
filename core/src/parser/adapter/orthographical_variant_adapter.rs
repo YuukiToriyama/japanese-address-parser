@@ -19,6 +19,7 @@ pub trait OrthographicalVariants {
     const 脊: Variant;
     const 渕: Variant;
     const 己: Variant;
+    const 槇: Variant;
 }
 
 impl OrthographicalVariants for Variant {
@@ -35,6 +36,7 @@ impl OrthographicalVariants for Variant {
     const 脊: Variant = &["脊", "背"];
     const 渕: Variant = &["渕", "淵"];
     const 己: Variant = &["己", "巳"];
+    const 槇: Variant = &["槇", "槙"];
 }
 
 pub struct OrthographicalVariantAdapter {
