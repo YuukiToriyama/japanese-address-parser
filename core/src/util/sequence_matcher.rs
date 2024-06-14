@@ -1,3 +1,4 @@
+use crate::util::trimmer::trim_city_name;
 use rapidfuzz::distance::lcs_seq;
 
 pub struct SequenceMatcher;
@@ -14,7 +15,11 @@ impl SequenceMatcher {
         possibilities: &[String],
         threshold: Option<f64>,
     ) -> Result<String, Error> {
-        let highest_matches = Self::get_most_similar_matches(input, possibilities, threshold);
+        let highest_matches: Vec<String> =
+            Self::get_most_similar_matches(input, possibilities, threshold)
+                .into_iter()
+                .filter(|candidate| input.starts_with(&trim_city_name(candidate)))
+                .collect();
         match &highest_matches.len() {
             0 => Err(Error::NoCandidateExist),
             1 => Ok(highest_matches.first().unwrap().clone()),
