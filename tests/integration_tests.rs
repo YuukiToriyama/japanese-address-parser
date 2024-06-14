@@ -40,7 +40,6 @@ async fn 郡が省略されている場合への対応テスト() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn 郡名と町名が一致している場合() {
     run_data_driven_tests("./test_data/郡名と町名が一致している場合.csv").await
 }

@@ -1,3 +1,4 @@
+use crate::util::trimmer::trim_city_name;
 use rapidfuzz::distance::lcs_seq;
 
 pub struct SequenceMatcher;
@@ -14,6 +15,23 @@ impl SequenceMatcher {
         possibilities: &[String],
         threshold: Option<f64>,
     ) -> Result<String, Error> {
+        let highest_matches: Vec<String> =
+            Self::get_most_similar_matches(input, possibilities, threshold)
+                .into_iter()
+                .filter(|candidate| input.starts_with(&trim_city_name(candidate)))
+                .collect();
+        match &highest_matches.len() {
+            0 => Err(Error::NoCandidateExist),
+            1 => Ok(highest_matches.first().unwrap().clone()),
+            _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
+        }
+    }
+
+    fn get_most_similar_matches(
+        input: &str,
+        possibilities: &[String],
+        threshold: Option<f64>,
+    ) -> Vec<String> {
         let mut highest_similarity: f64 = 0.0;
         let mut highest_matches: Vec<String> = vec![];
         let length_of_longest_possibility = Self::get_length_of_longest_one(possibilities).unwrap();
@@ -30,11 +48,7 @@ impl SequenceMatcher {
                 highest_similarity = similarity;
             }
         }
-        match &highest_matches.len() {
-            0 => Err(Error::NoCandidateExist),
-            1 => Ok(highest_matches.first().unwrap().clone()),
-            _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
-        }
+        highest_matches
     }
 
     fn get_length_of_longest_one(text_list: &[String]) -> Option<usize> {
