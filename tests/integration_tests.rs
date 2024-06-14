@@ -38,3 +38,8 @@ async fn 大字表記省略への対応テスト() {
 async fn 郡が省略されている場合への対応テスト() {
     run_data_driven_tests("./test_data/郡が省略されている場合への対応.csv").await
 }
+
+#[tokio::test]
+async fn 郡名と町名が一致している場合() {
+    run_data_driven_tests("./test_data/郡名と町名が一致している場合.csv").await
+}
