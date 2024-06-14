@@ -18,6 +18,11 @@ pub trait OrthographicalVariants {
     const 舘: Variant;
     const 脊: Variant;
     const 渕: Variant;
+    const 己: Variant;
+    const 槇: Variant;
+    const 治: Variant;
+    const 佛: Variant;
+    const 澤: Variant;
 }
 
 impl OrthographicalVariants for Variant {
@@ -33,6 +38,11 @@ impl OrthographicalVariants for Variant {
     const 舘: Variant = &["舘", "館"];
     const 脊: Variant = &["脊", "背"];
     const 渕: Variant = &["渕", "淵"];
+    const 己: Variant = &["己", "巳"];
+    const 槇: Variant = &["槇", "槙"];
+    const 治: Variant = &["治", "冶"];
+    const 佛: Variant = &["佛", "仏"];
+    const 澤: Variant = &["澤", "沢"];
 }
 
 pub struct OrthographicalVariantAdapter {
