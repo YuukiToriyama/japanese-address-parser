@@ -28,6 +28,9 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             "東京都" => {
                 variant_list.push(Variant::檜);
             }
+            "兵庫県" => {
+                variant_list.push(Variant::塚);
+            }
             _ => {}
         }
         let adapter = OrthographicalVariantAdapter { variant_list };
