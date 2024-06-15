@@ -31,6 +31,9 @@ pub fn read_city(input: &str, prefecture: Prefecture) -> Option<(String, String)
             "兵庫県" => {
                 variant_list.push(Variant::塚);
             }
+            "高知県" => {
+                variant_list.push(Variant::梼);
+            }
             "福岡県" => {
                 variant_list.push(Variant::恵);
             }
