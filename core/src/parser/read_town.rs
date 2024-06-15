@@ -55,6 +55,7 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
                 Variant::佛,
                 Variant::澤,
                 Variant::恵,
+                Variant::穂,
                 Variant::梼,
             ],
         };
