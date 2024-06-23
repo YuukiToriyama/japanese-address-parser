@@ -9,19 +9,45 @@ pub enum Error {
     NoCandidateExist,
 }
 
+struct Candidate {
+    similarity: f64,
+    text: String,
+}
+
 impl SequenceMatcher {
     pub fn get_most_similar_match(
         input: &str,
         possibilities: &[String],
         threshold: Option<f64>,
     ) -> Result<String, Error> {
-        let highest_matches: Vec<String> =
+        let mut candidates: Vec<Candidate> =
             Self::get_most_similar_matches(input, possibilities, threshold)
                 .into_iter()
-                .filter(|candidate| input.starts_with(&trim_city_name(candidate)))
+                .map(|candidate| {
+                    // 郡名を取り除いた部分がinputの先頭に一致する場合はそのまま、一致しない場合は類似度に0.9を掛ける
+                    if input.starts_with(&trim_city_name(&candidate.text)) {
+                        candidate
+                    } else {
+                        Candidate {
+                            similarity: candidate.similarity * 0.9,
+                            text: candidate.text,
+                        }
+                    }
+                })
                 .collect();
+        if candidates.is_empty() {
+            return Err(Error::NoCandidateExist);
+        }
+        // 類似度で並び替える
+        candidates.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap());
+        let highest_similarity = candidates.first().unwrap().similarity;
+        // 類似度が一位のものだけを抽出する
+        let highest_matches: Vec<String> = candidates
+            .iter()
+            .filter(|candidate| candidate.similarity == highest_similarity)
+            .map(|candidate| candidate.text.clone())
+            .collect();
         match &highest_matches.len() {
-            0 => Err(Error::NoCandidateExist),
             1 => Ok(highest_matches.first().unwrap().clone()),
             _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
         }
@@ -31,9 +57,9 @@ impl SequenceMatcher {
         input: &str,
         possibilities: &[String],
         threshold: Option<f64>,
-    ) -> Vec<String> {
+    ) -> Vec<Candidate> {
         let mut highest_similarity: f64 = 0.0;
-        let mut highest_matches: Vec<String> = vec![];
+        let mut highest_matches: Vec<Candidate> = vec![];
         let length_of_longest_possibility = Self::get_length_of_longest_one(possibilities).unwrap();
         let input = Self::cut_text(input, length_of_longest_possibility);
         for possibility in possibilities {
@@ -43,7 +69,10 @@ impl SequenceMatcher {
                     highest_matches.clear();
                 }
                 if threshold.is_none() || similarity > threshold.unwrap() {
-                    highest_matches.push(possibility.clone());
+                    highest_matches.push(Candidate {
+                        similarity,
+                        text: possibility.clone(),
+                    });
                 }
                 highest_similarity = similarity;
             }
