@@ -11,6 +11,16 @@ pub struct PrefectureMaster {
 }
 
 #[derive(Deserialize)]
+pub struct CityMaster {
+    /// 市区町村名
+    pub name: String,
+    /// 町名リスト
+    pub towns: Vec<String>,
+    /// 緯度経度
+    pub coordinate: Coordinate,
+}
+
+#[derive(Deserialize)]
 pub struct Coordinate {
     /// 緯度
     pub latitude: f64,
