@@ -151,3 +151,91 @@ impl PrefectureMasterRepository {
         Ok(json)
     }
 }
+
+#[cfg(test)]
+mod blocking_tests {
+    use crate::prefecture::PrefectureMasterRepository;
+    use jisx0401::Prefecture;
+
+    #[tokio::test]
+    async fn kochi() {
+        let repository = PrefectureMasterRepository {};
+        let result = repository.get(&Prefecture::KOCHI).await;
+        assert!(result.is_ok());
+        let entity = result.unwrap();
+        assert_eq!(entity.name, "高知県");
+        assert_eq!(
+            entity.cities,
+            vec![
+                "高知市",
+                "室戸市",
+                "安芸市",
+                "南国市",
+                "土佐市",
+                "須崎市",
+                "宿毛市",
+                "土佐清水市",
+                "四万十市",
+                "香南市",
+                "香美市",
+                "安芸郡東洋町",
+                "安芸郡奈半利町",
+                "安芸郡田野町",
+                "安芸郡安田町",
+                "安芸郡北川村",
+                "安芸郡馬路村",
+                "安芸郡芸西村",
+                "長岡郡本山町",
+                "長岡郡大豊町",
+                "土佐郡土佐町",
+                "土佐郡大川村",
+                "吾川郡いの町",
+                "吾川郡仁淀川町",
+                "高岡郡中土佐町",
+                "高岡郡佐川町",
+                "高岡郡越知町",
+                "高岡郡檮原町",
+                "高岡郡日高村",
+                "高岡郡津野町",
+                "高岡郡四万十町",
+                "幡多郡大月町",
+                "幡多郡三原村",
+                "幡多郡黒潮町"
+            ]
+        )
+    }
+
+    #[tokio::test]
+    async fn saga() {
+        let repository = PrefectureMasterRepository {};
+        let result = repository.get(&Prefecture::SAGA).await;
+        assert!(result.is_ok());
+        let entity = result.unwrap();
+        assert_eq!(entity.name, "佐賀県");
+        assert_eq!(
+            entity.cities,
+            vec![
+                "佐賀市",
+                "唐津市",
+                "鳥栖市",
+                "多久市",
+                "伊万里市",
+                "武雄市",
+                "鹿島市",
+                "小城市",
+                "嬉野市",
+                "神埼市",
+                "神埼郡吉野ヶ里町",
+                "三養基郡基山町",
+                "三養基郡上峰町",
+                "三養基郡みやき町",
+                "東松浦郡玄海町",
+                "西松浦郡有田町",
+                "杵島郡大町町",
+                "杵島郡江北町",
+                "杵島郡白石町",
+                "藤津郡太良町"
+            ]
+        );
+    }
+}
