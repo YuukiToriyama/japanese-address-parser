@@ -10,3 +10,4 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
+serde = { workspace = true }
