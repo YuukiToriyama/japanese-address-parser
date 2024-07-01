@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct PrefectureMaster {
     /// 都道府県名
     pub name: String,
@@ -10,7 +10,7 @@ pub struct PrefectureMaster {
     pub coordinate: Coordinate,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct CityMaster {
     /// 市区町村名
     pub name: String,
@@ -20,7 +20,7 @@ pub struct CityMaster {
     pub coordinate: Coordinate,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct Coordinate {
     /// 緯度
     pub latitude: f64,
