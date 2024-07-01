@@ -1,8 +1,11 @@
 use crate::entity::PrefectureMaster;
 use crate::error::ApiError;
+use crate::service::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
-pub struct PrefectureMasterRepository {}
+pub struct PrefectureMasterRepository {
+    api_service: ChimeiRuijuApiService,
+}
 
 impl PrefectureMasterRepository {
     pub async fn get(&self, prefecture: &Prefecture) -> Result<PrefectureMaster, ApiError> {
@@ -10,28 +13,21 @@ impl PrefectureMasterRepository {
             "https://{}.chimei-ruiju.org/master.json",
             prefecture.name_en()
         );
-        let response = reqwest::get(&url)
-            .await
-            .map_err(|error| ApiError::Network {
-                url: url.clone(),
-                status_code: error.status().unwrap(),
-            })?;
-        let json = response
-            .json::<PrefectureMaster>()
-            .await
-            .map_err(|_| ApiError::Deserialize { url })?;
-        Ok(json)
+        self.api_service.get::<PrefectureMaster>(&url).await
     }
 }
 
 #[cfg(test)]
 mod async_tests {
     use crate::prefecture::PrefectureMasterRepository;
+    use crate::service::ChimeiRuijuApiService;
     use jisx0401::Prefecture;
 
     #[tokio::test]
     async fn tokyo() {
-        let repository = PrefectureMasterRepository {};
+        let repository = PrefectureMasterRepository {
+            api_service: ChimeiRuijuApiService {},
+        };
         let result = repository.get(&Prefecture::TOKYO).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
@@ -107,7 +103,9 @@ mod async_tests {
 
     #[tokio::test]
     async fn toyama() {
-        let repository = PrefectureMasterRepository {};
+        let repository = PrefectureMasterRepository {
+            api_service: ChimeiRuijuApiService {},
+        };
         let result = repository.get(&Prefecture::TOYAMA).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
@@ -141,25 +139,21 @@ impl PrefectureMasterRepository {
             "https://{}.chimei-ruiju.org/master.json",
             prefecture.name_en()
         );
-        let response = reqwest::blocking::get(&url).map_err(|error| ApiError::Network {
-            url: url.clone(),
-            status_code: error.status().unwrap(),
-        })?;
-        let json = response
-            .json::<PrefectureMaster>()
-            .map_err(|_| ApiError::Deserialize { url })?;
-        Ok(json)
+        self.api_service.get_blocking::<PrefectureMaster>(&url)
     }
 }
 
 #[cfg(test)]
 mod blocking_tests {
     use crate::prefecture::PrefectureMasterRepository;
+    use crate::service::ChimeiRuijuApiService;
     use jisx0401::Prefecture;
 
     #[tokio::test]
     async fn kochi() {
-        let repository = PrefectureMasterRepository {};
+        let repository = PrefectureMasterRepository {
+            api_service: ChimeiRuijuApiService {},
+        };
         let result = repository.get(&Prefecture::KOCHI).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
@@ -207,7 +201,9 @@ mod blocking_tests {
 
     #[tokio::test]
     async fn saga() {
-        let repository = PrefectureMasterRepository {};
+        let repository = PrefectureMasterRepository {
+            api_service: ChimeiRuijuApiService {},
+        };
         let result = repository.get(&Prefecture::SAGA).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
