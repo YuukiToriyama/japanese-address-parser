@@ -16,4 +16,5 @@ serde = { workspace = true }
 thiserror = "1.0.61"
 
 [dev-dependencies]
+mockito = "1.4.0"
 tokio = { version = "1.38.0", features = ["rt", "macros"] }
