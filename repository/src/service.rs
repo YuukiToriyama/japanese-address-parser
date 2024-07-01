@@ -1,5 +1,7 @@
-use crate::error::ApiError;
+use reqwest::StatusCode;
 use serde::de::DeserializeOwned;
+
+use crate::error::ApiError;
 
 pub struct ChimeiRuijuApiService {}
 
@@ -8,10 +10,14 @@ impl ChimeiRuijuApiService {
     where
         T: DeserializeOwned,
     {
-        let response = reqwest::get(url).await.map_err(|error| ApiError::Network {
+        let response = reqwest::get(url).await.map_err(|_| ApiError::Network {
             url: url.to_string(),
-            status_code: error.status().unwrap(),
         })?;
+        if response.status() == StatusCode::NOT_FOUND {
+            return Err(ApiError::NotFound {
+                url: url.to_string(),
+            });
+        }
         response
             .json::<T>()
             .await
@@ -24,10 +30,14 @@ impl ChimeiRuijuApiService {
     where
         T: DeserializeOwned,
     {
-        let response = reqwest::blocking::get(url).map_err(|error| ApiError::Network {
+        let response = reqwest::blocking::get(url).map_err(|_| ApiError::Network {
             url: url.to_string(),
-            status_code: error.status().unwrap(),
         })?;
+        if response.status() == StatusCode::NOT_FOUND {
+            return Err(ApiError::NotFound {
+                url: url.to_string(),
+            });
+        }
         response.json::<T>().map_err(|_| ApiError::Deserialize {
             url: url.to_string(),
         })

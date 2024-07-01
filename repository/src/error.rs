@@ -1,12 +1,11 @@
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Error, PartialEq, Debug)]
 pub enum ApiError {
-    #[error("cannot fetch resource of {url}. status_code: {status_code}")]
-    Network {
-        url: String,
-        status_code: StatusCode,
-    },
+    #[error("network error occurs: {url}")]
+    Network { url: String },
+    #[error("cannot fetch resource of {url}")]
+    NotFound { url: String },
     #[error("cannot deserialize response from {url}")]
     Deserialize { url: String },
 }

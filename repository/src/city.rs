@@ -17,10 +17,7 @@ impl CityMasterRepository {
         );
         let response = reqwest::get(&url)
             .await
-            .map_err(|error| ApiError::Network {
-                url: url.clone(),
-                status_code: error.status().unwrap(),
-            })?;
+            .map_err(|error| ApiError::Network { url: url.clone() })?;
         let json = response
             .json::<CityMaster>()
             .await
@@ -40,10 +37,8 @@ impl CityMasterRepository {
             prefecture.name_en(),
             city_name
         );
-        let response = reqwest::blocking::get(&url).map_err(|error| ApiError::Network {
-            url: url.clone(),
-            status_code: error.status().unwrap(),
-        })?;
+        let response =
+            reqwest::blocking::get(&url).map_err(|error| ApiError::Network { url: url.clone() })?;
         let json = response
             .json::<CityMaster>()
             .map_err(|_| ApiError::Deserialize { url })?;
