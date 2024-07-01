@@ -24,7 +24,7 @@ mod async_tests {
     use jisx0401::Prefecture;
 
     #[tokio::test]
-    async fn tokyo() {
+    async fn 東京都() {
         let repository = PrefectureMasterRepository {
             api_service: ChimeiRuijuApiService {},
         };
@@ -102,7 +102,7 @@ mod async_tests {
     }
 
     #[tokio::test]
-    async fn toyama() {
+    async fn 富山県() {
         let repository = PrefectureMasterRepository {
             api_service: ChimeiRuijuApiService {},
         };
@@ -150,7 +150,7 @@ mod blocking_tests {
     use jisx0401::Prefecture;
 
     #[tokio::test]
-    async fn kochi() {
+    async fn 高知県() {
         let repository = PrefectureMasterRepository {
             api_service: ChimeiRuijuApiService {},
         };
@@ -200,7 +200,7 @@ mod blocking_tests {
     }
 
     #[tokio::test]
-    async fn saga() {
+    async fn 佐賀県() {
         let repository = PrefectureMasterRepository {
             api_service: ChimeiRuijuApiService {},
         };
