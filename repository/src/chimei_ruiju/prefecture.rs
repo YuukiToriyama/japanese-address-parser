@@ -1,7 +1,7 @@
 use domain::entity::PrefectureMaster;
 use domain::error::ApiError;
 use jisx0401::Prefecture;
-use service::service::ChimeiRuijuApiService;
+use service::chimei_ruiju::ChimeiRuijuApiService;
 
 pub struct PrefectureMasterRepository {
     api_service: ChimeiRuijuApiService,
@@ -21,7 +21,7 @@ impl PrefectureMasterRepository {
 mod async_tests {
     use crate::chimei_ruiju::prefecture::PrefectureMasterRepository;
     use jisx0401::Prefecture;
-    use service::service::ChimeiRuijuApiService;
+    use service::chimei_ruiju::ChimeiRuijuApiService;
 
     #[tokio::test]
     async fn 東京都() {
@@ -147,7 +147,7 @@ impl PrefectureMasterRepository {
 mod blocking_tests {
     use crate::chimei_ruiju::prefecture::PrefectureMasterRepository;
     use jisx0401::Prefecture;
-    use service::service::ChimeiRuijuApiService;
+    use service::chimei_ruiju::ChimeiRuijuApiService;
 
     #[tokio::test]
     async fn 高知県() {
