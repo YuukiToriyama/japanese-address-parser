@@ -1,6 +1,6 @@
-use crate::entity::TownMaster;
-use crate::error::ApiError;
 use crate::service::ChimeiRuijuApiService;
+use domain::entity::TownMaster;
+use domain::error::ApiError;
 use jisx0401::Prefecture;
 
 pub struct TownMasterRepository {

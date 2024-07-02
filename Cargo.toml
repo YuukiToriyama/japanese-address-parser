@@ -4,6 +4,7 @@ members = [
     "wasm",
     "python",
     "tests",
+    "domain",
     "repository",
 ]
 resolver = "2"

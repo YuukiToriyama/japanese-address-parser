@@ -1,8 +1,8 @@
 use jisx0401::Prefecture;
 
-use crate::entity::CityMaster;
-use crate::error::ApiError;
 use crate::service::ChimeiRuijuApiService;
+use domain::entity::CityMaster;
+use domain::error::ApiError;
 
 pub struct CityMasterRepository {
     api_service: ChimeiRuijuApiService,
