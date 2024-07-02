@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde::de::DeserializeOwned;
 
-use crate::error::ApiError;
+use domain::error::ApiError;
 
 pub struct ChimeiRuijuApiService {}
 
@@ -30,8 +30,8 @@ impl ChimeiRuijuApiService {
 #[cfg(test)]
 mod async_tests {
     use crate::entity::PrefectureMaster;
-    use crate::error::ApiError;
     use crate::service::ChimeiRuijuApiService;
+    use domain::error::ApiError;
 
     #[tokio::test]
     async fn 失敗_ネットワークエラー() {
@@ -139,8 +139,8 @@ impl ChimeiRuijuApiService {
 #[cfg(test)]
 mod blocking_tests {
     use crate::entity::PrefectureMaster;
-    use crate::error::ApiError;
     use crate::service::ChimeiRuijuApiService;
+    use domain::error::ApiError;
 
     #[test]
     fn 失敗_ネットワークエラー() {
