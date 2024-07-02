@@ -5,6 +5,7 @@ members = [
     "python",
     "tests",
     "domain",
+    "service",
 ]
 resolver = "2"
 
