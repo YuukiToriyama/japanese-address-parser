@@ -1,2 +1,1 @@
-pub mod entity;
-pub mod error;
+pub mod chimei_ruiju;
