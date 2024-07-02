@@ -1,7 +1,7 @@
 use jisx0401::Prefecture;
 
-use domain::entity::CityMaster;
-use domain::error::ApiError;
+use domain::chimei_ruiju::entity::CityMaster;
+use domain::chimei_ruiju::error::ApiError;
 use service::chimei_ruiju::ChimeiRuijuApiService;
 
 pub struct CityMasterRepository {

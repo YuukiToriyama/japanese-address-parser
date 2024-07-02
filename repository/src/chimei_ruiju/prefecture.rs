@@ -1,5 +1,5 @@
-use domain::entity::PrefectureMaster;
-use domain::error::ApiError;
+use domain::chimei_ruiju::entity::PrefectureMaster;
+use domain::chimei_ruiju::error::ApiError;
 use jisx0401::Prefecture;
 use service::chimei_ruiju::ChimeiRuijuApiService;
 
