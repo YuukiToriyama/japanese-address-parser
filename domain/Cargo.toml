@@ -10,4 +10,5 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
+serde.workspace = true
 thiserror = "1.0.61"

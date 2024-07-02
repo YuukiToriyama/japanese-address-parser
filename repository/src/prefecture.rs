@@ -1,5 +1,5 @@
-use crate::entity::PrefectureMaster;
 use crate::service::ChimeiRuijuApiService;
+use domain::entity::PrefectureMaster;
 use domain::error::ApiError;
 use jisx0401::Prefecture;
 

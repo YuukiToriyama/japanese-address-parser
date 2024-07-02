@@ -29,8 +29,8 @@ impl ChimeiRuijuApiService {
 
 #[cfg(test)]
 mod async_tests {
-    use crate::entity::PrefectureMaster;
     use crate::service::ChimeiRuijuApiService;
+    use domain::entity::PrefectureMaster;
     use domain::error::ApiError;
 
     #[tokio::test]
@@ -138,8 +138,8 @@ impl ChimeiRuijuApiService {
 
 #[cfg(test)]
 mod blocking_tests {
-    use crate::entity::PrefectureMaster;
     use crate::service::ChimeiRuijuApiService;
+    use domain::entity::PrefectureMaster;
     use domain::error::ApiError;
 
     #[test]
