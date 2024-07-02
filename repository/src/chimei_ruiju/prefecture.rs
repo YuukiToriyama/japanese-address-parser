@@ -19,7 +19,7 @@ impl PrefectureMasterRepository {
 
 #[cfg(test)]
 mod async_tests {
-    use crate::prefecture::PrefectureMasterRepository;
+    use crate::chimei_ruiju::prefecture::PrefectureMasterRepository;
     use jisx0401::Prefecture;
     use service::service::ChimeiRuijuApiService;
 
@@ -145,7 +145,7 @@ impl PrefectureMasterRepository {
 
 #[cfg(test)]
 mod blocking_tests {
-    use crate::prefecture::PrefectureMasterRepository;
+    use crate::chimei_ruiju::prefecture::PrefectureMasterRepository;
     use jisx0401::Prefecture;
     use service::service::ChimeiRuijuApiService;
 

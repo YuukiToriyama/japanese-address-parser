@@ -27,7 +27,7 @@ impl CityMasterRepository {
 mod async_tests {
     use jisx0401::Prefecture;
 
-    use crate::city::CityMasterRepository;
+    use crate::chimei_ruiju::city::CityMasterRepository;
     use service::service::ChimeiRuijuApiService;
 
     #[tokio::test]
@@ -74,7 +74,7 @@ impl CityMasterRepository {
 mod blocking_tests {
     use jisx0401::Prefecture;
 
-    use crate::city::CityMasterRepository;
+    use crate::chimei_ruiju::city::CityMasterRepository;
     use service::service::ChimeiRuijuApiService;
 
     #[test]

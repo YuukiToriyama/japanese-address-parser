@@ -26,7 +26,7 @@ impl TownMasterRepository {
 
 #[cfg(test)]
 mod async_tests {
-    use crate::town::TownMasterRepository;
+    use crate::chimei_ruiju::town::TownMasterRepository;
     use jisx0401::Prefecture;
     use service::service::ChimeiRuijuApiService;
 
@@ -63,7 +63,7 @@ impl TownMasterRepository {
 
 #[cfg(test)]
 mod blocking_tests {
-    use crate::town::TownMasterRepository;
+    use crate::chimei_ruiju::town::TownMasterRepository;
     use jisx0401::Prefecture;
     use service::service::ChimeiRuijuApiService;
 
