@@ -3,10 +3,10 @@ use std::sync::Arc;
 use crate::api::AsyncApi;
 #[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
-use crate::entity::Address;
 use crate::parser::read_city::read_city;
 use crate::parser::read_prefecture::read_prefecture;
 use crate::parser::read_town::read_town;
+use domain::geolonia::entity::Address;
 use domain::geolonia::error::{Error, ParseErrorKind};
 use serde::Serialize;
 

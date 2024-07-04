@@ -2,7 +2,6 @@ use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
 
-use crate::entity::City;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
@@ -10,6 +9,7 @@ use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
 use crate::parser::filter::Filter;
+use domain::geolonia::entity::City;
 
 pub fn read_town(input: &str, city: &City) -> Option<(String, String)> {
     let mut input: String = FullwidthCharacterFilter {}.apply(input.to_string());
@@ -69,8 +69,8 @@ fn find_town(input: &String, city: &City) -> Option<(String, String)> {
 #[cfg(all(test, feature = "blocking"))]
 mod tests {
     use crate::api::BlockingApi;
-    use crate::entity::{City, Town};
     use crate::parser::read_town::read_town;
+    use domain::geolonia::entity::{City, Town};
 
     #[test]
     fn read_town_成功_静岡市清水区旭町() {

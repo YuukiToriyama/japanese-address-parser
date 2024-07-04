@@ -4,6 +4,5 @@ compile_error! {
 }
 
 pub mod api;
-pub mod entity;
 pub mod parser;
 mod util;

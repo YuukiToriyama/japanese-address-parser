@@ -1,4 +1,4 @@
-use crate::entity::{City, Town};
+use domain::geolonia::entity::{City, Town};
 use domain::geolonia::error::{ApiErrorKind, Error};
 
 pub struct CityMasterApi {
@@ -56,7 +56,7 @@ impl CityMasterApi {
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
     use crate::api::city_master_api::CityMasterApi;
-    use crate::entity::Town;
+    use domain::geolonia::entity::Town;
 
     #[tokio::test]
     async fn 非同期_石川県羽咋郡志賀町_成功() {
@@ -91,7 +91,7 @@ mod tests {
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::api::city_master_api::CityMasterApi;
-    use crate::entity::Town;
+    use domain::geolonia::entity::Town;
 
     #[test]
     fn 同期_石川県羽咋郡志賀町_成功() {
