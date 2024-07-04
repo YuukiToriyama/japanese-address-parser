@@ -1,5 +1,6 @@
 use domain::geolonia::entity::{City, Town};
-use domain::geolonia::error::{ApiErrorKind, Error};
+use domain::geolonia::error::Error;
+use service::geolonia::GeoloniaApiService;
 
 pub struct CityMasterApi {
     pub server_url: &'static str,
@@ -16,47 +17,30 @@ impl Default for CityMasterApi {
 impl CityMasterApi {
     pub async fn get(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
-        let response = match reqwest::get(&endpoint).await {
-            Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-        };
-        if response.status() == 200 {
-            match response.json::<Vec<Town>>().await {
-                Ok(result) => Ok(City {
-                    name: city_name.to_string(),
-                    towns: result,
-                }),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-            }
-        } else {
-            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
-        }
+        let api_service = GeoloniaApiService {};
+        let towns = api_service.get::<Vec<Town>>(&endpoint).await?;
+        Ok(City {
+            name: city_name.to_string(),
+            towns,
+        })
     }
     #[cfg(feature = "blocking")]
     pub fn get_blocking(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let endpoint = format!("{}/{}/{}.json", self.server_url, prefecture_name, city_name);
-        let response = match reqwest::blocking::get(&endpoint) {
-            Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
-        };
-        if response.status() == 200 {
-            match response.json::<Vec<Town>>() {
-                Ok(result) => Ok(City {
-                    name: city_name.to_string(),
-                    towns: result,
-                }),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-            }
-        } else {
-            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
-        }
+        let api_service = GeoloniaApiService {};
+        let towns = api_service.get_blocking::<Vec<Town>>(&endpoint)?;
+        Ok(City {
+            name: city_name.to_string(),
+            towns,
+        })
     }
 }
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
-    use crate::api::city_master_api::CityMasterApi;
     use domain::geolonia::entity::Town;
+
+    use crate::geolonia::city_master_api::CityMasterApi;
 
     #[tokio::test]
     async fn 非同期_石川県羽咋郡志賀町_成功() {
@@ -90,8 +74,9 @@ mod tests {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use crate::api::city_master_api::CityMasterApi;
     use domain::geolonia::entity::Town;
+
+    use crate::geolonia::city_master_api::CityMasterApi;
 
     #[test]
     fn 同期_石川県羽咋郡志賀町_成功() {

@@ -117,6 +117,7 @@ mod async_tests {
     }
 }
 
+#[cfg(feature = "blocking")]
 impl ChimeiRuijuApiService {
     pub fn get_blocking<T>(&self, url: &str) -> Result<T, ApiError>
     where
@@ -136,7 +137,7 @@ impl ChimeiRuijuApiService {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::chimei_ruiju::ChimeiRuijuApiService;
     use domain::chimei_ruiju::entity::PrefectureMaster;

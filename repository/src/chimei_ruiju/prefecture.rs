@@ -133,6 +133,7 @@ mod async_tests {
     }
 }
 
+#[cfg(feature = "blocking")]
 impl PrefectureMasterRepository {
     pub fn get_blocking(&self, prefecture: Prefecture) -> Result<PrefectureMaster, ApiError> {
         let url = format!(
@@ -143,7 +144,7 @@ impl PrefectureMasterRepository {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::chimei_ruiju::prefecture::PrefectureMasterRepository;
     use jisx0401::Prefecture;

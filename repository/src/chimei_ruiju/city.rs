@@ -55,6 +55,7 @@ mod async_tests {
     }
 }
 
+#[cfg(feature = "blocking")]
 impl CityMasterRepository {
     pub fn get_blocking(
         &self,
@@ -70,7 +71,7 @@ impl CityMasterRepository {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use jisx0401::Prefecture;
 
