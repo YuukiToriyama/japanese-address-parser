@@ -1,4 +1,4 @@
-use crate::err::Error;
+use domain::geolonia::error::Error;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, PartialEq, Debug)]

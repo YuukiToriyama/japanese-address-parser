@@ -1,5 +1,5 @@
 use crate::entity::{City, Town};
-use crate::err::{ApiErrorKind, Error};
+use domain::geolonia::error::{ApiErrorKind, Error};
 
 pub struct CityMasterApi {
     pub server_url: &'static str,
