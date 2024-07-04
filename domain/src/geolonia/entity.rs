@@ -63,7 +63,7 @@ impl Address {
     }
 }
 
-#[cfg(test)]
+#[doc(hidden)]
 impl Prefecture {
     /// only for testing
     pub fn yamagata() -> Self {

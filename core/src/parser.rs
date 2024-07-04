@@ -3,8 +3,8 @@ use std::sync::Arc;
 use crate::api::AsyncApi;
 #[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
-use crate::entity::Address;
 use crate::tokenizer::Tokenizer;
+use domain::geolonia::entity::Address;
 use domain::geolonia::error::{Error, ParseErrorKind};
 use serde::Serialize;
 
