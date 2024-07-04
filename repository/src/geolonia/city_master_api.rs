@@ -40,7 +40,7 @@ impl CityMasterApi {
 mod tests {
     use domain::geolonia::entity::Town;
 
-    use crate::api::city_master_api::CityMasterApi;
+    use crate::geolonia::city_master_api::CityMasterApi;
 
     #[tokio::test]
     async fn 非同期_石川県羽咋郡志賀町_成功() {
@@ -76,7 +76,7 @@ mod tests {
 mod blocking_tests {
     use domain::geolonia::entity::Town;
 
-    use crate::api::city_master_api::CityMasterApi;
+    use crate::geolonia::city_master_api::CityMasterApi;
 
     #[test]
     fn 同期_石川県羽咋郡志賀町_成功() {
