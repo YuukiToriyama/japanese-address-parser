@@ -30,7 +30,7 @@ impl PrefectureMasterApi {
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
-    use crate::api::prefecture_master_api::PrefectureMasterApi;
+    use crate::geolonia::prefecture_master_api::PrefectureMasterApi;
 
     #[tokio::test]
     async fn 非同期_富山県_成功() {
@@ -77,7 +77,7 @@ mod tests {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use crate::api::prefecture_master_api::PrefectureMasterApi;
+    use crate::geolonia::prefecture_master_api::PrefectureMasterApi;
 
     #[test]
     fn 同期_富山県_成功() {
