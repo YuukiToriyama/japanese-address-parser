@@ -16,7 +16,7 @@ crate-type = ["rlib", "cdylib"]
 
 [features]
 default = []
-blocking = ["service/blocking"]
+blocking = ["repository/blocking"]
 
 [dependencies]
 domain = { path = "../domain" }
