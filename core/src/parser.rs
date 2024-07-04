@@ -3,11 +3,12 @@ use std::sync::Arc;
 use crate::api::AsyncApi;
 #[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
-use crate::entity::{Address, ParseResult};
+use crate::entity::Address;
 use crate::parser::read_city::read_city;
 use crate::parser::read_prefecture::read_prefecture;
 use crate::parser::read_town::read_town;
 use domain::geolonia::error::{Error, ParseErrorKind};
+use serde::Serialize;
 
 mod adapter;
 mod filter;
@@ -308,4 +309,10 @@ mod blocking_tests {
             ParseErrorKind::City.to_string()
         );
     }
+}
+
+#[derive(Serialize, PartialEq, Debug)]
+pub struct ParseResult {
+    pub address: Address,
+    pub error: Option<Error>,
 }
