@@ -1,8 +1,8 @@
-use crate::entity::Prefecture;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
 use crate::parser::adapter::vague_expression_adapter::VagueExpressionAdapter;
+use domain::geolonia::entity::Prefecture;
 use nom::bytes::complete::tag;
 use nom::error::VerboseError;
 use nom::Parser;
