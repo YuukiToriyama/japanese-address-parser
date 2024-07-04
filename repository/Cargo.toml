@@ -9,6 +9,9 @@ license.workspace = true
 keywords.workspace = true
 categories.workspace = true
 
+[features]
+blocking = ["service/blocking"]
+
 [dependencies]
 domain = { path = "../domain" }
 jisx0401 = "0.1.0-beta.2"
