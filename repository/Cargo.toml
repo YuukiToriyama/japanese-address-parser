@@ -10,3 +10,5 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
+domain = { path = "../domain" }
+service = { path = "../service" }

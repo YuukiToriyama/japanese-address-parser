@@ -138,10 +138,10 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
     use crate::api::city_master_api::CityMasterApi;
-    use crate::api::prefecture_master_api::PrefectureMasterApi;
     use crate::api::AsyncApi;
     use crate::parser::parse;
     use domain::geolonia::error::ParseErrorKind;
+    use repository::geolonia::prefecture_master_api::PrefectureMasterApi;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     #[tokio::test]
