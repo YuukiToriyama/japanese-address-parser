@@ -1,4 +1,3 @@
-use domain::geolonia::error::Error;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, PartialEq, Debug)]
@@ -62,10 +61,4 @@ impl Address {
             rest: rest_name.to_string(),
         }
     }
-}
-
-#[derive(Serialize, PartialEq, Debug)]
-pub struct ParseResult {
-    pub address: Address,
-    pub error: Option<Error>,
 }
