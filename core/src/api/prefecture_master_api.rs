@@ -1,5 +1,6 @@
 use domain::geolonia::entity::Prefecture;
-use domain::geolonia::error::{ApiErrorKind, Error};
+use domain::geolonia::error::Error;
+use service::geolonia::GeoloniaApiService;
 
 pub struct PrefectureMasterApi {
     pub server_url: &'static str,
@@ -16,34 +17,14 @@ impl Default for PrefectureMasterApi {
 impl PrefectureMasterApi {
     pub async fn get(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
-        let response = match reqwest::get(&endpoint).await {
-            Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
-        };
-        if response.status() == 200 {
-            match response.json::<Prefecture>().await {
-                Ok(result) => Ok(result),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-            }
-        } else {
-            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
-        }
+        let api_service = GeoloniaApiService {};
+        api_service.get::<Prefecture>(&endpoint).await
     }
     #[cfg(feature = "blocking")]
     pub fn get_blocking(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
-        let response = match reqwest::blocking::get(&endpoint) {
-            Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
-        };
-        if response.status() == 200 {
-            match response.json::<Prefecture>() {
-                Ok(result) => Ok(result),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-            }
-        } else {
-            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
-        }
+        let api_service = GeoloniaApiService {};
+        api_service.get_blocking::<Prefecture>(&endpoint)
     }
 }
 
