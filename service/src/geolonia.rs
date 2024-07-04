@@ -167,6 +167,7 @@ mod async_tests {
     }
 }
 
+#[cfg(feature = "blocking")]
 impl GeoloniaApiService {
     pub fn get_blocking<T>(&self, url: &str) -> Result<T, Error>
     where
@@ -184,7 +185,7 @@ impl GeoloniaApiService {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use domain::geolonia::entity::{Prefecture, Town};
     use domain::geolonia::error::{ApiErrorKind, Error};

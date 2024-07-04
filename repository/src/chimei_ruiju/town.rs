@@ -44,6 +44,7 @@ mod async_tests {
     }
 }
 
+#[cfg(feature = "blocking")]
 impl TownMasterRepository {
     pub fn get_blocking(
         &self,
@@ -61,7 +62,7 @@ impl TownMasterRepository {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::chimei_ruiju::town::TownMasterRepository;
     use jisx0401::Prefecture;
