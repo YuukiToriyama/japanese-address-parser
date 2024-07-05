@@ -15,6 +15,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          save-if: true
+          cache-provider: 'github'
       - name: Set up clippy
         run: rustup component add clippy
       - name: Code review with clippy
