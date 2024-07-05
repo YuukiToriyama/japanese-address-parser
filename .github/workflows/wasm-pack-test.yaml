@@ -15,7 +15,7 @@ jobs:
           cache-all-crates: true
           shared-key: 'wasm-pack'
           key: 'main'
-          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          save-if: true
           cache-provider: 'github'
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
