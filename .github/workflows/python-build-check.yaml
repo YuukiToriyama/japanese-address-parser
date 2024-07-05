@@ -14,7 +14,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
-          save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
+          shared-key: 'maturin-linux'
+          save-if: 'true'
+          #save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
           cache-provider: 'github'
       - uses: actions/setup-python@v5
         with:
@@ -34,7 +36,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
-          save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
+          shared-key: 'maturin-windows'
+          save-if: 'true'
+          #save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
           cache-provider: 'github'
       - uses: actions/setup-python@v5
         with:
@@ -54,7 +58,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
-          save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
+          shared-key: 'maturin-macos'
+          save-if: 'true'
+          #save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
           cache-provider: 'github'
       - uses: actions/setup-python@v5
         with:
@@ -73,7 +79,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
-          save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
+          shared-key: 'maturin-sdist'
+          save-if: 'true'
+          #save-if: false # mainブランチで保存したキャッシュを利用するので、PR作成時にはキャッシュを保存しない
           cache-provider: 'github'
       - name: Build sdist
         uses: PyO3/maturin-action@v1
