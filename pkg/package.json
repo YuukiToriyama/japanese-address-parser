@@ -1,5 +1,6 @@
 {
   "name": "@toriyama/wasm",
+  "type": "module",
   "collaborators": [
     "Yuuki Toriyama <github@toriyama.dev>"
   ],
@@ -15,7 +16,7 @@
     "japanese_address_parser.js",
     "japanese_address_parser.d.ts"
   ],
-  "module": "japanese_address_parser.js",
+  "main": "japanese_address_parser.js",
   "types": "japanese_address_parser.d.ts",
   "sideEffects": [
     "./snippets/*"
