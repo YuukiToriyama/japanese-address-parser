@@ -15,6 +15,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'test-on-pr'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
       - name: Set up clippy
         run: rustup component add clippy
       - name: Code review with clippy

@@ -2,6 +2,8 @@ name: Python module build check
 
 on:
   pull_request:
+  push:
+    branches: [ 'main' ]
 
 permissions:
   contents: read
@@ -11,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'maturin-linux'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -20,13 +28,18 @@ jobs:
           target: x86_64
           args: --release --out dist --zig
           working-directory: python
-          sccache: 'true'
           manylinux: auto
 
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'maturin-windows'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -37,12 +50,17 @@ jobs:
           target: x64
           args: --release --out dist
           working-directory: python
-          sccache: 'true'
 
   macos:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'maturin-macos'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -52,12 +70,17 @@ jobs:
           target: aarch64
           args: --release --out dist
           working-directory: python
-          sccache: 'true'
 
   sdist:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'maturin-sdist'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
