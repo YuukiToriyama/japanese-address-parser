@@ -1,28 +1,19 @@
-name: Unit test & Code check
+name: Code quality check
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-
-env:
-  CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
-          shared-key: 'test-on-pr'
-          key: 'main'
-          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          shared-key: 'code-quality'
           cache-provider: 'github'
-      - name: Set up clippy
+      - name: Setup clippy
         run: rustup component add clippy
       - name: Code review with clippy
         uses: giraffate/clippy-action@v1
