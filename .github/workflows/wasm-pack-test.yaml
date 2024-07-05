@@ -14,6 +14,7 @@ jobs:
         with:
           cache-all-crates: true
           shared-key: 'wasm-pack'
+          key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
       - name: Install wasm-pack
