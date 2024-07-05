@@ -39,7 +39,7 @@ jobs:
         run: cargo test
       - name: Integration test
         working-directory: tests
-        run: cargo run
+        run: cargo test
 
   run-tests-wasm:
     needs: [ run-tests ]
