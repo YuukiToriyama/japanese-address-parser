@@ -40,3 +40,24 @@ jobs:
       - name: Integration test
         working-directory: tests
         run: cargo run
+
+  run-tests-wasm:
+    needs: [ run-tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'wasm-pack'
+          key: 'main'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Run wasm-pack test for core(japanese-address-parser)
+        working-directory: core
+        run: wasm-pack test --firefox --headless
+      - name: Build check for wasm crate
+        working-directory: wasm
+        run: wasm-pack build --target web --scope toriyama
