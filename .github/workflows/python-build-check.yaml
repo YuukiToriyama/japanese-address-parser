@@ -17,6 +17,7 @@ jobs:
         with:
           cache-all-crates: true
           shared-key: 'maturin-linux'
+          key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
       - uses: actions/setup-python@v5
@@ -38,6 +39,7 @@ jobs:
         with:
           cache-all-crates: true
           shared-key: 'maturin-windows'
+          key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
       - uses: actions/setup-python@v5
@@ -59,6 +61,7 @@ jobs:
         with:
           cache-all-crates: true
           shared-key: 'maturin-macos'
+          key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
       - uses: actions/setup-python@v5
@@ -79,6 +82,7 @@ jobs:
         with:
           cache-all-crates: true
           shared-key: 'maturin-sdist'
+          key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
       - name: Build sdist
