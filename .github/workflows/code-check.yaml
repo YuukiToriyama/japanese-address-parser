@@ -18,7 +18,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
-          save-if: true
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
       - name: Set up clippy
         run: rustup component add clippy
