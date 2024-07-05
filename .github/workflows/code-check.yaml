@@ -30,13 +30,3 @@ jobs:
           reporter: 'github-pr-review'
           filter_mode: 'nofilter'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build check
-        run: cargo build --verbose
-      - name: Unit Testing
-        working-directory: core
-        run: | 
-          cargo test
-          cargo test --features blocking
-      - name: Integration Testing
-        working-directory: tests
-        run: cargo test

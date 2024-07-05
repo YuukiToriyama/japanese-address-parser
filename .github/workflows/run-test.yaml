@@ -1,0 +1,42 @@
+name: Unit test & Integration test
+
+on:
+  pull_request:
+  push:
+    branches: [ 'main' ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'test-on-pr'
+          key: 'main'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+      - name: Test core
+        working-directory: core
+        run: |
+          cargo test
+          cargo test --features=blocking
+      - name: Test repository
+        working-directory: repository
+        run: |
+          cargo test
+          cargo test --features=blocking
+      - name: Test service
+        working-directory: service
+        run: |
+          cargo test
+          cargo test --features=blocking
+      - name: Test domain
+        working-directory: domain
+        run: cargo test
+      - name: Integration test
+        working-directory: tests
+        run: cargo run
