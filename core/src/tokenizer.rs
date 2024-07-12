@@ -1,3 +1,5 @@
+pub(crate) mod read_prefecture;
+
 use std::marker::PhantomData;
 
 #[derive(Debug)]
