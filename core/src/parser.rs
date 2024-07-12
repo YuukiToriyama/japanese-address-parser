@@ -10,7 +10,7 @@ use crate::parser::read_prefecture::read_prefecture;
 use crate::parser::read_town::read_town;
 
 pub(crate) mod adapter;
-mod filter;
+pub(crate) mod filter;
 mod read_city;
 mod read_house_number;
 mod read_prefecture;
