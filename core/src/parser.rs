@@ -9,10 +9,7 @@ use crate::tokenizer::Tokenizer;
 
 pub(crate) mod adapter;
 pub(crate) mod filter;
-mod read_city;
 mod read_house_number;
-mod read_prefecture;
-mod read_town;
 
 impl<T> From<Tokenizer<T>> for Address {
     fn from(value: Tokenizer<T>) -> Self {
