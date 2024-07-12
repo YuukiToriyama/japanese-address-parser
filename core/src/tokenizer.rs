@@ -1,3 +1,4 @@
+pub(crate) mod read_city;
 pub(crate) mod read_prefecture;
 
 use std::marker::PhantomData;
