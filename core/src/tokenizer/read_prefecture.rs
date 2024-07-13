@@ -59,12 +59,12 @@ impl Tokenizer<Init> {
             prefecture_name: None,
             city_name: None,
             town_name: None,
-            rest: "".to_string(),
+            rest: input.to_string(),
             _state: PhantomData,
         }
     }
 
-    pub(crate) fn read_prefecture(self) -> Result<Tokenizer<PrefectureNameFound>, Tokenizer<End>> {
+    pub(crate) fn read_prefecture(&self) -> Result<Tokenizer<PrefectureNameFound>, Tokenizer<End>> {
         for prefecture_name in PREFECTURE_NAME_LIST {
             if self.input.starts_with(prefecture_name) {
                 return Ok(Tokenizer {
@@ -86,7 +86,7 @@ impl Tokenizer<Init> {
             prefecture_name: None,
             city_name: None,
             town_name: None,
-            rest: self.input.clone(),
+            rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
     }
@@ -103,7 +103,7 @@ mod tests {
         assert_eq!(tokenizer.prefecture_name, None);
         assert_eq!(tokenizer.city_name, None);
         assert_eq!(tokenizer.town_name, None);
-        assert_eq!(tokenizer.rest, "");
+        assert_eq!(tokenizer.rest, "東京都港区芝公園4丁目2-8");
     }
 
     #[test]

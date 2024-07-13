@@ -11,7 +11,7 @@ use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
 
 impl Tokenizer<CityNameFound> {
     pub(crate) fn read_town(
-        self,
+        &self,
         candidates: Vec<String>,
     ) -> Result<Tokenizer<TownNameFound>, Tokenizer<End>> {
         let mut rest = FullwidthCharacterFilter {}.apply(self.rest.clone());
@@ -20,9 +20,9 @@ impl Tokenizer<CityNameFound> {
         }
         if let Some(result) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
-                input: self.input,
-                prefecture_name: self.prefecture_name,
-                city_name: self.city_name,
+                input: self.input.clone(),
+                prefecture_name: self.prefecture_name.clone(),
+                city_name: self.city_name.clone(),
                 town_name: Some(result.1),
                 rest: result.0,
                 _state: PhantomData::<TownNameFound>,
@@ -32,9 +32,9 @@ impl Tokenizer<CityNameFound> {
         rest = InvalidTownNameFormatFilter {}.apply(rest);
         if let Some(result) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
-                input: self.input,
-                prefecture_name: self.prefecture_name,
-                city_name: self.city_name,
+                input: self.input.clone(),
+                prefecture_name: self.prefecture_name.clone(),
+                city_name: self.city_name.clone(),
                 town_name: Some(result.1),
                 rest: result.0,
                 _state: PhantomData::<TownNameFound>,
@@ -43,20 +43,20 @@ impl Tokenizer<CityNameFound> {
         // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
         if let Some(result) = find_town(&format!("大字{}", rest), &candidates) {
             return Ok(Tokenizer {
-                input: self.input,
-                prefecture_name: self.prefecture_name,
-                city_name: self.city_name,
+                input: self.input.clone(),
+                prefecture_name: self.prefecture_name.clone(),
+                city_name: self.city_name.clone(),
                 town_name: Some(result.1),
                 rest: result.0,
                 _state: PhantomData::<TownNameFound>,
             });
         }
         Err(Tokenizer {
-            input: self.input,
-            prefecture_name: self.prefecture_name,
-            city_name: self.city_name,
+            input: self.input.clone(),
+            prefecture_name: self.prefecture_name.clone(),
+            city_name: self.city_name.clone(),
             town_name: None,
-            rest: self.rest,
+            rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
     }

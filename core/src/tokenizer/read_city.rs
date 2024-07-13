@@ -8,7 +8,7 @@ use crate::tokenizer::{CityNameFound, End, PrefectureNameFound, Tokenizer};
 
 impl Tokenizer<PrefectureNameFound> {
     pub(crate) fn read_city(
-        self,
+        &self,
         candidates: Vec<String>,
     ) -> Result<Tokenizer<CityNameFound>, Tokenizer<End>> {
         for candidate in &candidates {
@@ -84,10 +84,10 @@ impl Tokenizer<PrefectureNameFound> {
 
         Err(Tokenizer {
             input: self.input.clone(),
-            prefecture_name: self.prefecture_name,
+            prefecture_name: self.prefecture_name.clone(),
             city_name: None,
             town_name: None,
-            rest: self.rest,
+            rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
     }
