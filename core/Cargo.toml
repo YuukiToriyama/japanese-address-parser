@@ -29,6 +29,5 @@ repository = { path = "../repository" }
 serde = { workspace = true }
 
 [dev-dependencies]
-test-case = "3.3.1"
 tokio = { version = "1.38.0", features = ["rt", "macros"] }
 wasm-bindgen-test = { workspace = true }

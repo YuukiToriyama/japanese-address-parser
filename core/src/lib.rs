@@ -5,4 +5,5 @@ compile_error! {
 
 pub mod api;
 pub mod parser;
+mod tokenizer;
 mod util;
