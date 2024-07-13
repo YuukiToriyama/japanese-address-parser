@@ -3,7 +3,10 @@ compile_error! {
     "The `blocking` feature is not supported with wasm target."
 }
 
+#[deprecated(since = "0.1.5", note = "This module will be deleted in v0.2")]
 pub mod api;
+#[deprecated(since = "0.1.5", note = "This module will be deleted in v0.2")]
+pub mod entity;
 pub mod parser;
 mod tokenizer;
 mod util;
