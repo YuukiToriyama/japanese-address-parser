@@ -62,7 +62,7 @@ impl Tokenizer<CityNameFound> {
     }
 }
 
-fn find_town(input: &String, candidates: &Vec<String>) -> Option<(String, String)> {
+fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> {
     for candidate in candidates {
         if input.starts_with(candidate) {
             return Some((
@@ -94,7 +94,7 @@ fn find_town(input: &String, candidates: &Vec<String>) -> Option<(String, String
                 Variant::梼,
             ],
         };
-        if let Some(result) = adapter.apply(input, &candidate) {
+        if let Some(result) = adapter.apply(input, candidate) {
             return Some(result);
         };
     }
