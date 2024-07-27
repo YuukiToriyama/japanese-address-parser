@@ -4,6 +4,7 @@ members = [
     "wasm",
     "python",
     "tests",
+    "domain",
 ]
 resolver = "2"
 
@@ -18,6 +19,7 @@ keywords = ["parser", "geo", "wasm"]
 categories = ["parser-implementations", "wasm"]
 
 [workspace.dependencies]
+serde = { version = "1.0.192", features = ["derive"] }
 wasm-bindgen = "0.2.92"
 wasm-bindgen-futures = "0.4.42"
 wasm-bindgen-test = "0.3.42"

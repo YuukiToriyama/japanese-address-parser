@@ -1,5 +1,5 @@
-use crate::entity::Prefecture;
-use crate::err::{ApiErrorKind, Error};
+use domain::geolonia::entity::Prefecture;
+use domain::geolonia::error::{ApiErrorKind, Error};
 
 pub struct PrefectureMasterApi {
     pub server_url: &'static str,
