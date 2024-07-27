@@ -6,6 +6,7 @@ members = [
     "tests",
     "domain",
     "service",
+    "repository",
 ]
 resolver = "2"
 
