@@ -1,10 +1,10 @@
-pub mod city_master_api;
-pub mod prefecture_master_api;
+pub use repository::geolonia::city_master_api;
+pub use repository::geolonia::prefecture_master_api;
 
-use crate::api::city_master_api::CityMasterApi;
-use crate::api::prefecture_master_api::PrefectureMasterApi;
-use crate::entity::{City, Prefecture};
-use crate::err::Error;
+use domain::geolonia::entity::{City, Prefecture};
+use domain::geolonia::error::Error;
+use repository::geolonia::city_master_api::CityMasterApi;
+use repository::geolonia::prefecture_master_api::PrefectureMasterApi;
 
 #[derive(Default)]
 pub struct AsyncApi {

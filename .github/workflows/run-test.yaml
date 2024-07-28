@@ -1,0 +1,62 @@
+name: Unit test & Integration test
+
+on:
+  pull_request:
+  push:
+    branches: [ 'main' ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'test-on-pr'
+          key: 'main'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+      - name: Test domain
+        working-directory: domain
+        run: cargo test
+      - name: Test service
+        working-directory: service
+        run: |
+          cargo test
+          cargo test --features=blocking
+      - name: Test repository
+        working-directory: repository
+        run: |
+          cargo test
+          cargo test --features=blocking
+      - name: Test core
+        working-directory: core
+        run: |
+          cargo test
+          cargo test --features=blocking
+      - name: Integration test
+        working-directory: tests
+        run: cargo test
+
+  run-tests-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
+          shared-key: 'wasm-pack'
+          key: 'main'
+          save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
+          cache-provider: 'github'
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Run wasm-pack test for core(japanese-address-parser)
+        working-directory: core
+        run: wasm-pack test --firefox --headless
+      - name: Build check for wasm crate
+        working-directory: wasm
+        run: wasm-pack build --target web --scope toriyama

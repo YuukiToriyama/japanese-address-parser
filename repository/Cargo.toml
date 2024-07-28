@@ -1,0 +1,20 @@
+[package]
+name = "repository"
+version.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[features]
+blocking = ["service/blocking"]
+
+[dependencies]
+domain = { path = "../domain" }
+service = { path = "../service" }
+
+[dev-dependencies]
+tokio.workspace = true

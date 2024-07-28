@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pyo3::prelude::*;
 
-use japanese_address_parser::entity::ParseResult;
+use japanese_address_parser::parser::ParseResult;
 use japanese_address_parser::parser::Parser;
 
 #[pyclass(name = "ParseResult")]

@@ -3,9 +3,10 @@ use std::sync::Arc;
 use crate::api::AsyncApi;
 #[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
-use crate::entity::{Address, ParseResult};
-use crate::err::{Error, ParseErrorKind};
 use crate::tokenizer::Tokenizer;
+use domain::geolonia::entity::Address;
+use domain::geolonia::error::{Error, ParseErrorKind};
+use serde::Serialize;
 
 pub(crate) mod adapter;
 pub(crate) mod filter;
@@ -136,11 +137,11 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
-    use crate::api::city_master_api::CityMasterApi;
-    use crate::api::prefecture_master_api::PrefectureMasterApi;
     use crate::api::AsyncApi;
-    use crate::err::ParseErrorKind;
     use crate::parser::parse;
+    use domain::geolonia::error::ParseErrorKind;
+    use repository::geolonia::city_master_api::CityMasterApi;
+    use repository::geolonia::prefecture_master_api::PrefectureMasterApi;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     #[tokio::test]
@@ -288,8 +289,8 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::api::BlockingApi;
-    use crate::err::ParseErrorKind;
     use crate::parser::parse_blocking;
+    use domain::geolonia::error::ParseErrorKind;
 
     #[test]
     fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
@@ -315,4 +316,10 @@ mod blocking_tests {
             ParseErrorKind::City.to_string()
         );
     }
+}
+
+#[derive(Serialize, PartialEq, Debug)]
+pub struct ParseResult {
+    pub address: Address,
+    pub error: Option<Error>,
 }
