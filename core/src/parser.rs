@@ -140,8 +140,8 @@ mod tests {
     use crate::api::AsyncApi;
     use crate::parser::parse;
     use domain::geolonia::error::ParseErrorKind;
-    use repository::geolonia::city_master_api::CityMasterApi;
-    use repository::geolonia::prefecture_master_api::PrefectureMasterApi;
+    use crate::repository::geolonia::city_master_api::CityMasterApi;
+    use crate::repository::geolonia::prefecture_master_api::PrefectureMasterApi;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     #[tokio::test]

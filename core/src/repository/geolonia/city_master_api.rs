@@ -75,8 +75,7 @@ mod tests {
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use domain::geolonia::entity::Town;
-
-    use crate::geolonia::city_master_api::CityMasterApi;
+    use crate::repository::geolonia::city_master_api::CityMasterApi;
 
     #[test]
     fn 同期_石川県羽咋郡志賀町_成功() {
