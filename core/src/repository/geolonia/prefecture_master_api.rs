@@ -1,6 +1,6 @@
 use domain::geolonia::entity::Prefecture;
 use domain::geolonia::error::Error;
-use service::geolonia::GeoloniaApiService;
+use crate::service::geolonia::GeoloniaApiService;
 
 pub struct PrefectureMasterApi {
     pub server_url: &'static str,

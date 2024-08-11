@@ -29,7 +29,7 @@ mod async_tests {
     use domain::geolonia::entity::{Prefecture, Town};
     use domain::geolonia::error::{ApiErrorKind, Error};
 
-    use crate::geolonia::GeoloniaApiService;
+    use crate::service::geolonia::GeoloniaApiService;
 
     #[tokio::test]
     async fn 失敗_ネットワークエラー() {
@@ -190,7 +190,7 @@ mod blocking_tests {
     use domain::geolonia::entity::{Prefecture, Town};
     use domain::geolonia::error::{ApiErrorKind, Error};
 
-    use crate::geolonia::GeoloniaApiService;
+    use crate::service::geolonia::GeoloniaApiService;
 
     #[test]
     fn 失敗_ネットワークエラー() {

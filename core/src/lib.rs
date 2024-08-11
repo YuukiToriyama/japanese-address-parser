@@ -8,5 +8,6 @@ pub mod api;
 pub mod entity;
 pub mod parser;
 mod repository;
+mod service;
 mod tokenizer;
 mod util;

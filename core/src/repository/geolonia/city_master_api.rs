@@ -1,6 +1,6 @@
 use domain::geolonia::entity::{City, Town};
 use domain::geolonia::error::Error;
-use service::geolonia::GeoloniaApiService;
+use crate::service::geolonia::GeoloniaApiService;
 
 pub struct CityMasterApi {
     pub server_url: &'static str,
@@ -40,7 +40,7 @@ impl CityMasterApi {
 mod tests {
     use domain::geolonia::entity::Town;
 
-    use crate::geolonia::city_master_api::CityMasterApi;
+    use crate::repository::geolonia::city_master_api::CityMasterApi;
 
     #[tokio::test]
     async fn 非同期_石川県羽咋郡志賀町_成功() {
