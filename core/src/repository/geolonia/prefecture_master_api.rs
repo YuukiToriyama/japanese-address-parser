@@ -1,5 +1,6 @@
-use crate::entity::Prefecture;
-use crate::err::{ApiErrorKind, Error};
+use crate::domain::geolonia::entity::Prefecture;
+use crate::domain::geolonia::error::Error;
+use crate::service::geolonia::GeoloniaApiService;
 
 pub struct PrefectureMasterApi {
     pub server_url: &'static str,
@@ -16,40 +17,20 @@ impl Default for PrefectureMasterApi {
 impl PrefectureMasterApi {
     pub async fn get(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
-        let response = match reqwest::get(&endpoint).await {
-            Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
-        };
-        if response.status() == 200 {
-            match response.json::<Prefecture>().await {
-                Ok(result) => Ok(result),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-            }
-        } else {
-            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
-        }
+        let api_service = GeoloniaApiService {};
+        api_service.get::<Prefecture>(&endpoint).await
     }
     #[cfg(feature = "blocking")]
     pub fn get_blocking(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let endpoint = format!("{}/{}/master.json", self.server_url, prefecture_name);
-        let response = match reqwest::blocking::get(&endpoint) {
-            Ok(result) => result,
-            Err(_) => return Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint))),
-        };
-        if response.status() == 200 {
-            match response.json::<Prefecture>() {
-                Ok(result) => Ok(result),
-                Err(_) => Err(Error::new_api_error(ApiErrorKind::Deserialize(endpoint))),
-            }
-        } else {
-            Err(Error::new_api_error(ApiErrorKind::Fetch(endpoint)))
-        }
+        let api_service = GeoloniaApiService {};
+        api_service.get_blocking::<Prefecture>(&endpoint)
     }
 }
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
-    use crate::api::prefecture_master_api::PrefectureMasterApi;
+    use crate::repository::geolonia::prefecture_master_api::PrefectureMasterApi;
 
     #[tokio::test]
     async fn 非同期_富山県_成功() {
@@ -96,7 +77,7 @@ mod tests {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use crate::api::prefecture_master_api::PrefectureMasterApi;
+    use crate::repository::geolonia::prefecture_master_api::PrefectureMasterApi;
 
     #[test]
     fn 同期_富山県_成功() {

@@ -3,7 +3,7 @@ A python toolkit for processing japanese addresses
 
 [![PyPI - Version](https://img.shields.io/pypi/v/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/#history)
-[![Unit test & Code check](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml/badge.svg)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/code-check.yaml)
+[![Unit test & Integration test](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml)
 
 ## What is it?
 **japanese-address-parser-py** is a Python package for parsing japanese addresses.
