@@ -24,7 +24,7 @@ impl GeoloniaApiService {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, not(target_arch = "wasm32")))]
 mod async_tests {
     use crate::domain::geolonia::entity::{Prefecture, Town};
     use crate::domain::geolonia::error::{ApiErrorKind, Error};
@@ -185,7 +185,7 @@ impl GeoloniaApiService {
     }
 }
 
-#[cfg(all(test, feature = "blocking"))]
+#[cfg(all(test, feature = "blocking", not(target_arch = "wasm32")))]
 mod blocking_tests {
     use crate::domain::geolonia::entity::{Prefecture, Town};
     use crate::domain::geolonia::error::{ApiErrorKind, Error};
