@@ -102,9 +102,9 @@ impl SequenceMatcher {
 
 #[cfg(test)]
 mod tests {
+    use crate::domain::geolonia::entity::Prefecture;
     use crate::util::sequence_matcher::Error::{MoreThanOneCandidateExist, NoCandidateExist};
     use crate::util::sequence_matcher::SequenceMatcher;
-    use domain::geolonia::entity::Prefecture;
 
     #[test]
     fn get_length_of_longest_one() {
