@@ -19,19 +19,6 @@ jobs:
           shared-key: 'test-on-pr'
           key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
-      - name: Test domain
-        working-directory: domain
-        run: cargo test
-      - name: Test service
-        working-directory: service
-        run: |
-          cargo test
-          cargo test --features=blocking
-      - name: Test repository
-        working-directory: repository
-        run: |
-          cargo test
-          cargo test --features=blocking
       - name: Test core
         working-directory: core
         run: |
