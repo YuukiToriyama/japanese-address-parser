@@ -1,8 +1,8 @@
 pub use crate::repository::geolonia::city_master_api;
 pub use crate::repository::geolonia::prefecture_master_api;
 
-use domain::geolonia::entity::{City, Prefecture};
-use domain::geolonia::error::Error;
+use crate::domain::geolonia::entity::{City, Prefecture};
+use crate::domain::geolonia::error::Error;
 use crate::repository::geolonia::city_master_api::CityMasterApi;
 use crate::repository::geolonia::prefecture_master_api::PrefectureMasterApi;
 

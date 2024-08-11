@@ -1,5 +1,5 @@
-use domain::geolonia::entity::Prefecture;
-use domain::geolonia::error::Error;
+use crate::domain::geolonia::entity::Prefecture;
+use crate::domain::geolonia::error::Error;
 use crate::service::geolonia::GeoloniaApiService;
 
 pub struct PrefectureMasterApi {

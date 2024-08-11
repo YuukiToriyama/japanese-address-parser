@@ -26,8 +26,8 @@ impl VagueExpressionAdapter {
 
 #[cfg(test)]
 mod tests {
+    use crate::domain::geolonia::entity::Prefecture;
     use crate::parser::adapter::vague_expression_adapter::VagueExpressionAdapter;
-    use domain::geolonia::entity::Prefecture;
 
     #[test]
     fn 郡名が省略されている場合_吉田郡永平寺町() {

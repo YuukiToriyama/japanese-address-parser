@@ -1,5 +1,5 @@
-use domain::geolonia::entity::{City, Town};
-use domain::geolonia::error::Error;
+use crate::domain::geolonia::entity::{City, Town};
+use crate::domain::geolonia::error::Error;
 use crate::service::geolonia::GeoloniaApiService;
 
 pub struct CityMasterApi {
@@ -38,7 +38,7 @@ impl CityMasterApi {
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
-    use domain::geolonia::entity::Town;
+    use crate::domain::geolonia::entity::Town;
 
     use crate::repository::geolonia::city_master_api::CityMasterApi;
 
@@ -74,7 +74,7 @@ mod tests {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use domain::geolonia::entity::Town;
+    use crate::domain::geolonia::entity::Town;
     use crate::repository::geolonia::city_master_api::CityMasterApi;
 
     #[test]

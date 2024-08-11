@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde::de::DeserializeOwned;
 
-use domain::geolonia::error::{ApiErrorKind, Error};
+use crate::domain::geolonia::error::{ApiErrorKind, Error};
 
 pub struct GeoloniaApiService {}
 
@@ -26,8 +26,8 @@ impl GeoloniaApiService {
 
 #[cfg(test)]
 mod async_tests {
-    use domain::geolonia::entity::{Prefecture, Town};
-    use domain::geolonia::error::{ApiErrorKind, Error};
+    use crate::domain::geolonia::entity::{Prefecture, Town};
+    use crate::domain::geolonia::error::{ApiErrorKind, Error};
 
     use crate::service::geolonia::GeoloniaApiService;
 
@@ -187,8 +187,8 @@ impl GeoloniaApiService {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use domain::geolonia::entity::{Prefecture, Town};
-    use domain::geolonia::error::{ApiErrorKind, Error};
+    use crate::domain::geolonia::entity::{Prefecture, Town};
+    use crate::domain::geolonia::error::{ApiErrorKind, Error};
 
     use crate::service::geolonia::GeoloniaApiService;
 
