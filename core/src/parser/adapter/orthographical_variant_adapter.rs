@@ -1,7 +1,4 @@
 use itertools::Itertools;
-use nom::bytes::complete::tag;
-use nom::error::VerboseError;
-use nom::Parser;
 
 pub type Variant = &'static [&'static str];
 
@@ -86,11 +83,15 @@ impl OrthographicalVariantAdapter {
                     // マッチ候補の中でパターンに引っかかるものがあれば文字を置き換えてマッチを試す
                     if candidate.contains(permutation[0]) {
                         let edited_region_name = candidate.replace(permutation[0], permutation[1]);
-                        if let Ok((rest, _)) =
-                            tag::<&str, &str, VerboseError<&str>>(&edited_region_name).parse(input)
-                        {
+                        if input.starts_with(&edited_region_name) {
                             // マッチすれば早期リターン
-                            return Some((rest.to_string(), region_name.to_string()));
+                            return Some((
+                                input
+                                    .chars()
+                                    .skip(edited_region_name.chars().count())
+                                    .collect(),
+                                region_name.to_string(),
+                            ));
                         } else {
                             // マッチしなければsemi_candidatesに置き換え後の文字列をpush
                             semi_candidates.push(edited_region_name.clone());
