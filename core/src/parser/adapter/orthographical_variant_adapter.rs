@@ -86,11 +86,11 @@ impl OrthographicalVariantAdapter {
                         if input.starts_with(&edited_region_name) {
                             // マッチすれば早期リターン
                             return Some((
+                                region_name.to_string(),
                                 input
                                     .chars()
                                     .skip(edited_region_name.chars().count())
                                     .collect(),
-                                region_name.to_string(),
                             ));
                         } else {
                             // マッチしなければsemi_candidatesに置き換え後の文字列をpush
