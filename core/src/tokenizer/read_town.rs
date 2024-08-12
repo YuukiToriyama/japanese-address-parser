@@ -18,36 +18,36 @@ impl Tokenizer<CityNameFound> {
         if rest.contains("丁目") {
             rest = NonKanjiBlockNumberFilter {}.apply(rest);
         }
-        if let Some(result) = find_town(&rest, &candidates) {
+        if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
-                town_name: Some(result.1),
-                rest: result.0,
+                town_name: Some(town_name),
+                rest,
                 _state: PhantomData::<TownNameFound>,
             });
         }
         // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
         rest = InvalidTownNameFormatFilter {}.apply(rest);
-        if let Some(result) = find_town(&rest, &candidates) {
+        if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
-                town_name: Some(result.1),
-                rest: result.0,
+                town_name: Some(town_name),
+                rest,
                 _state: PhantomData::<TownNameFound>,
             });
         }
         // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
-        if let Some(result) = find_town(&format!("大字{}", rest), &candidates) {
+        if let Some((town_name, rest)) = find_town(&format!("大字{}", rest), &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
-                town_name: Some(result.1),
-                rest: result.0,
+                town_name: Some(town_name),
+                rest,
                 _state: PhantomData::<TownNameFound>,
             });
         }
@@ -66,11 +66,11 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
     for candidate in candidates {
         if input.starts_with(candidate) {
             return Some((
+                candidate.to_string(),
                 input
                     .chars()
                     .skip(candidate.chars().count())
                     .collect::<String>(),
-                candidate.to_string(),
             ));
         }
         let adapter = OrthographicalVariantAdapter {
