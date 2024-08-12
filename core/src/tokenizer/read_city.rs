@@ -75,9 +75,9 @@ impl Tokenizer<PrefectureNameFound> {
             return Ok(Tokenizer {
                 input: self.input.clone(),
                 prefecture_name: self.prefecture_name.clone(),
-                city_name: Some(result.1),
+                city_name: Some(result.0),
                 town_name: None,
-                rest: result.0,
+                rest: result.1,
                 _state: PhantomData::<CityNameFound>,
             });
         }
