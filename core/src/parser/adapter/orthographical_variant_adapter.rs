@@ -26,6 +26,7 @@ pub trait OrthographicalVariants {
     const 梼: Variant;
     const 葛: Variant;
     const 蛍: Variant;
+    const 瀧: Variant;
 }
 
 impl OrthographicalVariants for Variant {
@@ -52,6 +53,7 @@ impl OrthographicalVariants for Variant {
     const 梼: Variant = &["梼", "檮"];
     const 葛: Variant = &["葛󠄀", "葛"];
     const 蛍: Variant = &["蛍", "螢"];
+    const 瀧: Variant = &["瀧", "滝"];
 }
 
 pub struct OrthographicalVariantAdapter {
