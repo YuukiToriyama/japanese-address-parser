@@ -1,8 +1,4 @@
 use crate::util::sequence_matcher::SequenceMatcher;
-use nom::bytes::complete::{is_a, is_not};
-use nom::combinator::rest;
-use nom::error::Error;
-use nom::sequence::tuple;
 
 pub struct VagueExpressionAdapter;
 
@@ -11,13 +7,8 @@ impl VagueExpressionAdapter {
         if let Ok(highest_match) =
             SequenceMatcher::get_most_similar_match(input, region_name_list, None)
         {
-            let mut parser = tuple((
-                is_not::<&str, &str, Error<&str>>("町村"),
-                is_a::<&str, &str, Error<&str>>("町村"),
-                rest,
-            ));
-            if let Ok((_, (_, _, rest))) = parser(input) {
-                return Some((rest.to_string(), highest_match));
+            if let Some(position) = input.chars().position(|c| c == '町' || c == '村') {
+                return Some((input.chars().skip(position + 1).collect(), highest_match));
             }
         }
         None
