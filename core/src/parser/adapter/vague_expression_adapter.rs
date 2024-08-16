@@ -15,10 +15,45 @@ impl VagueExpressionAdapter {
     }
 }
 
+fn complement_county_name(vague_address: &str, with: &str) -> String {
+    let mut vague_address = vague_address.to_string();
+    let mut concatenated_string = String::new();
+    for c in with.chars() {
+        match vague_address.chars().next() {
+            None => break,
+            Some(ch) => {
+                if c == ch {
+                    vague_address.remove(0);
+                }
+            }
+        };
+        concatenated_string.push(c);
+    }
+    concatenated_string + vague_address.as_str()
+}
+
 #[cfg(test)]
 mod tests {
     use crate::domain::geolonia::entity::Prefecture;
-    use crate::parser::adapter::vague_expression_adapter::VagueExpressionAdapter;
+    use crate::parser::adapter::vague_expression_adapter::{
+        complement_county_name, VagueExpressionAdapter,
+    };
+
+    #[test]
+    fn complement_county_name_郡名が省略されている場合() {
+        assert_eq!(
+            complement_county_name("大町町大字福母297", "杵島郡大町町"),
+            "杵島郡大町町大字福母297"
+        );
+        assert_eq!(
+            complement_county_name("村田町大字村田字迫6", "柴田郡村田町"),
+            "柴田郡村田町大字村田字迫6"
+        );
+        assert_eq!(
+            complement_county_name("玉村町上新田1116", "佐波郡玉村町"),
+            "佐波郡玉村町上新田1116"
+        );
+    }
 
     #[test]
     fn 郡名が省略されている場合_吉田郡永平寺町() {
