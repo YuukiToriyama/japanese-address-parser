@@ -202,4 +202,33 @@ impl Prefecture {
             ],
         }
     }
+
+    /// only for testing
+    pub fn saga() -> Self {
+        Prefecture {
+            name: "佐賀県".to_string(),
+            cities: vec![
+                "佐賀市".to_string(),
+                "唐津市".to_string(),
+                "鳥栖市".to_string(),
+                "多久市".to_string(),
+                "伊万里市".to_string(),
+                "武雄市".to_string(),
+                "鹿島市".to_string(),
+                "小城市".to_string(),
+                "嬉野市".to_string(),
+                "神埼市".to_string(),
+                "神埼郡吉野ヶ里町".to_string(),
+                "三養基郡基山町".to_string(),
+                "三養基郡上峰町".to_string(),
+                "三養基郡みやき町".to_string(),
+                "東松浦郡玄海町".to_string(),
+                "西松浦郡有田町".to_string(),
+                "杵島郡大町町".to_string(),
+                "杵島郡江北町".to_string(),
+                "杵島郡白石町".to_string(),
+                "藤津郡太良町".to_string(),
+            ],
+        }
+    }
 }

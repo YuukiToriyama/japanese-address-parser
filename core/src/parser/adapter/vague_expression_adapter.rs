@@ -96,6 +96,16 @@ mod tests {
     }
 
     #[test]
+    fn 郡名が省略されている場合_杵島郡大町町() {
+        let saga = Prefecture::saga();
+        let (city_name, rest) = VagueExpressionAdapter {}
+            .apply("大町町大字大町5017番地", &saga.cities)
+            .unwrap();
+        assert_eq!(city_name, "杵島郡大町町");
+        assert_eq!(rest, "大字大町5017番地");
+    }
+
+    #[test]
     fn 郡名と町名が一致している場合_最上郡最上町() {
         let yamagata = Prefecture::yamagata();
         let (city_name, rest) = VagueExpressionAdapter {}
