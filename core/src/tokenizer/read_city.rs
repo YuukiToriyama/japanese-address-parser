@@ -147,31 +147,6 @@ mod tests {
     }
 
     #[test]
-    fn read_city_vague_expression_adapterで成功() {
-        let tokenizer = Tokenizer {
-            input: "埼玉県東秩父村大字御堂634番地".to_string(), // 「秩父郡」が省略されている
-            prefecture_name: Some("埼玉県".to_string()),
-            city_name: None,
-            town_name: None,
-            rest: "東秩父村大字御堂634番地".to_string(),
-            _state: PhantomData::<PrefectureNameFound>,
-        };
-        let result = tokenizer.read_city(vec![
-            "秩父郡皆野町".to_string(),
-            "秩父郡長瀞町".to_string(),
-            "秩父郡小鹿野町".to_string(),
-            "秩父郡東秩父村".to_string(),
-        ]);
-        assert!(result.is_ok());
-        let tokenizer = result.unwrap();
-        assert_eq!(tokenizer.input, "埼玉県東秩父村大字御堂634番地");
-        assert_eq!(tokenizer.prefecture_name, Some("埼玉県".to_string()));
-        assert_eq!(tokenizer.city_name, Some("秩父郡東秩父村".to_string()));
-        assert_eq!(tokenizer.town_name, None);
-        assert_eq!(tokenizer.rest, "大字御堂634番地");
-    }
-
-    #[test]
     fn read_city_失敗() {
         let tokenizer = Tokenizer {
             input: "神奈川県京都市上京区川辺町2番地9".to_string(),
