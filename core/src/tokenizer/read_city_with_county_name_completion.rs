@@ -5,10 +5,10 @@ use std::marker::PhantomData;
 impl Tokenizer<CityNameNotFound> {
     pub(crate) fn read_city_with_county_name_completion(
         &self,
-        candidates: Vec<String>,
+        candidates: &[String],
     ) -> Result<Tokenizer<CityNameFound>, Tokenizer<End>> {
         if let Ok(highest_match) =
-            SequenceMatcher::get_most_similar_match(&self.rest, &candidates, None)
+            SequenceMatcher::get_most_similar_match(&self.rest, candidates, None)
         {
             if let Ok(complemented_address) = complement_county_name(&self.rest, &highest_match) {
                 return Ok(Tokenizer {
@@ -84,7 +84,7 @@ mod tests {
             rest: "東秩父村大字御堂634番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(vec![
+        let result = tokenizer.read_city_with_county_name_completion(&vec![
             "秩父郡皆野町".to_string(),
             "秩父郡長瀞町".to_string(),
             "秩父郡小鹿野町".to_string(),
@@ -109,7 +109,7 @@ mod tests {
             rest: "永平寺町志比５－５".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(Prefecture::fukui().cities);
+        let result = tokenizer.read_city_with_county_name_completion(&Prefecture::fukui().cities);
         assert!(result.is_ok());
         let tokenizer = result.unwrap();
         assert_eq!(tokenizer.city_name, Some("吉田郡永平寺町".to_string()));
@@ -126,7 +126,7 @@ mod tests {
             rest: "池田町稲荷２８－７".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(Prefecture::fukui().cities);
+        let result = tokenizer.read_city_with_county_name_completion(&Prefecture::fukui().cities);
         assert!(result.is_ok());
         let tokenizer = result.unwrap();
         assert_eq!(tokenizer.city_name, Some("今立郡池田町".to_string()));
@@ -143,7 +143,7 @@ mod tests {
             rest: "南越前町今庄７４－７－１".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(Prefecture::fukui().cities);
+        let result = tokenizer.read_city_with_county_name_completion(&Prefecture::fukui().cities);
         assert!(result.is_ok());
         let tokenizer = result.unwrap();
         assert_eq!(tokenizer.city_name, Some("南条郡南越前町".to_string()));
@@ -160,7 +160,8 @@ mod tests {
             rest: "河北町大字吉田字馬場261".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(Prefecture::yamagata().cities);
+        let result =
+            tokenizer.read_city_with_county_name_completion(&Prefecture::yamagata().cities);
         assert!(result.is_ok());
         let tokenizer = result.unwrap();
         assert_eq!(tokenizer.city_name, Some("西村山郡河北町".to_string()));
@@ -177,7 +178,7 @@ mod tests {
             rest: "大町町大字大町5017番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(Prefecture::saga().cities);
+        let result = tokenizer.read_city_with_county_name_completion(&Prefecture::saga().cities);
         assert!(result.is_ok());
         let tokenizer = result.unwrap();
         assert_eq!(tokenizer.city_name, Some("杵島郡大町町".to_string()));
@@ -194,7 +195,8 @@ mod tests {
             rest: "最上町法田2672-2".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
-        let result = tokenizer.read_city_with_county_name_completion(Prefecture::yamagata().cities);
+        let result =
+            tokenizer.read_city_with_county_name_completion(&Prefecture::yamagata().cities);
         assert!(result.is_ok());
         let tokenizer = result.unwrap();
         assert_eq!(tokenizer.city_name, Some("最上郡最上町".to_string()));
