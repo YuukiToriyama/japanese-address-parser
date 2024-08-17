@@ -98,7 +98,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 市町村名を特定
-    let tokenizer = match tokenizer.read_city(prefecture.cities.clone()) {
+    let tokenizer = match tokenizer.read_city(&prefecture.cities) {
         Ok(found) => found,
         Err(not_found) => {
             // 見つからない場合は郡名が抜けている可能性を検討
@@ -263,7 +263,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         }
         Ok(result) => result,
     };
-    let tokenizer = match tokenizer.read_city(prefecture.cities.clone()) {
+    let tokenizer = match tokenizer.read_city(&prefecture.cities) {
         Ok(found) => found,
         Err(not_found) => {
             let Ok(found) = not_found.read_city_with_county_name_completion(prefecture.cities)

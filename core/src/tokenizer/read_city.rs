@@ -8,9 +8,9 @@ use crate::tokenizer::{CityNameFound, CityNameNotFound, PrefectureNameFound, Tok
 impl Tokenizer<PrefectureNameFound> {
     pub(crate) fn read_city(
         &self,
-        candidates: Vec<String>,
+        candidates: &Vec<String>,
     ) -> Result<Tokenizer<CityNameFound>, Tokenizer<CityNameNotFound>> {
-        for candidate in &candidates {
+        for candidate in candidates {
             if self.rest.starts_with(candidate) {
                 return Ok(Tokenizer {
                     input: self.input.clone(),
@@ -94,7 +94,7 @@ mod tests {
             rest: "横浜市保土ケ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
-        let result = tokenizer.read_city(vec![
+        let result = tokenizer.read_city(&vec![
             "横浜市保土ケ谷区".to_string(),
             "横浜市鶴見区".to_string(),
             "横浜市西区".to_string(),
@@ -118,7 +118,7 @@ mod tests {
             rest: "横浜市保土ヶ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
-        let result = tokenizer.read_city(vec![
+        let result = tokenizer.read_city(&vec![
             "横浜市保土ケ谷区".to_string(),
             "横浜市鶴見区".to_string(),
             "横浜市西区".to_string(),
@@ -142,7 +142,7 @@ mod tests {
             rest: "京都市上京区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
-        let result = tokenizer.read_city(vec![
+        let result = tokenizer.read_city(&vec![
             "横浜市保土ケ谷区".to_string(),
             "横浜市鶴見区".to_string(),
             "横浜市西区".to_string(),
