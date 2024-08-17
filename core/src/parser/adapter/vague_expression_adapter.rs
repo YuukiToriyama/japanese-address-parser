@@ -7,9 +7,14 @@ impl VagueExpressionAdapter {
         if let Ok(highest_match) =
             SequenceMatcher::get_most_similar_match(input, region_name_list, None)
         {
-            if let Some(position) = input.chars().position(|c| c == '町' || c == '村') {
-                return Some((highest_match, input.chars().skip(position + 1).collect()));
-            }
+            let complemented_address = complement_county_name(input, &highest_match);
+            return Some((
+                highest_match.clone(),
+                complemented_address
+                    .chars()
+                    .skip(highest_match.chars().count())
+                    .collect(),
+            ));
         }
         None
     }
