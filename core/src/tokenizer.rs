@@ -1,4 +1,5 @@
 pub(crate) mod read_city;
+pub(crate) mod read_city_with_county_name_completion;
 pub(crate) mod read_prefecture;
 pub(crate) mod read_town;
 
@@ -10,6 +11,8 @@ pub(crate) struct Init;
 pub(crate) struct PrefectureNameFound;
 #[derive(Debug)]
 pub(crate) struct CityNameFound;
+#[derive(Debug)]
+pub(crate) struct CityNameNotFound;
 #[derive(Debug)]
 pub(crate) struct TownNameFound;
 #[derive(Debug)]
