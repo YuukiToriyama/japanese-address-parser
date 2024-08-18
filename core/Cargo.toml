@@ -15,8 +15,9 @@ rust-version = "1.73.0"
 crate-type = ["rlib", "cdylib"]
 
 [features]
-default = []
+default = ["enable-city-name-correction"]
 blocking = ["reqwest/blocking"]
+enable-city-name-correction = []
 
 [dependencies]
 itertools = "0.13.0"
