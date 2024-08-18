@@ -103,7 +103,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         Err(not_found) => {
             // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
             match not_found.read_city_with_county_name_completion(&prefecture.cities) {
-                Ok(found) if cfg!(feature = "enable-city-name-correction") => found,
+                Ok(found) if cfg!(feature = "city-name-correction") => found,
                 _ => {
                     // それでも見つからない場合は終了
                     return ParseResult {
@@ -268,7 +268,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         Ok(found) => found,
         Err(not_found) => {
             match not_found.read_city_with_county_name_completion(&prefecture.cities) {
-                Ok(found) if cfg!(feature = "enable-city-name-correction") => found,
+                Ok(found) if cfg!(feature = "city-name-correction") => found,
                 _ => {
                     return ParseResult {
                         address: Address::from(tokenizer),
