@@ -18,7 +18,7 @@ fn format_house_number(input: &str) -> Option<(String, String)> {
 
 #[allow(dead_code)]
 #[cfg(target_arch = "wasm32")]
-fn read_house_number_with_js_sys_regexp(input: &str) -> Option<(String, String)> {
+fn format_house_number(input: &str) -> Option<(String, String)> {
     let expression = js_sys::RegExp::new(r"(?<house_number>\d+)\D*(?<rest>.*)$", "");
     let captures = expression.exec(input)?;
     let house_number = captures.get(1).as_string()?;
@@ -50,18 +50,18 @@ mod tests {
 
 #[cfg(all(test, target_arch = "wasm32"))]
 mod wasm_tests {
-    use crate::formatter::house_number::read_house_number_with_js_sys_regexp;
+    use crate::formatter::house_number::format_house_number;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
-    fn read_house_number_with_js_sys_regexp_success() {
-        let (rest, house_number) = read_house_number_with_js_sys_regexp("1").unwrap();
+    fn format_house_number_success() {
+        let (rest, house_number) = format_house_number("1").unwrap();
         assert_eq!(house_number, "1番");
         assert_eq!(rest, "");
 
-        let (rest, house_number) = read_house_number_with_js_sys_regexp("3-2").unwrap();
+        let (rest, house_number) = format_house_number("3-2").unwrap();
         assert_eq!(house_number, "3番");
         assert_eq!(rest, "2");
     }
