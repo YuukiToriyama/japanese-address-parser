@@ -1,32 +1,50 @@
 #[allow(dead_code)]
 #[cfg(not(target_arch = "wasm32"))]
-fn format_house_number(input: &str) -> Option<(String, String)> {
-    let expression = regex::Regex::new(r"(?<house_number>\d+)\D*(?<rest>.*)$").unwrap();
-    let captures = expression.captures(input)?;
-    let house_number = if let Some(matched) = captures.name("house_number") {
-        matched.as_str()
-    } else {
-        return None;
+fn format_house_number(input: &str) -> Result<String, &'static str> {
+    let captures = regex::Regex::new(r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$")
+        .unwrap()
+        .captures(input)
+        .ok_or_else(|| "マッチするものがありませんでした")?;
+    let block_number = captures
+        .name("block_number")
+        .ok_or_else(|| "街区符号を検出できませんでした")?;
+    let house_number = captures
+        .name("house_number")
+        .ok_or_else(|| "住居番号を検出できませんでした")?;
+    let rest = match captures.name("rest") {
+        Some(matched) => matched.as_str(),
+        None => "",
     };
-    let rest = if let Some(matched) = captures.name("rest") {
-        matched.as_str()
-    } else {
-        ""
-    };
-    Some((rest.to_string(), format!("{}番", house_number)))
+    Ok(format!(
+        "{}番{}号{}",
+        block_number.as_str(),
+        house_number.as_str(),
+        rest
+    ))
 }
 
 #[allow(dead_code)]
 #[cfg(target_arch = "wasm32")]
-fn format_house_number(input: &str) -> Option<(String, String)> {
-    let expression = js_sys::RegExp::new(r"(?<house_number>\d+)\D*(?<rest>.*)$", "");
-    let captures = expression.exec(input)?;
-    let house_number = captures.get(1).as_string()?;
-    let rest = captures
+fn format_house_number(input: &str) -> Result<String, &'static str> {
+    let captures = js_sys::RegExp::new(
+        r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$",
+        "",
+    )
+    .exec(input)
+    .ok_or_else(|| "マッチするものがありませんでした")?;
+    let block_number = captures
+        .get(1)
+        .as_string()
+        .ok_or_else(|| "街区符号を検出できませんでした")?;
+    let house_number = captures
         .get(2)
         .as_string()
+        .ok_or_else(|| "住居番号を検出できませんでした")?;
+    let rest = captures
+        .get(3)
+        .as_string()
         .unwrap_or_else(|| "".to_string());
-    Some((rest, format!("{}番", house_number)))
+    Ok(format!("{}番{}号{}", block_number, house_number, rest))
 }
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
@@ -34,17 +52,17 @@ mod tests {
     use crate::formatter::house_number::format_house_number;
 
     #[test]
-    fn format_house_number_1番() {
-        let (rest, house_number) = format_house_number("1").unwrap();
-        assert_eq!(house_number, "1番");
-        assert_eq!(rest, "");
+    fn format_house_number_1番1号() {
+        let result = format_house_number("1-1");
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "1番1号");
     }
 
     #[test]
-    fn format_house_number_3番2() {
-        let (rest, house_number) = format_house_number("3-2").unwrap();
-        assert_eq!(house_number, "3番");
-        assert_eq!(rest, "2");
+    fn format_house_number_3番2号レジデンシャルマンション101号室() {
+        let result = format_house_number("3-2レジデンシャルマンション101号室");
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "3番2号レジデンシャルマンション101号室");
     }
 }
 
@@ -57,12 +75,12 @@ mod wasm_tests {
 
     #[wasm_bindgen_test]
     fn format_house_number_success() {
-        let (rest, house_number) = format_house_number("1").unwrap();
-        assert_eq!(house_number, "1番");
-        assert_eq!(rest, "");
+        let result = format_house_number("1-1");
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "1番1号");
 
-        let (rest, house_number) = format_house_number("3-2").unwrap();
-        assert_eq!(house_number, "3番");
-        assert_eq!(rest, "2");
+        let result = format_house_number("3-2レジデンシャルマンション101号室");
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), "3番2号レジデンシャルマンション101号室");
     }
 }
