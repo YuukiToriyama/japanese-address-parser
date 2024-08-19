@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 #[cfg(not(target_arch = "wasm32"))]
-fn read_house_number_with_regex(input: &str) -> Option<(String, String)> {
+fn format_house_number(input: &str) -> Option<(String, String)> {
     let expression = regex::Regex::new(r"(?<house_number>\d+)\D*(?<rest>.*)$").unwrap();
     let captures = expression.captures(input)?;
     let house_number = if let Some(matched) = captures.name("house_number") {
@@ -31,18 +31,18 @@ fn read_house_number_with_js_sys_regexp(input: &str) -> Option<(String, String)>
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
-    use crate::formatter::house_number::read_house_number_with_regex;
+    use crate::formatter::house_number::format_house_number;
 
     #[test]
-    fn read_house_number_1番() {
-        let (rest, house_number) = read_house_number_with_regex("1").unwrap();
+    fn format_house_number_1番() {
+        let (rest, house_number) = format_house_number("1").unwrap();
         assert_eq!(house_number, "1番");
         assert_eq!(rest, "");
     }
 
     #[test]
-    fn read_house_number_3番2() {
-        let (rest, house_number) = read_house_number_with_regex("3-2").unwrap();
+    fn format_house_number_3番2() {
+        let (rest, house_number) = format_house_number("3-2").unwrap();
         assert_eq!(house_number, "3番");
         assert_eq!(rest, "2");
     }
