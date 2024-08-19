@@ -98,11 +98,21 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 市町村名を特定
-    let Ok(tokenizer) = tokenizer.read_city(prefecture.cities) else {
-        return ParseResult {
-            address: Address::from(tokenizer),
-            error: Some(Error::new_parse_error(ParseErrorKind::City)),
-        };
+    let tokenizer = match tokenizer.read_city(&prefecture.cities) {
+        Ok(found) => found,
+        Err(not_found) => {
+            // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
+            match not_found.read_city_with_county_name_completion(&prefecture.cities) {
+                Ok(found) if cfg!(feature = "city-name-correction") => found,
+                _ => {
+                    // それでも見つからない場合は終了
+                    return ParseResult {
+                        address: Address::from(tokenizer),
+                        error: Some(Error::new_parse_error(ParseErrorKind::City)),
+                    };
+                }
+            }
+        }
     };
     // その市町村の町名リストを取得
     let city = match api
@@ -254,11 +264,19 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         }
         Ok(result) => result,
     };
-    let Ok(tokenizer) = tokenizer.read_city(prefecture.cities) else {
-        return ParseResult {
-            address: Address::from(tokenizer),
-            error: Some(Error::new_parse_error(ParseErrorKind::City)),
-        };
+    let tokenizer = match tokenizer.read_city(&prefecture.cities) {
+        Ok(found) => found,
+        Err(not_found) => {
+            match not_found.read_city_with_county_name_completion(&prefecture.cities) {
+                Ok(found) if cfg!(feature = "city-name-correction") => found,
+                _ => {
+                    return ParseResult {
+                        address: Address::from(tokenizer),
+                        error: Some(Error::new_parse_error(ParseErrorKind::City)),
+                    };
+                }
+            }
+        }
     };
     let city = match api.get_city_master(
         tokenizer.prefecture_name.as_ref().unwrap(),
