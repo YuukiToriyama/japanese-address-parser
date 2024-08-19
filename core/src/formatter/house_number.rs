@@ -4,13 +4,13 @@ fn format_house_number(input: &str) -> Result<String, &'static str> {
     let captures = regex::Regex::new(r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$")
         .unwrap()
         .captures(input)
-        .ok_or_else(|| "マッチするものがありませんでした")?;
+        .ok_or("マッチするものがありませんでした")?;
     let block_number = captures
         .name("block_number")
-        .ok_or_else(|| "街区符号を検出できませんでした")?;
+        .ok_or("街区符号を検出できませんでした")?;
     let house_number = captures
         .name("house_number")
-        .ok_or_else(|| "住居番号を検出できませんでした")?;
+        .ok_or("住居番号を検出できませんでした")?;
     let rest = match captures.name("rest") {
         Some(matched) => matched.as_str(),
         None => "",
@@ -31,15 +31,15 @@ fn format_house_number(input: &str) -> Result<String, &'static str> {
         "",
     )
     .exec(input)
-    .ok_or_else(|| "マッチするものがありませんでした")?;
+    .ok_or("マッチするものがありませんでした")?;
     let block_number = captures
         .get(1)
         .as_string()
-        .ok_or_else(|| "街区符号を検出できませんでした")?;
+        .ok_or("街区符号を検出できませんでした")?;
     let house_number = captures
         .get(2)
         .as_string()
-        .ok_or_else(|| "住居番号を検出できませんでした")?;
+        .ok_or("住居番号を検出できませんでした")?;
     let rest = captures
         .get(3)
         .as_string()
