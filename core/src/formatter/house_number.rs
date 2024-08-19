@@ -31,7 +31,7 @@ fn read_house_number_with_js_sys_regexp(input: &str) -> Option<(String, String)>
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
-    use crate::parser::read_house_number::read_house_number_with_regex;
+    use crate::formatter::house_number::read_house_number_with_regex;
 
     #[test]
     fn read_house_number_1番() {
@@ -50,7 +50,7 @@ mod tests {
 
 #[cfg(all(test, target_arch = "wasm32"))]
 mod wasm_tests {
-    use crate::parser::read_house_number::read_house_number_with_js_sys_regexp;
+    use crate::formatter::house_number::read_house_number_with_js_sys_regexp;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     wasm_bindgen_test_configure!(run_in_browser);
