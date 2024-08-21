@@ -1,10 +1,12 @@
 use std::collections::HashMap;
 
-use pyo3::prelude::*;
-
 use japanese_address_parser::parser::ParseResult;
 use japanese_address_parser::parser::Parser;
+use pyo3::prelude::*;
+use pyo3_stub_gen::define_stub_info_gatherer;
+use pyo3_stub_gen::derive::{gen_stub_pyclass, gen_stub_pyfunction, gen_stub_pymethods};
 
+#[gen_stub_pyclass]
 #[pyclass(name = "ParseResult")]
 struct PyParseResult {
     #[pyo3(get)]
@@ -29,11 +31,13 @@ impl From<ParseResult> for PyParseResult {
     }
 }
 
+#[gen_stub_pyclass]
 #[pyclass(name = "Parser")]
 struct PyParser {
     parser: Parser,
 }
 
+#[gen_stub_pymethods]
 #[pymethods]
 impl PyParser {
     #[new]
@@ -48,6 +52,7 @@ impl PyParser {
     }
 }
 
+#[gen_stub_pyfunction]
 #[pyfunction]
 fn parse(address: &str) -> PyParseResult {
     let parser: Parser = Default::default();
@@ -62,3 +67,5 @@ fn python_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(parse, m)?)?;
     Ok(())
 }
+
+define_stub_info_gatherer!(stub_info);

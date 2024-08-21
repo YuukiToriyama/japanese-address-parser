@@ -13,8 +13,13 @@ categories.workspace = true
 [lib]
 name = "japanese_address_parser_py"
 path = "src/lib.rs"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "generate-stub"
+path = "src/bin/generate_stub.rs"
 
 [dependencies]
 japanese-address-parser = { path = "../core", features = ["blocking"] }
 pyo3 = { version = "0.22.0", features = ["abi3-py37"] }
+pyo3-stub-gen = { version = "0.5.3", default-features = false }
