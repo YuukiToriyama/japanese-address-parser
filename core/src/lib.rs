@@ -3,6 +3,7 @@
 //! ## Feature flags
 //! - `blocking`: Provide method that works synchronously
 //! - `city-name-correction`*(enabled by default)*: Enable autocorrection if ambiguous city name was typed
+//! - `format-house-number`: Enable normalization of addresses after town name
 
 #[cfg(all(target_family = "wasm", feature = "blocking"))]
 compile_error! {
