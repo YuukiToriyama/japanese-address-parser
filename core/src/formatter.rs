@@ -1,1 +1,1 @@
-mod house_number;
+pub(crate) mod house_number;
