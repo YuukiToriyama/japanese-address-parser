@@ -1,20 +1,3 @@
-import init, {Parser} from "../pkg/japanese_address_parser.js"
-
-const inputTextArea = document.getElementById("input")
-
-init().then(() => {
-    document.getElementById("exec").addEventListener("click", () => {
-        const input = inputTextArea.value
-        alert("input: " + input)
-        const parser = new Parser()
-        parser.parse(input).then(result => {
-            document.getElementById("result").appendChild(
-                createRow(input, result)
-            )
-        })
-    })
-})
-
 const createRow = (input, parseResult) => {
     const tr = document.createElement("tr")
     tr.appendChild(createCell(`<p>${input}</p>`))
