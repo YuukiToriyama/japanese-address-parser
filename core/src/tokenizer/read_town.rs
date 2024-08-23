@@ -1,5 +1,6 @@
 use std::marker::PhantomData;
 
+use crate::formatter::house_number::format_house_number;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
@@ -24,7 +25,12 @@ impl Tokenizer<CityNameFound> {
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
                 town_name: Some(town_name),
-                rest,
+                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
+                {
+                    format_house_number(&rest).unwrap()
+                } else {
+                    rest
+                },
                 _state: PhantomData::<TownNameFound>,
             });
         }
@@ -36,7 +42,12 @@ impl Tokenizer<CityNameFound> {
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
                 town_name: Some(town_name),
-                rest,
+                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
+                {
+                    format_house_number(&rest).unwrap()
+                } else {
+                    rest
+                },
                 _state: PhantomData::<TownNameFound>,
             });
         }
@@ -47,7 +58,12 @@ impl Tokenizer<CityNameFound> {
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
                 town_name: Some(town_name),
-                rest,
+                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
+                {
+                    format_house_number(&rest).unwrap()
+                } else {
+                    rest
+                },
                 _state: PhantomData::<TownNameFound>,
             });
         }

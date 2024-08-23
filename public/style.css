@@ -49,3 +49,30 @@
 .output tbody tr td:hover {
     background: #8eeacd;
 }
+
+.ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+}
+
+.ribbon-label {
+    display: inline-block;
+    position: absolute;
+    padding: 5px 0;
+    left: -18px;
+    top: 18px;
+    width: 160px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 20px;
+    background: #5bc8ac;
+    color: #fff;
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 2px #8eeacd;
+    border-top: dashed 2px rgba(255, 255, 255, 0.6);
+    border-bottom: dashed 2px rgba(255, 255, 255, 0.6);
+}
