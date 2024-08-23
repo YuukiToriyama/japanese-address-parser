@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo | japanese-address-parser</title>
+    <link rel="stylesheet" href="./style.css" type="text/css">
+</head>
+<body>
+<div class="ribbon">
+    <span class="ribbon-label">Nightly</span>
+</div>
+<h2>YuukiToriyama/japanese-address-parser</h2>
+<p>Rust製の住所パーサーです</p>
+
+<h3>住所を入力してください</h3>
+<div class="input">
+    <input class="address" id="input" type="text" placeholder="例) 東京都中央区日本橋一丁目1-1"/>
+    <button class="button" id="exec">パースを実行</button>
+</div>
+
+<h3>処理結果</h3>
+<table class="output">
+    <thead>
+    <tr>
+        <th>入力値</th>
+        <th>ステータス</th>
+        <th>address.prefecture</th>
+        <th>address.city</th>
+        <th>address.town</th>
+        <th>address.rest</th>
+        <th>JSON</th>
+    </tr>
+    </thead>
+    <tbody id="result">
+    <tr>
+        <td><p>東京都中央区日本橋一丁目1-1</p></td>
+        <td><p>成功</p></td>
+        <td><p>東京都</p></td>
+        <td><p>中央区</p></td>
+        <td><p>日本橋一丁目</p></td>
+        <td><p>1-1</p></td>
+        <td><code>{"address":{"prefecture":"東京都","city":"中央区","town":"日本橋一丁目","rest":"1-1"}}</code>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script src="table_util.js"></script>
+<script type="module">
+    import init, {Parser} from "../pkg/japanese_address_parser_nightly.js"
+
+    const inputTextArea = document.getElementById("input")
+
+    init().then(() => {
+        document.getElementById("exec").addEventListener("click", () => {
+            const input = inputTextArea.value
+            alert("input: " + input)
+            const parser = new Parser()
+            parser.parse(input).then(result => {
+                document.getElementById("result").appendChild(
+                    createRow(input, result)
+                )
+            })
+        })
+    })
+</script>
+
+</body>
+</html>
