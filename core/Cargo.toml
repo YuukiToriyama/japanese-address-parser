@@ -18,14 +18,17 @@ crate-type = ["rlib", "cdylib"]
 default = ["city-name-correction"]
 blocking = ["reqwest/blocking"]
 city-name-correction = []
+format-house-number = []
 
 [dependencies]
 itertools = "0.13.0"
-js-sys = "0.3.67"
 rapidfuzz = "0.5.0"
 regex = "1.10.2"
 serde.workspace = true
 reqwest = { version = "0.12.5", default-features = false, features = ["json", "rustls-tls"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+js-sys = "0.3.67"
 
 [dev-dependencies]
 tokio.workspace = true

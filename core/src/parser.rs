@@ -10,7 +10,6 @@ use serde::Serialize;
 
 pub(crate) mod adapter;
 pub(crate) mod filter;
-mod read_house_number;
 
 impl<T> From<Tokenizer<T>> for Address {
     fn from(value: Tokenizer<T>) -> Self {

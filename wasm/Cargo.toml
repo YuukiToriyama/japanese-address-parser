@@ -15,6 +15,7 @@ crate-type = ["cdylib"]
 
 [features]
 debug = []
+nightly = ["japanese-address-parser/format-house-number"]
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
