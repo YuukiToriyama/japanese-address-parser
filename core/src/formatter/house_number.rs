@@ -1,6 +1,5 @@
-#[allow(dead_code)]
 #[cfg(not(target_arch = "wasm32"))]
-fn format_house_number(input: &str) -> Result<String, &'static str> {
+pub(crate) fn format_house_number(input: &str) -> Result<String, &'static str> {
     let captures = regex::Regex::new(r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$")
         .unwrap()
         .captures(input)
@@ -23,9 +22,8 @@ fn format_house_number(input: &str) -> Result<String, &'static str> {
     ))
 }
 
-#[allow(dead_code)]
 #[cfg(target_arch = "wasm32")]
-fn format_house_number(input: &str) -> Result<String, &'static str> {
+pub(crate) fn format_house_number(input: &str) -> Result<String, &'static str> {
     let captures = js_sys::RegExp::new(
         r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$",
         "",
