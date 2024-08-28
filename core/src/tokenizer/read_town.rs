@@ -1,9 +1,9 @@
 use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
+use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
-use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
 use crate::parser::filter::Filter;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
@@ -34,7 +34,7 @@ impl Tokenizer<CityNameFound> {
             });
         }
         // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
-        rest = InvalidTownNameFormatFilter {}.apply(rest);
+        rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
