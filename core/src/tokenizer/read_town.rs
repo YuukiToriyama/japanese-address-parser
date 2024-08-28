@@ -1,21 +1,20 @@
-use std::marker::PhantomData;
-
+use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
-use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
 use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
 use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
 use crate::parser::filter::Filter;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
+use std::marker::PhantomData;
 
 impl Tokenizer<CityNameFound> {
     pub(crate) fn read_town(
         &self,
         candidates: Vec<String>,
     ) -> Result<Tokenizer<TownNameFound>, Tokenizer<End>> {
-        let mut rest = FullwidthCharacterFilter {}.apply(self.rest.clone());
+        let mut rest = format_fullwidth_number(&self.rest);
         if rest.contains("丁目") {
             rest = NonKanjiBlockNumberFilter {}.apply(rest);
         }
