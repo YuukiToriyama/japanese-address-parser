@@ -15,7 +15,7 @@ impl Tokenizer<CityNameFound> {
     ) -> Result<Tokenizer<TownNameFound>, Tokenizer<End>> {
         let mut rest = format_fullwidth_number(&self.rest);
         if rest.contains("丁目") {
-            rest = format_chome_with_arabic_numerals(rest)
+            rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
