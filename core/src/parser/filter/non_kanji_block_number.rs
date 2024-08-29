@@ -1,21 +1,7 @@
-use crate::parser::filter::Filter;
 use crate::util::converter::JapaneseNumber;
 
-pub struct NonKanjiBlockNumberFilter {}
-
-impl Filter for NonKanjiBlockNumberFilter {
-    #[cfg(not(target_arch = "wasm32"))]
-    fn apply(self, input: String) -> String {
-        format_chome_with_arabic_numerals(input)
-    }
-    #[cfg(target_arch = "wasm32")]
-    fn apply(self, input: String) -> String {
-        format_chome_with_arabic_numerals(input)
-    }
-}
-
 #[cfg(not(target_arch = "wasm32"))]
-fn format_chome_with_arabic_numerals(input: String) -> String {
+pub(crate) fn format_chome_with_arabic_numerals(input: String) -> String {
     let expression = regex::Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
     match expression.captures(&input) {
         Some(captures) => {
@@ -35,7 +21,7 @@ fn format_chome_with_arabic_numerals(input: String) -> String {
 }
 
 #[cfg(target_arch = "wasm32")]
-fn format_chome_with_arabic_numerals(input: String) -> String {
+pub(crate) fn format_chome_with_arabic_numerals(input: String) -> String {
     let expression = js_sys::RegExp::new(r"\D+(\d+)丁目", "");
     match expression.exec(&input) {
         Some(result) => {
