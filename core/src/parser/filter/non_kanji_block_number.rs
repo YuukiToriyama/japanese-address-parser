@@ -10,7 +10,7 @@ impl Filter for NonKanjiBlockNumberFilter {
     }
     #[cfg(target_arch = "wasm32")]
     fn apply(self, input: String) -> String {
-        filter_with_js_sys_regexp(input)
+        format_chome_with_arabic_numerals(input)
     }
 }
 
@@ -35,7 +35,7 @@ fn format_chome_with_arabic_numerals(input: String) -> String {
 }
 
 #[cfg(target_arch = "wasm32")]
-fn filter_with_js_sys_regexp(input: String) -> String {
+fn format_chome_with_arabic_numerals(input: String) -> String {
     let expression = js_sys::RegExp::new(r"\D+(\d+)丁目", "");
     match expression.exec(&input) {
         Some(result) => {
@@ -76,26 +76,26 @@ mod tests {
 
 #[cfg(all(test, target_arch = "wasm32"))]
 mod wasm_tests {
-    use crate::parser::filter::non_kanji_block_number::filter_with_js_sys_regexp;
+    use crate::parser::filter::non_kanji_block_number::format_chome_with_arabic_numerals;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
     fn filter_with_js_sys_regexp_input_value_will_be_filtered() {
-        let result = filter_with_js_sys_regexp("銀座1丁目".to_string());
+        let result = format_chome_with_arabic_numerals("銀座1丁目".to_string());
         assert_eq!(result, "銀座一丁目");
 
-        let result = filter_with_js_sys_regexp("銀座1丁目1-1".to_string());
+        let result = format_chome_with_arabic_numerals("銀座1丁目1-1".to_string());
         assert_eq!(result, "銀座一丁目1-1");
     }
 
     #[wasm_bindgen_test]
     fn filter_with_js_sys_regexp_return_original_value() {
-        let result = filter_with_js_sys_regexp("銀座A丁目".to_string());
+        let result = format_chome_with_arabic_numerals("銀座A丁目".to_string());
         assert_eq!(result, "銀座A丁目");
 
-        let result = filter_with_js_sys_regexp("銀座2147483648丁目".to_string());
+        let result = format_chome_with_arabic_numerals("銀座2147483648丁目".to_string());
         assert_eq!(result, "銀座2147483648丁目");
     }
 }
