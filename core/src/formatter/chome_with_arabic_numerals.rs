@@ -1,24 +1,24 @@
 use crate::util::converter::JapaneseNumber;
 
 #[cfg(not(target_arch = "wasm32"))]
-pub(crate) fn format_chome_with_arabic_numerals(target: &str) -> Option<String> {
-    let expression = regex::Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
-    let capture_block_number = expression.captures(target)?.name("block_number")?.as_str();
-    let block_number = capture_block_number.parse::<i8>().ok()?;
-    Some(target.replacen(
-        capture_block_number,
-        block_number.to_japanese_form()?.as_str(),
-        1,
-    ))
+pub(crate) fn format_chome_with_arabic_numerals(input: &str) -> Option<String> {
+    let chome = regex::Regex::new(r"\D+(?<chome>\d+)丁目")
+        .unwrap()
+        .captures(input)?
+        .name("chome")?
+        .as_str();
+    let chome_int = chome.parse::<i8>().ok()?;
+    Some(input.replacen(chome, chome_int.to_japanese_form()?.as_str(), 1))
 }
 
 #[cfg(target_arch = "wasm32")]
 pub(crate) fn format_chome_with_arabic_numerals(target: &str) -> Option<String> {
-    let expression = js_sys::RegExp::new(r"\D+(\d+)丁目", "");
-    let capture_block_number = expression.exec(target)?.get(1).as_string()?;
-    let block_number = capture_block_number.parse::<i8>().ok()?;
-    let block_number_in_japanese_form = block_number.to_japanese_form()?;
-    Some(target.replacen(&capture_block_number, &block_number_in_japanese_form, 1))
+    let chome = js_sys::RegExp::new(r"\D+(\d+)丁目", "")
+        .exec(target)?
+        .get(1)
+        .as_string()?;
+    let chome_int = chome.parse::<i8>().ok()?;
+    Some(target.replacen(&chome, &chome_int.to_japanese_form()?, 1))
 }
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
