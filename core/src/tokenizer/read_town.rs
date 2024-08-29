@@ -1,11 +1,10 @@
+use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
-use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
-use crate::parser::filter::Filter;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
 use std::marker::PhantomData;
 
@@ -16,7 +15,7 @@ impl Tokenizer<CityNameFound> {
     ) -> Result<Tokenizer<TownNameFound>, Tokenizer<End>> {
         let mut rest = format_fullwidth_number(&self.rest);
         if rest.contains("丁目") {
-            rest = NonKanjiBlockNumberFilter {}.apply(rest);
+            rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
