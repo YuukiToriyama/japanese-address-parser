@@ -26,15 +26,25 @@ mod tests {
     use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 
     #[test]
-    fn filter_with_regex_成功() {
-        let result = format_chome_with_arabic_numerals("銀座1丁目");
-        assert_eq!(result, Some("銀座一丁目".to_string()));
+    fn 丁目を検出できない場合() {
+        assert_eq!(format_chome_with_arabic_numerals("a丁目"), None);
     }
 
     #[test]
-    fn filter_with_regex_失敗() {
-        let result = format_chome_with_arabic_numerals("銀座１丁目");
-        assert_eq!(result, None);
+    fn 丁目をi8に変換できない場合() {
+        assert_eq!(
+            format_chome_with_arabic_numerals("銀座127丁目"),
+            Some("銀座百二十七丁目".to_string())
+        );
+        assert_eq!(format_chome_with_arabic_numerals("銀座128丁目"), None);
+    }
+
+    #[test]
+    fn 成功() {
+        assert_eq!(
+            format_chome_with_arabic_numerals("銀座1丁目"),
+            Some("銀座一丁目".to_string())
+        );
     }
 }
 
@@ -46,20 +56,24 @@ mod wasm_tests {
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
-    fn filter_with_js_sys_regexp_input_value_will_be_filtered() {
-        let result = format_chome_with_arabic_numerals("銀座1丁目");
-        assert_eq!(result, Some("銀座一丁目".to_string()));
-
-        let result = format_chome_with_arabic_numerals("銀座1丁目1-1");
-        assert_eq!(result, Some("銀座一丁目1-1".to_string()));
+    fn chome_not_detected() {
+        assert_eq!(format_chome_with_arabic_numerals("a丁目"), None);
     }
 
     #[wasm_bindgen_test]
-    fn filter_with_js_sys_regexp_return_original_value() {
-        let result = format_chome_with_arabic_numerals("銀座A丁目");
-        assert_eq!(result, Some("銀座A丁目".to_string()));
+    fn failed_to_convert_chome_into_i8() {
+        assert_eq!(
+            format_chome_with_arabic_numerals("銀座127丁目"),
+            Some("銀座百二十七丁目".to_string())
+        );
+        assert_eq!(format_chome_with_arabic_numerals("銀座128丁目"), None);
+    }
 
-        let result = format_chome_with_arabic_numerals("銀座2147483648丁目");
-        assert_eq!(result, Some("銀座2147483648丁目".to_string()));
+    #[wasm_bindgen_test]
+    fn success() {
+        assert_eq!(
+            format_chome_with_arabic_numerals("銀座1丁目"),
+            Some("銀座一丁目".to_string())
+        );
     }
 }
