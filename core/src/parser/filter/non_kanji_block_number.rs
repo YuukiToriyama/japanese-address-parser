@@ -6,7 +6,7 @@ pub struct NonKanjiBlockNumberFilter {}
 impl Filter for NonKanjiBlockNumberFilter {
     #[cfg(not(target_arch = "wasm32"))]
     fn apply(self, input: String) -> String {
-        filter_with_regex(input)
+        format_chome_with_arabic_numerals(input)
     }
     #[cfg(target_arch = "wasm32")]
     fn apply(self, input: String) -> String {
@@ -15,7 +15,7 @@ impl Filter for NonKanjiBlockNumberFilter {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn filter_with_regex(input: String) -> String {
+fn format_chome_with_arabic_numerals(input: String) -> String {
     let expression = regex::Regex::new(r"\D+(?<block_number>\d+)丁目").unwrap();
     match expression.captures(&input) {
         Some(captures) => {
@@ -59,17 +59,17 @@ fn filter_with_js_sys_regexp(input: String) -> String {
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
-    use crate::parser::filter::non_kanji_block_number::filter_with_regex;
+    use crate::parser::filter::non_kanji_block_number::format_chome_with_arabic_numerals;
 
     #[test]
     fn filter_with_regex_成功() {
-        let result = filter_with_regex("銀座1丁目".to_string());
+        let result = format_chome_with_arabic_numerals("銀座1丁目".to_string());
         assert_eq!(result, "銀座一丁目");
     }
 
     #[test]
     fn filter_with_regex_失敗() {
-        let result = filter_with_regex("銀座１丁目".to_string());
+        let result = format_chome_with_arabic_numerals("銀座１丁目".to_string());
         assert_ne!(result, "銀座一丁目");
     }
 }
