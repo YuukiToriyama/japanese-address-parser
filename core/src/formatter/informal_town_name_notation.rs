@@ -99,7 +99,7 @@ mod wasm_tests {
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
-    fn own_name_not_detected() {
+    fn town_name_not_detected() {
         assert_eq!(format_informal_town_name_notation("1-1-1"), None);
     }
 
