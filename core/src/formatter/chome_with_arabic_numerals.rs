@@ -45,7 +45,7 @@ pub(crate) fn format_chome_with_arabic_numerals(input: String) -> String {
 
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
-    use crate::parser::filter::non_kanji_block_number::format_chome_with_arabic_numerals;
+    use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 
     #[test]
     fn filter_with_regex_成功() {
@@ -62,7 +62,7 @@ mod tests {
 
 #[cfg(all(test, target_arch = "wasm32"))]
 mod wasm_tests {
-    use crate::parser::filter::non_kanji_block_number::format_chome_with_arabic_numerals;
+    use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     wasm_bindgen_test_configure!(run_in_browser);
