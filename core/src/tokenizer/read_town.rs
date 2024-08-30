@@ -1,23 +1,21 @@
-use std::marker::PhantomData;
-
+use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
+use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
+use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
-use crate::parser::filter::fullwidth_character::FullwidthCharacterFilter;
-use crate::parser::filter::invalid_town_name_format::InvalidTownNameFormatFilter;
-use crate::parser::filter::non_kanji_block_number::NonKanjiBlockNumberFilter;
-use crate::parser::filter::Filter;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
+use std::marker::PhantomData;
 
 impl Tokenizer<CityNameFound> {
     pub(crate) fn read_town(
         &self,
         candidates: Vec<String>,
     ) -> Result<Tokenizer<TownNameFound>, Tokenizer<End>> {
-        let mut rest = FullwidthCharacterFilter {}.apply(self.rest.clone());
+        let mut rest = format_fullwidth_number(&self.rest);
         if rest.contains("丁目") {
-            rest = NonKanjiBlockNumberFilter {}.apply(rest);
+            rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
@@ -35,7 +33,7 @@ impl Tokenizer<CityNameFound> {
             });
         }
         // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
-        rest = InvalidTownNameFormatFilter {}.apply(rest);
+        rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
@@ -109,7 +107,9 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
                 Variant::穂,
                 Variant::梼,
                 Variant::蛍,
+                Variant::與,
                 Variant::瀧,
+                Variant::濱,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {
