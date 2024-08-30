@@ -36,10 +36,10 @@ export interface InitOutput {
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hab002c7c1bdf0b2e: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hd640bd04ecb855ec: (a: number, b: number, c: number) => void;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
-  readonly wasm_bindgen__convert__closures__invoke2_mut__h9cebb555936cf91e: (a: number, b: number, c: number, d: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke2_mut__h1805480ca7be13b8: (a: number, b: number, c: number, d: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
