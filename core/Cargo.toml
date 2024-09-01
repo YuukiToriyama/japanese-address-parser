@@ -13,6 +13,7 @@ rust-version = "1.73.0"
 
 [lib]
 crate-type = ["rlib", "cdylib"]
+bench = false
 
 [features]
 default = ["city-name-correction"]
