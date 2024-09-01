@@ -99,7 +99,7 @@ impl OrthographicalVariantAdapter {
                             ));
                         } else {
                             // マッチしなければsemi_candidatesに置き換え後の文字列をpush
-                            semi_candidates.push(edited_region_name.clone());
+                            semi_candidates.push(edited_region_name);
                         };
                     }
                 }
