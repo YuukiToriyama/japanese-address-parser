@@ -8,7 +8,7 @@ use crate::domain::geolonia::error::{Error, ParseErrorKind};
 use crate::tokenizer::Tokenizer;
 use serde::Serialize;
 
-pub(crate) mod adapter;
+pub mod adapter;
 
 impl<T> From<Tokenizer<T>> for Address {
     fn from(value: Tokenizer<T>) -> Self {
