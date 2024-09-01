@@ -84,24 +84,22 @@ impl OrthographicalVariantAdapter {
             // variantから順列を作成
             // ["ケ", "ヶ", "が"] -> (ケ, ヶ), (ケ, が), (ヶ, ケ), (ヶ, が), (が, ケ), (が, ヶ)
             for permutation in variant.iter().permutations(2) {
-                for candidate in &candidates {
+                for candidate in candidates.iter().filter(|c| c.contains(permutation[0])) {
                     // マッチ候補の中でパターンに引っかかるものがあれば文字を置き換えてマッチを試す
-                    if candidate.contains(permutation[0]) {
-                        let edited_region_name = candidate.replace(permutation[0], permutation[1]);
-                        if input.starts_with(&edited_region_name) {
-                            // マッチすれば早期リターン
-                            return Some((
-                                region_name.to_string(),
-                                input
-                                    .chars()
-                                    .skip(edited_region_name.chars().count())
-                                    .collect(),
-                            ));
-                        } else {
-                            // マッチしなければsemi_candidatesに置き換え後の文字列をpush
-                            semi_candidates.push(edited_region_name);
-                        };
-                    }
+                    let edited_region_name = candidate.replace(permutation[0], permutation[1]);
+                    if input.starts_with(&edited_region_name) {
+                        // マッチすれば早期リターン
+                        return Some((
+                            region_name.to_string(),
+                            input
+                                .chars()
+                                .skip(edited_region_name.chars().count())
+                                .collect(),
+                        ));
+                    } else {
+                        // マッチしなければsemi_candidatesに置き換え後の文字列をpush
+                        semi_candidates.push(edited_region_name);
+                    };
                 }
             }
             candidates = semi_candidates;
