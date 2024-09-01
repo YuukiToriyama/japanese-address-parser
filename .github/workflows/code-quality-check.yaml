@@ -26,3 +26,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branchName: ${{ github.base_ref }}
+          cwd: 'core'
