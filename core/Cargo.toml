@@ -20,6 +20,10 @@ blocking = ["reqwest/blocking"]
 city-name-correction = []
 format-house-number = []
 
+[[bench]]
+name = "core_benchmark"
+harness = false
+
 [dependencies]
 itertools = "0.13.0"
 rapidfuzz = "0.5.0"
@@ -29,6 +33,7 @@ reqwest = { version = "0.12.5", default-features = false, features = ["json", "r
 js-sys = "0.3.67"
 
 [dev-dependencies]
+criterion = { version = "0.5.1", default-features = false, features = ["html_reports"] }
 tokio.workspace = true
 wasm-bindgen-test = { workspace = true }
 
