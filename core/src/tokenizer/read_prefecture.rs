@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 
 use crate::tokenizer::{End, Init, PrefectureNameFound, Tokenizer};
+use crate::util::extension::StrExt;
 
 const PREFECTURE_NAME_LIST: [&str; 47] = [
     "北海道",
@@ -59,7 +60,7 @@ impl Tokenizer<Init> {
             prefecture_name: None,
             city_name: None,
             town_name: None,
-            rest: input.to_string(),
+            rest: input.strip_variation_selectors(),
             _state: PhantomData,
         }
     }
@@ -104,6 +105,16 @@ mod tests {
         assert_eq!(tokenizer.city_name, None);
         assert_eq!(tokenizer.town_name, None);
         assert_eq!(tokenizer.rest, "東京都港区芝公園4丁目2-8");
+    }
+
+    #[test]
+    fn new_異字体セレクタ除去() {
+        let tokenizer = Tokenizer::new("東京都葛\u{E0100}飾区立石5-13-1");
+        assert_eq!(tokenizer.input, "東京都葛\u{E0100}飾区立石5-13-1");
+        assert_eq!(tokenizer.prefecture_name, None);
+        assert_eq!(tokenizer.city_name, None);
+        assert_eq!(tokenizer.town_name, None);
+        assert_eq!(tokenizer.rest, "東京都葛飾区立石5-13-1")
     }
 
     #[test]
