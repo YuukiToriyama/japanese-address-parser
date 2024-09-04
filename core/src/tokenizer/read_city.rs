@@ -39,13 +39,9 @@ impl Tokenizer<PrefectureNameFound> {
                 }
                 "東京都" => {
                     variant_list.push(Variant::檜);
-                    variant_list.push(Variant::葛);
                 }
                 "兵庫県" => {
                     variant_list.push(Variant::塚);
-                }
-                "奈良県" => {
-                    variant_list.push(Variant::葛);
                 }
                 "高知県" => {
                     variant_list.push(Variant::梼);
