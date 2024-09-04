@@ -66,14 +66,14 @@ impl Tokenizer<Init> {
 
     pub(crate) fn read_prefecture(&self) -> Result<Tokenizer<PrefectureNameFound>, Tokenizer<End>> {
         for prefecture_name in PREFECTURE_NAME_LIST {
-            if self.input.starts_with(prefecture_name) {
+            if self.rest.starts_with(prefecture_name) {
                 return Ok(Tokenizer {
                     input: self.input.clone(),
                     prefecture_name: Some(prefecture_name.to_string()),
                     city_name: None,
                     town_name: None,
                     rest: self
-                        .input
+                        .rest
                         .chars()
                         .skip(prefecture_name.chars().count())
                         .collect::<String>(),
