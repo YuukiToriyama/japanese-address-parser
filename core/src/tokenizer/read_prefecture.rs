@@ -60,7 +60,11 @@ impl Tokenizer<Init> {
             prefecture_name: None,
             city_name: None,
             town_name: None,
-            rest: input.strip_variation_selectors(),
+            rest: if cfg!(feature = "eliminate-whitespaces") {
+                input.strip_variation_selectors().strip_whitespaces()
+            } else {
+                input.strip_variation_selectors()
+            },
             _state: PhantomData,
         }
     }
@@ -115,6 +119,17 @@ mod tests {
         assert_eq!(tokenizer.city_name, None);
         assert_eq!(tokenizer.town_name, None);
         assert_eq!(tokenizer.rest, "東京都葛飾区立石5-13-1")
+    }
+
+    #[test]
+    #[cfg(feature = "eliminate-whitespaces")]
+    fn new_ホワイトスペース除却() {
+        let tokenizer = Tokenizer::new("東京都 目黒区 下目黒 4‐1‐1");
+        assert_eq!(tokenizer.input, "東京都 目黒区 下目黒 4‐1‐1");
+        assert_eq!(tokenizer.prefecture_name, None);
+        assert_eq!(tokenizer.city_name, None);
+        assert_eq!(tokenizer.town_name, None);
+        assert_eq!(tokenizer.rest, "東京都目黒区下目黒4‐1‐1")
     }
 
     #[test]

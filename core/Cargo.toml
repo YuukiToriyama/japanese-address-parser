@@ -19,6 +19,7 @@ default = ["city-name-correction"]
 blocking = ["reqwest/blocking"]
 city-name-correction = []
 format-house-number = []
+eliminate-whitespaces = []
 
 [dependencies]
 itertools = "0.13.0"
