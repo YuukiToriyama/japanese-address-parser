@@ -10,10 +10,15 @@ impl CharExt for char {
 }
 
 pub(crate) trait StrExt {
+    fn strip_whitespaces(&self) -> String;
     fn strip_variation_selectors(&self) -> String;
 }
 
 impl StrExt for str {
+    /// 文字列からホワイトスペースを取り除きます
+    fn strip_whitespaces(&self) -> String {
+        self.chars().filter(|c| !c.is_whitespace()).collect()
+    }
     /// 文字列から異字体セレクタを取り除きます
     fn strip_variation_selectors(&self) -> String {
         self.chars()
@@ -58,5 +63,17 @@ mod tests {
         let variant = "\u{8328}\u{E0100}\u{57CE}";
         assert_ne!(normal, variant);
         assert_eq!(normal, variant.strip_variation_selectors());
+    }
+
+    #[test]
+    fn strip_whitespaces() {
+        assert_eq!("四谷1丁目".strip_whitespaces(), "四谷1丁目");
+        assert_eq!("四谷 1丁目".strip_whitespaces(), "四谷1丁目");
+        assert_eq!("四谷  1丁目".strip_whitespaces(), "四谷1丁目");
+        assert_eq!("四谷 1 丁 目".strip_whitespaces(), "四谷1丁目");
+        assert_eq!("神田３丁目".strip_whitespaces(), "神田３丁目");
+        assert_eq!("神田　３丁目".strip_whitespaces(), "神田３丁目");
+        assert_eq!("神田　　３丁目".strip_whitespaces(), "神田３丁目");
+        assert_eq!("神田　３　丁目".strip_whitespaces(), "神田３丁目");
     }
 }
