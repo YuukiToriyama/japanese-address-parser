@@ -23,7 +23,7 @@ pub struct CityMaster {
 #[derive(Deserialize, Debug)]
 pub struct TownMaster {
     /// 町名
-    name: String,
+    pub(crate) name: String,
     /// 街区リスト
     blocks: Vec<Block>,
     /// 緯度経度
