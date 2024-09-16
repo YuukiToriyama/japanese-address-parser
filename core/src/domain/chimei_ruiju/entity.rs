@@ -13,9 +13,9 @@ pub struct PrefectureMaster {
 #[derive(Deserialize, Debug)]
 pub struct CityMaster {
     /// 市区町村名
-    name: String,
+    pub(crate) name: String,
     /// 町名リスト
-    towns: Vec<String>,
+    pub(crate) towns: Vec<String>,
     /// 緯度経度
     coordinate: Coordinate,
 }
@@ -23,7 +23,7 @@ pub struct CityMaster {
 #[derive(Deserialize, Debug)]
 pub struct TownMaster {
     /// 町名
-    name: String,
+    pub(crate) name: String,
     /// 街区リスト
     blocks: Vec<Block>,
     /// 緯度経度
