@@ -27,7 +27,9 @@ pub trait OrthographicalVariants {
     const 蛍: Variant;
     const 與: Variant;
     const 瀧: Variant;
+    const 籠: Variant;
     const 濱: Variant;
+    const 祗: Variant;
 }
 
 impl OrthographicalVariants for Variant {
@@ -38,7 +40,7 @@ impl OrthographicalVariants for Variant {
     const 崎: Variant = &["崎", "﨑"];
     const 檜: Variant = &["桧", "檜"];
     const 龍: Variant = &["龍", "竜"];
-    const 竈: Variant = &["竈", "釜"];
+    const 竈: Variant = &["竈", "竃", "釜"];
     const 嶋: Variant = &["嶋", "島"];
     const 舘: Variant = &["舘", "館"];
     const 脊: Variant = &["脊", "背"];
@@ -55,7 +57,9 @@ impl OrthographicalVariants for Variant {
     const 蛍: Variant = &["蛍", "螢"];
     const 與: Variant = &["與", "与"];
     const 瀧: Variant = &["瀧", "滝"];
+    const 籠: Variant = &["籠", "篭"];
     const 濱: Variant = &["濱", "浜"];
+    const 祗: Variant = &["祗", "祇"];
 }
 
 pub struct OrthographicalVariantAdapter {
