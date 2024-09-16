@@ -54,7 +54,7 @@ mod async_tests {
 #[cfg(feature = "blocking")]
 impl CityMasterRepository {
     pub fn get_blocking(
-        &self,
+        api_service: &ChimeiRuijuApiService,
         prefecture: &Prefecture,
         city_name: &str,
     ) -> Result<CityMaster, ApiError> {
@@ -63,7 +63,7 @@ impl CityMasterRepository {
             prefecture.name_en(),
             city_name
         );
-        self.api_service.get_blocking::<CityMaster>(&url)
+        api_service.get_blocking::<CityMaster>(&url)
     }
 }
 
@@ -75,10 +75,9 @@ mod blocking_tests {
 
     #[test]
     fn 埼玉県比企郡嵐山町() {
-        let repository = CityMasterRepository {
-            api_service: ChimeiRuijuApiService {},
-        };
-        let result = repository.get_blocking(&Prefecture::SAITAMA, "比企郡嵐山町");
+        let api_service = ChimeiRuijuApiService {};
+        let result =
+            CityMasterRepository::get_blocking(&api_service, &Prefecture::SAITAMA, "比企郡嵐山町");
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "比企郡嵐山町");
@@ -112,10 +111,9 @@ mod blocking_tests {
 
     #[test]
     fn 岐阜県不破郡関ケ原町() {
-        let repository = CityMasterRepository {
-            api_service: ChimeiRuijuApiService {},
-        };
-        let result = repository.get_blocking(&Prefecture::GIFU, "不破郡関ケ原町");
+        let api_service = ChimeiRuijuApiService {};
+        let result =
+            CityMasterRepository::get_blocking(&api_service, &Prefecture::GIFU, "不破郡関ケ原町");
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "不破郡関ケ原町");
