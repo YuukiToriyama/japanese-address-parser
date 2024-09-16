@@ -4,9 +4,7 @@ use crate::service::chimei_ruiju::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
 #[allow(dead_code)]
-pub struct TownMasterRepository {
-    api_service: ChimeiRuijuApiService,
-}
+pub struct TownMasterRepository {}
 
 impl TownMasterRepository {
     pub async fn get(
