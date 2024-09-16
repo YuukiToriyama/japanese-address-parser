@@ -3,9 +3,7 @@ use crate::domain::chimei_ruiju::error::ApiError;
 use crate::service::chimei_ruiju::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
-pub struct PrefectureMasterRepository {
-    api_service: ChimeiRuijuApiService,
-}
+pub struct PrefectureMasterRepository {}
 
 impl PrefectureMasterRepository {
     pub async fn get(
