@@ -134,12 +134,15 @@ mod async_tests {
 
 #[cfg(feature = "blocking")]
 impl PrefectureMasterRepository {
-    pub fn get_blocking(&self, prefecture: Prefecture) -> Result<PrefectureMaster, ApiError> {
+    pub fn get_blocking(
+        api_service: &ChimeiRuijuApiService,
+        prefecture: Prefecture,
+    ) -> Result<PrefectureMaster, ApiError> {
         let url = format!(
             "https://{}.chimei-ruiju.org/master.json",
             prefecture.name_en()
         );
-        self.api_service.get_blocking::<PrefectureMaster>(&url)
+        api_service.get_blocking::<PrefectureMaster>(&url)
     }
 }
 
@@ -151,10 +154,8 @@ mod blocking_tests {
 
     #[tokio::test]
     async fn 高知県() {
-        let repository = PrefectureMasterRepository {
-            api_service: ChimeiRuijuApiService {},
-        };
-        let result = repository.get(&Prefecture::KOCHI).await;
+        let api_service = ChimeiRuijuApiService {};
+        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::KOCHI).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "高知県");
@@ -201,10 +202,8 @@ mod blocking_tests {
 
     #[tokio::test]
     async fn 佐賀県() {
-        let repository = PrefectureMasterRepository {
-            api_service: ChimeiRuijuApiService {},
-        };
-        let result = repository.get(&Prefecture::SAGA).await;
+        let api_service = ChimeiRuijuApiService {};
+        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::SAGA).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "佐賀県");
