@@ -8,12 +8,15 @@ pub struct PrefectureMasterRepository {
 }
 
 impl PrefectureMasterRepository {
-    pub async fn get(&self, prefecture: &Prefecture) -> Result<PrefectureMaster, ApiError> {
+    pub async fn get(
+        api_service: &ChimeiRuijuApiService,
+        prefecture: &Prefecture,
+    ) -> Result<PrefectureMaster, ApiError> {
         let url = format!(
             "https://{}.chimei-ruiju.org/master.json",
             prefecture.name_en()
         );
-        self.api_service.get::<PrefectureMaster>(&url).await
+        api_service.get::<PrefectureMaster>(&url).await
     }
 }
 
@@ -25,10 +28,8 @@ mod async_tests {
 
     #[tokio::test]
     async fn 東京都() {
-        let repository = PrefectureMasterRepository {
-            api_service: ChimeiRuijuApiService {},
-        };
-        let result = repository.get(&Prefecture::TOKYO).await;
+        let api_service = ChimeiRuijuApiService {};
+        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::TOKYO).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "東京都");
@@ -103,10 +104,8 @@ mod async_tests {
 
     #[tokio::test]
     async fn 富山県() {
-        let repository = PrefectureMasterRepository {
-            api_service: ChimeiRuijuApiService {},
-        };
-        let result = repository.get(&Prefecture::TOYAMA).await;
+        let api_service = ChimeiRuijuApiService {};
+        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::TOYAMA).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "富山県");
