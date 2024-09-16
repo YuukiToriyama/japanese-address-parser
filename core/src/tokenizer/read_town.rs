@@ -109,6 +109,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
                 Variant::蛍,
                 Variant::與,
                 Variant::瀧,
+                Variant::籠,
                 Variant::濱,
             ],
         };
