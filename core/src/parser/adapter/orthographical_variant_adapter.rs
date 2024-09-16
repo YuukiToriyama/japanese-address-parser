@@ -38,7 +38,7 @@ impl OrthographicalVariants for Variant {
     const 崎: Variant = &["崎", "﨑"];
     const 檜: Variant = &["桧", "檜"];
     const 龍: Variant = &["龍", "竜"];
-    const 竈: Variant = &["竈", "釜"];
+    const 竈: Variant = &["竈", "竃", "釜"];
     const 嶋: Variant = &["嶋", "島"];
     const 舘: Variant = &["舘", "館"];
     const 脊: Variant = &["脊", "背"];
