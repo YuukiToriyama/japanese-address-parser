@@ -212,7 +212,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_24(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h962193116e6fb655(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h89242578ce6a33c6(arg0, arg1, addHeapObject(arg2));
 }
 
 function handleError(f, args) {
@@ -223,7 +223,7 @@ function handleError(f, args) {
     }
 }
 function __wbg_adapter_101(arg0, arg1, arg2, arg3) {
-    wasm.wasm_bindgen__convert__closures__invoke2_mut__hb23829b012754d9a(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
+    wasm.wasm_bindgen__convert__closures__invoke2_mut__h7d8880f5fbcc2354(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
 const ParserFinalization = (typeof FinalizationRegistry === 'undefined')
