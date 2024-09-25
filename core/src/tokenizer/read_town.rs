@@ -113,6 +113,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
                 Variant::籠,
                 Variant::濱,
                 Variant::祗,
+                Variant::曾,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {
