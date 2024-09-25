@@ -33,7 +33,7 @@ pub trait OrthographicalVariants {
 }
 
 impl OrthographicalVariants for Variant {
-    const の: Variant = &["の", "ノ"];
+    const の: Variant = &["の", "ノ", "之"];
     const ツ: Variant = &["ツ", "ッ"];
     const ケ: Variant = &["ケ", "ヶ", "が", "ガ"];
     const 薮: Variant = &["薮", "藪", "籔"];
