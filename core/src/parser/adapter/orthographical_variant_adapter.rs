@@ -30,6 +30,7 @@ pub trait OrthographicalVariants {
     const 籠: Variant;
     const 濱: Variant;
     const 祗: Variant;
+    const 曾: Variant;
 }
 
 impl OrthographicalVariants for Variant {
@@ -60,6 +61,7 @@ impl OrthographicalVariants for Variant {
     const 籠: Variant = &["籠", "篭"];
     const 濱: Variant = &["濱", "浜"];
     const 祗: Variant = &["祗", "祇"];
+    const 曾: Variant = &["曾", "曽"];
 }
 
 pub struct OrthographicalVariantAdapter {
