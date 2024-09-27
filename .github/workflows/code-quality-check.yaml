@@ -2,6 +2,9 @@ name: Code quality check
 
 on:
   pull_request:
+    paths:
+      - '**.rs'
+      - '**/Cargo.toml'
 
 jobs:
   build:
@@ -21,3 +24,10 @@ jobs:
           reporter: 'github-pr-review'
           filter_mode: 'nofilter'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run benchmark
+        uses: boa-dev/criterion-compare-action@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branchName: ${{ github.base_ref }}
+          cwd: 'core'
+          benchName: 'core_benchmark'
