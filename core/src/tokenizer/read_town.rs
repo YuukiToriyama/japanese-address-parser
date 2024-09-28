@@ -26,7 +26,7 @@ impl Tokenizer<CityNameFound> {
                     tokens: append_token(
                         &self.tokens,
                         Token::Town(Town {
-                            town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
+                            town_name,
                             representative_point: None,
                         }),
                     ),
@@ -53,7 +53,7 @@ impl Tokenizer<CityNameFound> {
                     tokens: append_token(
                         &self.tokens,
                         Token::Town(Town {
-                            town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
+                            town_name,
                             representative_point: None,
                         }),
                     ),
@@ -79,7 +79,7 @@ impl Tokenizer<CityNameFound> {
                     tokens: append_token(
                         &self.tokens,
                         Token::Town(Town {
-                            town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
+                            town_name,
                             representative_point: None,
                         }),
                     ),
