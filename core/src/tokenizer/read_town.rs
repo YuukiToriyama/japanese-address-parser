@@ -20,6 +20,7 @@ impl Tokenizer<CityNameFound> {
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
+                tokens: vec![],
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
                 town_name: Some(town_name),
@@ -37,6 +38,7 @@ impl Tokenizer<CityNameFound> {
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
+                tokens: vec![],
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
                 town_name: Some(town_name),
@@ -53,6 +55,7 @@ impl Tokenizer<CityNameFound> {
         if let Some((town_name, rest)) = find_town(&format!("大字{}", rest), &candidates) {
             return Ok(Tokenizer {
                 input: self.input.clone(),
+                tokens: vec![],
                 prefecture_name: self.prefecture_name.clone(),
                 city_name: self.city_name.clone(),
                 town_name: Some(town_name),
@@ -67,6 +70,7 @@ impl Tokenizer<CityNameFound> {
         }
         Err(Tokenizer {
             input: self.input.clone(),
+            tokens: vec![],
             prefecture_name: self.prefecture_name.clone(),
             city_name: self.city_name.clone(),
             town_name: None,
@@ -132,6 +136,7 @@ mod tests {
     fn read_town_成功() {
         let tokenizer = Tokenizer {
             input: "静岡県静岡市清水区旭町6番8号".to_string(),
+            tokens: vec![],
             prefecture_name: Some("静岡県".to_string()),
             city_name: Some("静岡市清水区".to_string()),
             town_name: None,
@@ -158,6 +163,7 @@ mod tests {
     fn read_town_orthographical_variant_adapterで成功() {
         let tokenizer = Tokenizer {
             input: "東京都千代田区一ッ橋二丁目1番".to_string(), // 「ッ」と「ツ」の表記ゆれ
+            tokens: vec![],
             prefecture_name: Some("東京都".to_string()),
             city_name: Some("千代田区".to_string()),
             town_name: None,
@@ -184,6 +190,7 @@ mod tests {
     fn read_town_invalid_town_name_format_filterで成功() {
         let tokenizer = Tokenizer {
             input: "京都府京都市東山区本町22丁目489番".to_string(),
+            tokens: vec![],
             prefecture_name: Some("京都府".to_string()),
             city_name: Some("京都市東山区".to_string()),
             town_name: None,
@@ -211,6 +218,7 @@ mod tests {
     fn read_town_大字が省略されている場合_成功() {
         let tokenizer = Tokenizer {
             input: "東京都西多摩郡日の出町平井2780番地".to_string(), // 「大字」が省略されている
+            tokens: vec![],
             prefecture_name: Some("東京都".to_string()),
             city_name: Some("西多摩郡日の出町".to_string()),
             town_name: None,
@@ -231,6 +239,7 @@ mod tests {
     fn read_town_失敗() {
         let tokenizer = Tokenizer {
             input: "静岡県静岡市清水区".to_string(),
+            tokens: vec![],
             prefecture_name: Some("静岡県".to_string()),
             city_name: Some("静岡市清水区".to_string()),
             town_name: None,

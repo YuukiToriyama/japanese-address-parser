@@ -57,6 +57,7 @@ impl Tokenizer<Init> {
     pub(crate) fn new(input: &str) -> Self {
         Self {
             input: input.to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
@@ -74,6 +75,7 @@ impl Tokenizer<Init> {
             if self.rest.starts_with(prefecture_name) {
                 return Ok(Tokenizer {
                     input: self.input.clone(),
+                    tokens: vec![],
                     prefecture_name: Some(prefecture_name.to_string()),
                     city_name: None,
                     town_name: None,
@@ -88,6 +90,7 @@ impl Tokenizer<Init> {
         }
         Err(Tokenizer {
             input: self.input.clone(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,

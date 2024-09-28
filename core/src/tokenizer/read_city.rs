@@ -14,6 +14,7 @@ impl Tokenizer<PrefectureNameFound> {
             if self.rest.starts_with(candidate) {
                 return Ok(Tokenizer {
                     input: self.input.clone(),
+                    tokens: vec![],
                     prefecture_name: self.prefecture_name.clone(),
                     city_name: Some(candidate.clone()),
                     town_name: None,
@@ -55,6 +56,7 @@ impl Tokenizer<PrefectureNameFound> {
             if let Some(result) = adapter.apply(self.rest.as_str(), candidate) {
                 return Ok(Tokenizer {
                     input: self.input.clone(),
+                    tokens: vec![],
                     prefecture_name: self.prefecture_name.clone(),
                     city_name: Some(result.0),
                     town_name: None,
@@ -66,6 +68,7 @@ impl Tokenizer<PrefectureNameFound> {
 
         Err(Tokenizer {
             input: self.input.clone(),
+            tokens: vec![],
             prefecture_name: self.prefecture_name.clone(),
             city_name: None,
             town_name: None,
@@ -84,6 +87,7 @@ mod tests {
     fn read_city_成功() {
         let tokenizer = Tokenizer {
             input: "神奈川県横浜市保土ケ谷区川辺町2番地9".to_string(),
+            tokens: vec![],
             prefecture_name: Some("神奈川県".to_string()),
             city_name: None,
             town_name: None,
@@ -108,6 +112,7 @@ mod tests {
     fn read_city_orthographical_variant_adapterで成功() {
         let tokenizer = Tokenizer {
             input: "神奈川県横浜市保土ヶ谷区川辺町2番地9".to_string(), // 「ヶ」と「ケ」の表記ゆれ
+            tokens: vec![],
             prefecture_name: Some("神奈川県".to_string()),
             city_name: None,
             town_name: None,
@@ -132,6 +137,7 @@ mod tests {
     fn read_city_失敗() {
         let tokenizer = Tokenizer {
             input: "神奈川県京都市上京区川辺町2番地9".to_string(),
+            tokens: vec![],
             prefecture_name: Some("神奈川県".to_string()),
             city_name: None,
             town_name: None,

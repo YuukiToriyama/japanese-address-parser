@@ -13,6 +13,7 @@ impl Tokenizer<CityNameNotFound> {
             if let Ok(complemented_address) = complement_county_name(&self.rest, &highest_match) {
                 return Ok(Tokenizer {
                     input: self.input.clone(),
+                    tokens: vec![],
                     prefecture_name: self.prefecture_name.clone(),
                     city_name: Some(highest_match.clone()),
                     town_name: None,
@@ -26,6 +27,7 @@ impl Tokenizer<CityNameNotFound> {
         }
         Err(Tokenizer {
             input: self.input.clone(),
+            tokens: vec![],
             prefecture_name: self.prefecture_name.clone(),
             city_name: None,
             town_name: None,
@@ -78,6 +80,7 @@ mod tests {
     fn read_city_with_county_name_completion_秩父郡東秩父村() {
         let tokenizer = Tokenizer {
             input: "埼玉県東秩父村大字御堂634番地".to_string(), // 「秩父郡」が省略されている
+            tokens: vec![],
             prefecture_name: Some("埼玉県".to_string()),
             city_name: None,
             town_name: None,
@@ -103,6 +106,7 @@ mod tests {
     fn read_city_with_county_name_completion_吉田郡永平寺町() {
         let tokenizer = Tokenizer {
             input: "".to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
@@ -120,6 +124,7 @@ mod tests {
     fn read_city_with_county_name_completion_今立郡池田町() {
         let tokenizer = Tokenizer {
             input: "".to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
@@ -137,6 +142,7 @@ mod tests {
     fn read_city_with_county_name_completion_南条郡南越前町() {
         let tokenizer = Tokenizer {
             input: "".to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
@@ -154,6 +160,7 @@ mod tests {
     fn read_city_with_county_name_completion_西村山郡河北町() {
         let tokenizer = Tokenizer {
             input: "".to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
@@ -172,6 +179,7 @@ mod tests {
     fn read_city_with_county_name_completion_杵島郡大町町() {
         let tokenizer = Tokenizer {
             input: "".to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
@@ -189,6 +197,7 @@ mod tests {
     fn read_city_with_county_name_completion_最上郡最上町() {
         let tokenizer = Tokenizer {
             input: "".to_string(),
+            tokens: vec![],
             prefecture_name: None,
             city_name: None,
             town_name: None,
