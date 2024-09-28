@@ -88,8 +88,8 @@ impl Tokenizer<CityNameFound> {
             ));
         }
         Err(Tokenizer {
-            tokens: self.tokens.clone(),
-            rest: self.rest.clone(),
+            tokens: append_token(&self.tokens, Token::Rest(self.rest.clone())),
+            rest: "".to_string(),
             _state: PhantomData::<End>,
         })
     }
@@ -288,7 +288,7 @@ mod tests {
         ]);
         assert!(result.is_err());
         let tokenizer = result.unwrap_err();
-        assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(tokenizer.rest, "");
+        assert_eq!(tokenizer.tokens.len(), 3);
+        assert_eq!(tokenizer.tokens[2], Token::Rest("".to_string()));
     }
 }

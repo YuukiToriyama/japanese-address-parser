@@ -6,20 +6,20 @@ use crate::api::BlockingApi;
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
-use crate::tokenizer::Tokenizer;
+use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
 
 pub mod adapter;
 
-impl<T> From<Tokenizer<T>> for Address {
-    fn from(value: Tokenizer<T>) -> Self {
-        let mut address = Address::new("", "", "", value.rest.as_str());
+impl From<Tokenizer<End>> for Address {
+    fn from(value: Tokenizer<End>) -> Self {
+        let mut address = Address::new("", "", "", "");
         for token in value.tokens {
             match token {
                 Token::Prefecture(prefecture) => address.prefecture = prefecture.prefecture_name,
                 Token::City(city) => address.city = city.city_name,
                 Token::Town(town) => address.town = town.town_name,
-                _ => {}
+                Token::Rest(rest) => address.rest = rest,
             }
         }
         address
