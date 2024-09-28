@@ -24,7 +24,6 @@ impl Tokenizer<PrefectureNameFound> {
                             }),
                         ),
                         prefecture_name: self.prefecture_name.clone(),
-                        city_name: Some(candidate.clone()),
                         rest: self
                             .rest
                             .chars()
@@ -69,12 +68,11 @@ impl Tokenizer<PrefectureNameFound> {
                         tokens: append_token(
                             &self.tokens,
                             Token::City(City {
-                                city_name: result.0.clone(), // TODO: 以降に使用箇所があるためcloneしているが本来不要なので使用箇所なくなったら削除する
+                                city_name: result.0,
                                 representative_point: None,
                             }),
                         ),
                         prefecture_name: self.prefecture_name.clone(),
-                        city_name: Some(result.0),
                         rest: result.1,
                         _state: PhantomData::<CityNameFound>,
                     },
@@ -86,7 +84,6 @@ impl Tokenizer<PrefectureNameFound> {
             input: self.input.clone(),
             tokens: self.tokens.clone(),
             prefecture_name: self.prefecture_name.clone(),
-            city_name: None,
             rest: self.rest.clone(),
             _state: PhantomData::<CityNameNotFound>,
         })
@@ -108,7 +105,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: Some("神奈川県".to_string()),
-            city_name: None,
             rest: "横浜市保土ケ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
@@ -134,7 +130,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: Some("神奈川県".to_string()),
-            city_name: None,
             rest: "横浜市保土ヶ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
@@ -160,7 +155,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: Some("神奈川県".to_string()),
-            city_name: None,
             rest: "京都市上京区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };

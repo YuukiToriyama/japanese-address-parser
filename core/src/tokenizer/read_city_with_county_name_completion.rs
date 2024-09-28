@@ -24,7 +24,6 @@ impl Tokenizer<CityNameNotFound> {
                             }),
                         ),
                         prefecture_name: self.prefecture_name.clone(),
-                        city_name: Some(highest_match.clone()),
                         rest: complemented_address
                             .chars()
                             .skip(highest_match.chars().count())
@@ -38,7 +37,6 @@ impl Tokenizer<CityNameNotFound> {
             input: self.input.clone(),
             tokens: self.tokens.clone(),
             prefecture_name: self.prefecture_name.clone(),
-            city_name: None,
             rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
@@ -94,7 +92,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: Some("埼玉県".to_string()),
-            city_name: None,
             rest: "東秩父村大字御堂634番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -121,7 +118,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: None,
-            city_name: None,
             rest: "永平寺町志比５－５".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -143,7 +139,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: None,
-            city_name: None,
             rest: "池田町稲荷２８－７".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -165,7 +160,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: None,
-            city_name: None,
             rest: "南越前町今庄７４－７－１".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -187,7 +181,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: None,
-            city_name: None,
             rest: "河北町大字吉田字馬場261".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -210,7 +203,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: None,
-            city_name: None,
             rest: "大町町大字大町5017番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -232,7 +224,6 @@ mod tests {
                 representative_point: None,
             })],
             prefecture_name: None,
-            city_name: None,
             rest: "最上町法田2672-2".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
