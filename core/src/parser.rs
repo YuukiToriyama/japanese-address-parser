@@ -121,7 +121,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let city = match api.get_city_master(&prefecture_name, &city_name).await {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -132,7 +132,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
     else {
         return ParseResult {
-            address: Address::from(tokenizer),
+            address: Address::from(tokenizer.finish()),
             error: Some(Error::new_parse_error(ParseErrorKind::Town)),
         };
     };
@@ -282,7 +282,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let city = match api.get_city_master(&prefecture_name, &city_name) {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -292,7 +292,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
     else {
         return ParseResult {
-            address: Address::from(tokenizer),
+            address: Address::from(tokenizer.finish()),
             error: Some(Error::new_parse_error(ParseErrorKind::Town)),
         };
     };

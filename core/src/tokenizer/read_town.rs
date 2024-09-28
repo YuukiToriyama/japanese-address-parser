@@ -93,6 +93,14 @@ impl Tokenizer<CityNameFound> {
             _state: PhantomData::<End>,
         })
     }
+
+    pub(crate) fn finish(&self) -> Tokenizer<End> {
+        Tokenizer {
+            tokens: append_token(&self.tokens, Token::Rest(self.rest.clone())),
+            rest: "".to_string(),
+            _state: PhantomData::<End>,
+        }
+    }
 }
 
 fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> {
