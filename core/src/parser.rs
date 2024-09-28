@@ -120,7 +120,8 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 町名を特定
-    let Ok(tokenizer) = tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
+    let Ok((_, tokenizer)) =
+        tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
     else {
         return ParseResult {
             address: Address::from(tokenizer),
@@ -276,7 +277,8 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         }
         Ok(result) => result,
     };
-    let Ok(tokenizer) = tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
+    let Ok((_, tokenizer)) =
+        tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
     else {
         return ParseResult {
             address: Address::from(tokenizer),

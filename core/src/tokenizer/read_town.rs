@@ -13,79 +13,91 @@ impl Tokenizer<CityNameFound> {
     pub(crate) fn read_town(
         &self,
         candidates: Vec<String>,
-    ) -> Result<Tokenizer<TownNameFound>, Tokenizer<End>> {
+    ) -> Result<(String, Tokenizer<TownNameFound>), Tokenizer<End>> {
         let mut rest = format_fullwidth_number(&self.rest);
         if rest.contains("丁目") {
             rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
-            return Ok(Tokenizer {
-                input: self.input.clone(),
-                tokens: append_token(
-                    &self.tokens,
-                    Token::Town(Town {
-                        town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
-                        representative_point: None,
-                    }),
-                ),
-                prefecture_name: self.prefecture_name.clone(),
-                city_name: self.city_name.clone(),
-                town_name: Some(town_name),
-                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
-                {
-                    format_house_number(&rest).unwrap()
-                } else {
-                    rest
+            return Ok((
+                town_name.clone(),
+                Tokenizer {
+                    input: self.input.clone(),
+                    tokens: append_token(
+                        &self.tokens,
+                        Token::Town(Town {
+                            town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
+                            representative_point: None,
+                        }),
+                    ),
+                    prefecture_name: self.prefecture_name.clone(),
+                    city_name: self.city_name.clone(),
+                    town_name: Some(town_name),
+                    rest: if cfg!(feature = "format-house-number")
+                        && format_house_number(&rest).is_ok()
+                    {
+                        format_house_number(&rest).unwrap()
+                    } else {
+                        rest
+                    },
+                    _state: PhantomData::<TownNameFound>,
                 },
-                _state: PhantomData::<TownNameFound>,
-            });
+            ));
         }
         // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
         rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
         if let Some((town_name, rest)) = find_town(&rest, &candidates) {
-            return Ok(Tokenizer {
-                input: self.input.clone(),
-                tokens: append_token(
-                    &self.tokens,
-                    Token::Town(Town {
-                        town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
-                        representative_point: None,
-                    }),
-                ),
-                prefecture_name: self.prefecture_name.clone(),
-                city_name: self.city_name.clone(),
-                town_name: Some(town_name),
-                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
-                {
-                    format_house_number(&rest).unwrap()
-                } else {
-                    rest
+            return Ok((
+                town_name.clone(),
+                Tokenizer {
+                    input: self.input.clone(),
+                    tokens: append_token(
+                        &self.tokens,
+                        Token::Town(Town {
+                            town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
+                            representative_point: None,
+                        }),
+                    ),
+                    prefecture_name: self.prefecture_name.clone(),
+                    city_name: self.city_name.clone(),
+                    town_name: Some(town_name),
+                    rest: if cfg!(feature = "format-house-number")
+                        && format_house_number(&rest).is_ok()
+                    {
+                        format_house_number(&rest).unwrap()
+                    } else {
+                        rest
+                    },
+                    _state: PhantomData::<TownNameFound>,
                 },
-                _state: PhantomData::<TownNameFound>,
-            });
+            ));
         }
         // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
         if let Some((town_name, rest)) = find_town(&format!("大字{}", rest), &candidates) {
-            return Ok(Tokenizer {
-                input: self.input.clone(),
-                tokens: append_token(
-                    &self.tokens,
-                    Token::Town(Town {
-                        town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
-                        representative_point: None,
-                    }),
-                ),
-                prefecture_name: self.prefecture_name.clone(),
-                city_name: self.city_name.clone(),
-                town_name: Some(town_name),
-                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
-                {
-                    format_house_number(&rest).unwrap()
-                } else {
-                    rest
+            return Ok((
+                town_name.clone(),
+                Tokenizer {
+                    input: self.input.clone(),
+                    tokens: append_token(
+                        &self.tokens,
+                        Token::Town(Town {
+                            town_name: town_name.clone(), // TODO: 以降に使用箇所があるためcloneしているが、本来不要なので使用箇所なくなったら削除する
+                            representative_point: None,
+                        }),
+                    ),
+                    prefecture_name: self.prefecture_name.clone(),
+                    city_name: self.city_name.clone(),
+                    town_name: Some(town_name),
+                    rest: if cfg!(feature = "format-house-number")
+                        && format_house_number(&rest).is_ok()
+                    {
+                        format_house_number(&rest).unwrap()
+                    } else {
+                        rest
+                    },
+                    _state: PhantomData::<TownNameFound>,
                 },
-                _state: PhantomData::<TownNameFound>,
-            });
+            ));
         }
         Err(Tokenizer {
             input: self.input.clone(),
@@ -148,7 +160,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::domain::common::token::{City, Prefecture, Token};
     use crate::tokenizer::{CityNameFound, Tokenizer};
     use std::marker::PhantomData;
 
@@ -180,16 +192,10 @@ mod tests {
             "三保松原町".to_string(),
         ]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (town_name, tokenizer) = result.unwrap();
+        assert_eq!(town_name, "旭町");
         assert_eq!(tokenizer.input, "静岡県静岡市清水区旭町6番8号");
         assert_eq!(tokenizer.tokens.len(), 3);
-        assert_eq!(
-            tokenizer.tokens[2],
-            Token::Town(Town {
-                town_name: "旭町".to_string(),
-                representative_point: None,
-            })
-        );
         assert_eq!(tokenizer.rest, "6番8号");
     }
 
@@ -221,16 +227,10 @@ mod tests {
             "一ツ橋二丁目".to_string(),
         ]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (town_name, tokenizer) = result.unwrap();
+        assert_eq!(town_name, "一ツ橋二丁目");
         assert_eq!(tokenizer.input, "東京都千代田区一ッ橋二丁目1番");
         assert_eq!(tokenizer.tokens.len(), 3);
-        assert_eq!(
-            tokenizer.tokens[2],
-            Token::Town(Town {
-                town_name: "一ツ橋二丁目".to_string(),
-                representative_point: None,
-            })
-        );
         assert_eq!(tokenizer.rest, "1番");
     }
 
@@ -263,16 +263,10 @@ mod tests {
             "本町新六丁目".to_string(),
         ]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (town_name, tokenizer) = result.unwrap();
+        assert_eq!(town_name, "本町二十二丁目");
         assert_eq!(tokenizer.input, "京都府京都市東山区本町22丁目489番");
         assert_eq!(tokenizer.tokens.len(), 3);
-        assert_eq!(
-            tokenizer.tokens[2],
-            Token::Town(Town {
-                town_name: "本町二十二丁目".to_string(),
-                representative_point: None,
-            })
-        );
         assert_eq!(tokenizer.rest, "489番");
     }
 
@@ -298,16 +292,10 @@ mod tests {
         };
         let result = tokenizer.read_town(vec!["大字大久野".to_string(), "大字平井".to_string()]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (town_name, tokenizer) = result.unwrap();
+        assert_eq!(town_name, "大字平井");
         assert_eq!(tokenizer.input, "東京都西多摩郡日の出町平井2780番地");
         assert_eq!(tokenizer.tokens.len(), 3);
-        assert_eq!(
-            tokenizer.tokens[2],
-            Token::Town(Town {
-                town_name: "大字平井".to_string(),
-                representative_point: None,
-            })
-        );
         assert_eq!(tokenizer.rest, "2780番地");
     }
 
