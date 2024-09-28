@@ -34,27 +34,27 @@ impl Tokenizer<PrefectureNameFound> {
                 ));
             }
             let mut variant_list = vec![Variant::ケ];
-            match self.prefecture_name.clone().unwrap().as_str() {
-                "青森県" => {
+            match self.get_prefecture_name() {
+                Some("青森県") => {
                     variant_list.push(Variant::舘);
                 }
-                "宮城県" => {
+                Some("宮城県") => {
                     variant_list.push(Variant::竈);
                 }
-                "茨城県" => {
+                Some("茨城県") => {
                     variant_list.push(Variant::龍);
                     variant_list.push(Variant::嶋);
                 }
-                "東京都" => {
+                Some("東京都") => {
                     variant_list.push(Variant::檜);
                 }
-                "兵庫県" => {
+                Some("兵庫県") => {
                     variant_list.push(Variant::塚);
                 }
-                "高知県" => {
+                Some("高知県") => {
                     variant_list.push(Variant::梼);
                 }
-                "福岡県" => {
+                Some("福岡県") => {
                     variant_list.push(Variant::恵);
                 }
                 _ => {}
