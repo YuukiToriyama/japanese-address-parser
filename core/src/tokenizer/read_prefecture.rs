@@ -56,7 +56,6 @@ const PREFECTURE_NAME_LIST: [&str; 47] = [
 impl Tokenizer<Init> {
     pub(crate) fn new(input: &str) -> Self {
         Self {
-            input: input.to_string(),
             tokens: vec![],
             rest: if cfg!(feature = "eliminate-whitespaces") {
                 input.strip_variation_selectors().strip_whitespaces()
@@ -75,7 +74,6 @@ impl Tokenizer<Init> {
                 return Ok((
                     prefecture_name.to_string(),
                     Tokenizer {
-                        input: self.input.clone(),
                         tokens: vec![Token::Prefecture(Prefecture {
                             prefecture_name: prefecture_name.to_string(),
                             representative_point: None,
@@ -91,7 +89,6 @@ impl Tokenizer<Init> {
             }
         }
         Err(Tokenizer {
-            input: self.input.clone(),
             tokens: vec![],
             rest: self.rest.clone(),
             _state: PhantomData::<End>,
@@ -106,7 +103,6 @@ mod tests {
     #[test]
     fn new() {
         let tokenizer = Tokenizer::new("東京都港区芝公園4丁目2-8");
-        assert_eq!(tokenizer.input, "東京都港区芝公園4丁目2-8");
         assert_eq!(tokenizer.tokens, vec![]);
         assert_eq!(tokenizer.rest, "東京都港区芝公園4丁目2-8");
     }
@@ -114,7 +110,6 @@ mod tests {
     #[test]
     fn new_異字体セレクタ除去() {
         let tokenizer = Tokenizer::new("東京都葛\u{E0100}飾区立石5-13-1");
-        assert_eq!(tokenizer.input, "東京都葛\u{E0100}飾区立石5-13-1");
         assert_eq!(tokenizer.tokens, vec![]);
         assert_eq!(tokenizer.rest, "東京都葛飾区立石5-13-1")
     }
@@ -123,7 +118,6 @@ mod tests {
     #[cfg(feature = "eliminate-whitespaces")]
     fn new_ホワイトスペース除却() {
         let tokenizer = Tokenizer::new("東京都 目黒区 下目黒 4‐1‐1");
-        assert_eq!(tokenizer.input, "東京都 目黒区 下目黒 4‐1‐1");
         assert_eq!(tokenizer.tokens, vec![]);
         assert_eq!(tokenizer.rest, "東京都目黒区下目黒4‐1‐1")
     }
@@ -135,7 +129,6 @@ mod tests {
         assert!(result.is_ok());
         let (prefecture_name, tokenizer) = result.unwrap();
         assert_eq!(prefecture_name, "東京都");
-        assert_eq!(tokenizer.input, "東京都港区芝公園4丁目2-8");
         assert_eq!(tokenizer.tokens.len(), 1);
         assert_eq!(tokenizer.rest, "港区芝公園4丁目2-8");
     }
@@ -146,7 +139,6 @@ mod tests {
         let result = tokenizer.read_prefecture();
         assert!(result.is_err());
         let tokenizer = result.unwrap_err();
-        assert_eq!(tokenizer.input, "東今日都港区芝公園4丁目2-8");
         assert_eq!(tokenizer.tokens, vec![]);
         assert_eq!(tokenizer.rest, "東今日都港区芝公園4丁目2-8".to_string());
     }

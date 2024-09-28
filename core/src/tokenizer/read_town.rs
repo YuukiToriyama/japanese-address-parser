@@ -22,7 +22,6 @@ impl Tokenizer<CityNameFound> {
             return Ok((
                 town_name.clone(),
                 Tokenizer {
-                    input: self.input.clone(),
                     tokens: append_token(
                         &self.tokens,
                         Token::Town(Town {
@@ -47,7 +46,6 @@ impl Tokenizer<CityNameFound> {
             return Ok((
                 town_name.clone(),
                 Tokenizer {
-                    input: self.input.clone(),
                     tokens: append_token(
                         &self.tokens,
                         Token::Town(Town {
@@ -71,7 +69,6 @@ impl Tokenizer<CityNameFound> {
             return Ok((
                 town_name.clone(),
                 Tokenizer {
-                    input: self.input.clone(),
                     tokens: append_token(
                         &self.tokens,
                         Token::Town(Town {
@@ -91,7 +88,6 @@ impl Tokenizer<CityNameFound> {
             ));
         }
         Err(Tokenizer {
-            input: self.input.clone(),
             tokens: self.tokens.clone(),
             rest: self.rest.clone(),
             _state: PhantomData::<End>,
@@ -155,7 +151,6 @@ mod tests {
     #[test]
     fn read_town_成功() {
         let tokenizer = Tokenizer {
-            input: "静岡県静岡市清水区旭町6番8号".to_string(),
             tokens: vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "静岡県".to_string(),
@@ -179,7 +174,6 @@ mod tests {
         assert!(result.is_ok());
         let (town_name, tokenizer) = result.unwrap();
         assert_eq!(town_name, "旭町");
-        assert_eq!(tokenizer.input, "静岡県静岡市清水区旭町6番8号");
         assert_eq!(tokenizer.tokens.len(), 3);
         assert_eq!(tokenizer.rest, "6番8号");
     }
@@ -187,7 +181,6 @@ mod tests {
     #[test]
     fn read_town_orthographical_variant_adapterで成功() {
         let tokenizer = Tokenizer {
-            input: "東京都千代田区一ッ橋二丁目1番".to_string(), // 「ッ」と「ツ」の表記ゆれ
             tokens: vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "東京都".to_string(),
@@ -198,7 +191,7 @@ mod tests {
                     representative_point: None,
                 }),
             ],
-            rest: "一ッ橋二丁目1番".to_string(),
+            rest: "一ッ橋二丁目1番".to_string(), // 「ッ」と「ツ」の表記ゆれ
             _state: PhantomData::<CityNameFound>,
         };
         let result = tokenizer.read_town(vec![
@@ -211,7 +204,6 @@ mod tests {
         assert!(result.is_ok());
         let (town_name, tokenizer) = result.unwrap();
         assert_eq!(town_name, "一ツ橋二丁目");
-        assert_eq!(tokenizer.input, "東京都千代田区一ッ橋二丁目1番");
         assert_eq!(tokenizer.tokens.len(), 3);
         assert_eq!(tokenizer.rest, "1番");
     }
@@ -219,7 +211,6 @@ mod tests {
     #[test]
     fn read_town_invalid_town_name_format_filterで成功() {
         let tokenizer = Tokenizer {
-            input: "京都府京都市東山区本町22丁目489番".to_string(),
             tokens: vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "京都府".to_string(),
@@ -244,7 +235,6 @@ mod tests {
         assert!(result.is_ok());
         let (town_name, tokenizer) = result.unwrap();
         assert_eq!(town_name, "本町二十二丁目");
-        assert_eq!(tokenizer.input, "京都府京都市東山区本町22丁目489番");
         assert_eq!(tokenizer.tokens.len(), 3);
         assert_eq!(tokenizer.rest, "489番");
     }
@@ -252,7 +242,6 @@ mod tests {
     #[test]
     fn read_town_大字が省略されている場合_成功() {
         let tokenizer = Tokenizer {
-            input: "東京都西多摩郡日の出町平井2780番地".to_string(), // 「大字」が省略されている
             tokens: vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "東京都".to_string(),
@@ -263,14 +252,13 @@ mod tests {
                     representative_point: None,
                 }),
             ],
-            rest: "平井2780番地".to_string(),
+            rest: "平井2780番地".to_string(), // 「大字」が省略されている
             _state: PhantomData::<CityNameFound>,
         };
         let result = tokenizer.read_town(vec!["大字大久野".to_string(), "大字平井".to_string()]);
         assert!(result.is_ok());
         let (town_name, tokenizer) = result.unwrap();
         assert_eq!(town_name, "大字平井");
-        assert_eq!(tokenizer.input, "東京都西多摩郡日の出町平井2780番地");
         assert_eq!(tokenizer.tokens.len(), 3);
         assert_eq!(tokenizer.rest, "2780番地");
     }
@@ -278,7 +266,6 @@ mod tests {
     #[test]
     fn read_town_失敗() {
         let tokenizer = Tokenizer {
-            input: "静岡県静岡市清水区".to_string(),
             tokens: vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "静岡県".to_string(),
@@ -301,7 +288,6 @@ mod tests {
         ]);
         assert!(result.is_err());
         let tokenizer = result.unwrap_err();
-        assert_eq!(tokenizer.input, "静岡県静岡市清水区");
         assert_eq!(tokenizer.tokens.len(), 2);
         assert_eq!(tokenizer.rest, "");
     }
