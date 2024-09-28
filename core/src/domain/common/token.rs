@@ -5,7 +5,7 @@ pub enum Token {
     Prefecture(Prefecture),
     City(City),
     Town(Town),
-    Rest(Rest),
+    Rest(String),
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -24,12 +24,6 @@ pub(crate) struct City {
 pub(crate) struct Town {
     pub(crate) town_name: String,
     pub(crate) representative_point: Option<LatLng>,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct Rest {
-    rest: String,
-    representative_point: Option<LatLng>,
 }
 
 pub(crate) fn append_token(tokens: &[Token], token: Token) -> Vec<Token> {
