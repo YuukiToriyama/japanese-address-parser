@@ -31,11 +31,7 @@ impl Tokenizer<CityNameNotFound> {
                 ));
             }
         }
-        Err(Tokenizer {
-            tokens: append_token(&self.tokens, Token::Rest(self.rest.clone())),
-            rest: "".to_string(),
-            _state: PhantomData::<End>,
-        })
+        Err(self.finish())
     }
 }
 

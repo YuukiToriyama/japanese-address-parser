@@ -87,19 +87,7 @@ impl Tokenizer<CityNameFound> {
                 },
             ));
         }
-        Err(Tokenizer {
-            tokens: append_token(&self.tokens, Token::Rest(self.rest.clone())),
-            rest: "".to_string(),
-            _state: PhantomData::<End>,
-        })
-    }
-
-    pub(crate) fn finish(&self) -> Tokenizer<End> {
-        Tokenizer {
-            tokens: append_token(&self.tokens, Token::Rest(self.rest.clone())),
-            rest: "".to_string(),
-            _state: PhantomData::<End>,
-        }
+        Err(self.finish())
     }
 }
 
