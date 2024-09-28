@@ -3,6 +3,7 @@ pub(crate) mod read_city_with_county_name_completion;
 pub(crate) mod read_prefecture;
 pub(crate) mod read_town;
 
+use crate::domain::common::token::Token;
 use std::marker::PhantomData;
 
 #[derive(Debug)]
@@ -21,6 +22,7 @@ pub(crate) struct End;
 #[derive(Debug)]
 pub struct Tokenizer<State> {
     input: String,
+    tokens: Vec<Token>,
     pub(crate) prefecture_name: Option<String>,
     pub(crate) city_name: Option<String>,
     pub(crate) town_name: Option<String>,
