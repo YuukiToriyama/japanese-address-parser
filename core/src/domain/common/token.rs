@@ -7,22 +7,22 @@ pub enum Token {
     Rest(Rest),
 }
 
-struct Prefecture {
+pub(crate) struct Prefecture {
     prefecture_name: String,
     representative_point: Option<LatLng>,
 }
 
-struct City {
+pub(crate) struct City {
     city_name: String,
     representative_point: Option<LatLng>,
 }
 
-struct Town {
+pub(crate) struct Town {
     town_name: String,
     representative_point: Option<LatLng>,
 }
 
-struct Rest {
+pub(crate) struct Rest {
     rest: String,
     representative_point: Option<LatLng>,
 }
