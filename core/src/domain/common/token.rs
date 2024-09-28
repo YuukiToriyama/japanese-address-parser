@@ -1,6 +1,6 @@
 use crate::domain::common::latlng::LatLng;
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Token {
     Prefecture(Prefecture),
     City(City),
@@ -8,25 +8,25 @@ pub enum Token {
     Rest(Rest),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) struct Prefecture {
     pub(crate) prefecture_name: String,
     pub(crate) representative_point: Option<LatLng>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) struct City {
     city_name: String,
     representative_point: Option<LatLng>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) struct Town {
     town_name: String,
     representative_point: Option<LatLng>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) struct Rest {
     rest: String,
     representative_point: Option<LatLng>,
