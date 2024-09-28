@@ -25,7 +25,6 @@ pub struct Tokenizer<State> {
     pub(crate) tokens: Vec<Token>,
     pub(crate) prefecture_name: Option<String>,
     pub(crate) city_name: Option<String>,
-    pub(crate) town_name: Option<String>,
     pub(crate) rest: String,
     _state: PhantomData<State>,
 }

@@ -32,7 +32,6 @@ impl Tokenizer<CityNameFound> {
                     ),
                     prefecture_name: self.prefecture_name.clone(),
                     city_name: self.city_name.clone(),
-                    town_name: Some(town_name),
                     rest: if cfg!(feature = "format-house-number")
                         && format_house_number(&rest).is_ok()
                     {
@@ -60,7 +59,6 @@ impl Tokenizer<CityNameFound> {
                     ),
                     prefecture_name: self.prefecture_name.clone(),
                     city_name: self.city_name.clone(),
-                    town_name: Some(town_name),
                     rest: if cfg!(feature = "format-house-number")
                         && format_house_number(&rest).is_ok()
                     {
@@ -87,7 +85,6 @@ impl Tokenizer<CityNameFound> {
                     ),
                     prefecture_name: self.prefecture_name.clone(),
                     city_name: self.city_name.clone(),
-                    town_name: Some(town_name),
                     rest: if cfg!(feature = "format-house-number")
                         && format_house_number(&rest).is_ok()
                     {
@@ -104,7 +101,6 @@ impl Tokenizer<CityNameFound> {
             tokens: self.tokens.clone(),
             prefecture_name: self.prefecture_name.clone(),
             city_name: self.city_name.clone(),
-            town_name: None,
             rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
@@ -180,7 +176,6 @@ mod tests {
             ],
             prefecture_name: Some("静岡県".to_string()),
             city_name: Some("静岡市清水区".to_string()),
-            town_name: None,
             rest: "旭町6番8号".to_string(),
             _state: PhantomData::<CityNameFound>,
         };
@@ -215,7 +210,6 @@ mod tests {
             ],
             prefecture_name: Some("東京都".to_string()),
             city_name: Some("千代田区".to_string()),
-            town_name: None,
             rest: "一ッ橋二丁目1番".to_string(),
             _state: PhantomData::<CityNameFound>,
         };
@@ -250,7 +244,6 @@ mod tests {
             ],
             prefecture_name: Some("京都府".to_string()),
             city_name: Some("京都市東山区".to_string()),
-            town_name: None,
             rest: "本町22丁目489番".to_string(),
             _state: PhantomData::<CityNameFound>,
         };
@@ -286,7 +279,6 @@ mod tests {
             ],
             prefecture_name: Some("東京都".to_string()),
             city_name: Some("西多摩郡日の出町".to_string()),
-            town_name: None,
             rest: "平井2780番地".to_string(),
             _state: PhantomData::<CityNameFound>,
         };
@@ -315,7 +307,6 @@ mod tests {
             ],
             prefecture_name: Some("静岡県".to_string()),
             city_name: Some("静岡市清水区".to_string()),
-            town_name: None,
             rest: "".to_string(),
             _state: PhantomData::<CityNameFound>,
         };
