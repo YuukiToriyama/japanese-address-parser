@@ -3,6 +3,7 @@ use std::sync::Arc;
 use crate::api::AsyncApi;
 #[cfg(feature = "blocking")]
 use crate::api::BlockingApi;
+use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
 use crate::tokenizer::Tokenizer;
@@ -12,12 +13,16 @@ pub mod adapter;
 
 impl<T> From<Tokenizer<T>> for Address {
     fn from(value: Tokenizer<T>) -> Self {
-        Self {
-            prefecture: value.prefecture_name.unwrap_or("".to_string()),
-            city: value.city_name.unwrap_or("".to_string()),
-            town: value.town_name.unwrap_or("".to_string()),
-            rest: value.rest,
+        let mut address = Address::new("", "", "", value.rest.as_str());
+        for token in value.tokens {
+            match token {
+                Token::Prefecture(prefecture) => address.prefecture = prefecture.prefecture_name,
+                Token::City(city) => address.city = city.city_name,
+                Token::Town(town) => address.town = town.town_name,
+                _ => {}
+            }
         }
+        address
     }
 }
 

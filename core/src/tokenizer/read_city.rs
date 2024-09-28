@@ -25,7 +25,6 @@ impl Tokenizer<PrefectureNameFound> {
                         ),
                         prefecture_name: self.prefecture_name.clone(),
                         city_name: Some(candidate.clone()),
-                        town_name: None,
                         rest: self
                             .rest
                             .chars()
@@ -76,7 +75,6 @@ impl Tokenizer<PrefectureNameFound> {
                         ),
                         prefecture_name: self.prefecture_name.clone(),
                         city_name: Some(result.0),
-                        town_name: None,
                         rest: result.1,
                         _state: PhantomData::<CityNameFound>,
                     },
@@ -89,7 +87,6 @@ impl Tokenizer<PrefectureNameFound> {
             tokens: self.tokens.clone(),
             prefecture_name: self.prefecture_name.clone(),
             city_name: None,
-            town_name: None,
             rest: self.rest.clone(),
             _state: PhantomData::<CityNameNotFound>,
         })
@@ -112,7 +109,6 @@ mod tests {
             })],
             prefecture_name: Some("神奈川県".to_string()),
             city_name: None,
-            town_name: None,
             rest: "横浜市保土ケ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
@@ -139,7 +135,6 @@ mod tests {
             })],
             prefecture_name: Some("神奈川県".to_string()),
             city_name: None,
-            town_name: None,
             rest: "横浜市保土ヶ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
@@ -166,7 +161,6 @@ mod tests {
             })],
             prefecture_name: Some("神奈川県".to_string()),
             city_name: None,
-            town_name: None,
             rest: "京都市上京区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };

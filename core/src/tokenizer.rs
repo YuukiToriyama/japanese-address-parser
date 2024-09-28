@@ -22,10 +22,9 @@ pub(crate) struct End;
 #[derive(Debug)]
 pub struct Tokenizer<State> {
     input: String,
-    tokens: Vec<Token>,
+    pub(crate) tokens: Vec<Token>,
     pub(crate) prefecture_name: Option<String>,
     pub(crate) city_name: Option<String>,
-    pub(crate) town_name: Option<String>,
     pub(crate) rest: String,
     _state: PhantomData<State>,
 }
