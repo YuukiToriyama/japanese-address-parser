@@ -59,7 +59,6 @@ impl Tokenizer<Init> {
             input: input.to_string(),
             tokens: vec![],
             prefecture_name: None,
-            city_name: None,
             rest: if cfg!(feature = "eliminate-whitespaces") {
                 input.strip_variation_selectors().strip_whitespaces()
             } else {
@@ -83,7 +82,6 @@ impl Tokenizer<Init> {
                             representative_point: None,
                         })],
                         prefecture_name: Some(prefecture_name.to_string()),
-                        city_name: None,
                         rest: self
                             .rest
                             .chars()
@@ -98,7 +96,6 @@ impl Tokenizer<Init> {
             input: self.input.clone(),
             tokens: vec![],
             prefecture_name: None,
-            city_name: None,
             rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
