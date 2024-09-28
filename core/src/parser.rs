@@ -76,17 +76,14 @@ impl Parser {
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
     // 都道府県を特定
-    let Ok(tokenizer) = tokenizer.read_prefecture() else {
+    let Ok((prefecture_name, tokenizer)) = tokenizer.read_prefecture() else {
         return ParseResult {
             address: Address::from(tokenizer),
             error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
         };
     };
     // その都道府県の市町村名リストを取得
-    let prefecture = match api
-        .get_prefecture_master(tokenizer.prefecture_name.as_ref().unwrap())
-        .await
-    {
+    let prefecture = match api.get_prefecture_master(&prefecture_name).await {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer),
@@ -247,13 +244,13 @@ mod tests {
 #[cfg(feature = "blocking")]
 pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
-    let Ok(tokenizer) = tokenizer.read_prefecture() else {
+    let Ok((prefecture_name, tokenizer)) = tokenizer.read_prefecture() else {
         return ParseResult {
             address: Address::from(tokenizer),
             error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
         };
     };
-    let prefecture = match api.get_prefecture_master(tokenizer.prefecture_name.as_ref().unwrap()) {
+    let prefecture = match api.get_prefecture_master(&prefecture_name) {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer),
