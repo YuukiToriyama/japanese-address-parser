@@ -23,7 +23,17 @@ pub(crate) struct End;
 pub struct Tokenizer<State> {
     input: String,
     pub(crate) tokens: Vec<Token>,
-    pub(crate) prefecture_name: Option<String>,
     pub(crate) rest: String,
     _state: PhantomData<State>,
+}
+
+impl<T> Tokenizer<T> {
+    fn get_prefecture_name(&self) -> Option<&str> {
+        for token in &self.tokens {
+            if let Token::Prefecture(prefecture) = token {
+                return Some(&prefecture.prefecture_name);
+            };
+        }
+        None
+    }
 }
