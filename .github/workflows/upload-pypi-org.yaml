@@ -41,7 +41,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --zig
           working-directory: python
-          sccache: 'true'
+          sccache: false # sccacheを有効にしているとビルドに失敗するため、無効化している
           manylinux: auto
       - name: Upload wheels
         uses: actions/upload-artifact@v4
