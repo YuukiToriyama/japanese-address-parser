@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct LatLng {
     /// 緯度
     latitude: f64,
