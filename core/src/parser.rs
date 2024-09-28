@@ -110,7 +110,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
                 _ => {
                     // それでも見つからない場合は終了
                     return ParseResult {
-                        address: Address::from(tokenizer),
+                        address: Address::from(tokenizer.finish()),
                         error: Some(Error::new_parse_error(ParseErrorKind::City)),
                     };
                 }
@@ -272,7 +272,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
                 Ok(found) if cfg!(feature = "city-name-correction") => found,
                 _ => {
                     return ParseResult {
-                        address: Address::from(tokenizer),
+                        address: Address::from(tokenizer.finish()),
                         error: Some(Error::new_parse_error(ParseErrorKind::City)),
                     };
                 }
