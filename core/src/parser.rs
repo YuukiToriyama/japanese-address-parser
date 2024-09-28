@@ -94,7 +94,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let prefecture = match api.get_prefecture_master(&prefecture_name).await {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -259,7 +259,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let prefecture = match api.get_prefecture_master(&prefecture_name) {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }

@@ -2,7 +2,7 @@ use crate::domain::common::token::{append_token, City, Token};
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
-use crate::tokenizer::{CityNameFound, CityNameNotFound, PrefectureNameFound, Tokenizer};
+use crate::tokenizer::{CityNameFound, CityNameNotFound, End, PrefectureNameFound, Tokenizer};
 use std::marker::PhantomData;
 
 impl Tokenizer<PrefectureNameFound> {
@@ -81,6 +81,14 @@ impl Tokenizer<PrefectureNameFound> {
             rest: self.rest.clone(),
             _state: PhantomData::<CityNameNotFound>,
         })
+    }
+
+    pub(crate) fn finish(&self) -> Tokenizer<End> {
+        Tokenizer {
+            tokens: append_token(&self.tokens, Token::Rest(self.rest.clone())),
+            rest: "".to_string(),
+            _state: PhantomData::<End>,
+        }
     }
 }
 
