@@ -9,28 +9,31 @@ impl Tokenizer<PrefectureNameFound> {
     pub(crate) fn read_city(
         &self,
         candidates: &Vec<String>,
-    ) -> Result<Tokenizer<CityNameFound>, Tokenizer<CityNameNotFound>> {
+    ) -> Result<(String, Tokenizer<CityNameFound>), Tokenizer<CityNameNotFound>> {
         for candidate in candidates {
             if self.rest.starts_with(candidate) {
-                return Ok(Tokenizer {
-                    input: self.input.clone(),
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::City(City {
-                            city_name: candidate.to_string(),
-                            representative_point: None,
-                        }),
-                    ),
-                    prefecture_name: self.prefecture_name.clone(),
-                    city_name: Some(candidate.clone()),
-                    town_name: None,
-                    rest: self
-                        .rest
-                        .chars()
-                        .skip(candidate.chars().count())
-                        .collect::<String>(),
-                    _state: PhantomData::<CityNameFound>,
-                });
+                return Ok((
+                    candidate.to_string(),
+                    Tokenizer {
+                        input: self.input.clone(),
+                        tokens: append_token(
+                            &self.tokens,
+                            Token::City(City {
+                                city_name: candidate.to_string(),
+                                representative_point: None,
+                            }),
+                        ),
+                        prefecture_name: self.prefecture_name.clone(),
+                        city_name: Some(candidate.clone()),
+                        town_name: None,
+                        rest: self
+                            .rest
+                            .chars()
+                            .skip(candidate.chars().count())
+                            .collect::<String>(),
+                        _state: PhantomData::<CityNameFound>,
+                    },
+                ));
             }
             let mut variant_list = vec![Variant::ケ];
             match self.prefecture_name.clone().unwrap().as_str() {
@@ -60,21 +63,24 @@ impl Tokenizer<PrefectureNameFound> {
             }
             let adapter = OrthographicalVariantAdapter { variant_list };
             if let Some(result) = adapter.apply(self.rest.as_str(), candidate) {
-                return Ok(Tokenizer {
-                    input: self.input.clone(),
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::City(City {
-                            city_name: result.0.clone(), // TODO: 以降に使用箇所があるためcloneしているが本来不要なので使用箇所なくなったら削除する
-                            representative_point: None,
-                        }),
-                    ),
-                    prefecture_name: self.prefecture_name.clone(),
-                    city_name: Some(result.0),
-                    town_name: None,
-                    rest: result.1,
-                    _state: PhantomData::<CityNameFound>,
-                });
+                return Ok((
+                    result.0.clone(),
+                    Tokenizer {
+                        input: self.input.clone(),
+                        tokens: append_token(
+                            &self.tokens,
+                            Token::City(City {
+                                city_name: result.0.clone(), // TODO: 以降に使用箇所があるためcloneしているが本来不要なので使用箇所なくなったら削除する
+                                representative_point: None,
+                            }),
+                        ),
+                        prefecture_name: self.prefecture_name.clone(),
+                        city_name: Some(result.0),
+                        town_name: None,
+                        rest: result.1,
+                        _state: PhantomData::<CityNameFound>,
+                    },
+                ));
             }
         }
 
@@ -92,7 +98,7 @@ impl Tokenizer<PrefectureNameFound> {
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token};
+    use crate::domain::common::token::{Prefecture, Token};
     use crate::tokenizer::{PrefectureNameFound, Tokenizer};
     use std::marker::PhantomData;
 
@@ -116,16 +122,10 @@ mod tests {
             "横浜市西区".to_string(),
         ]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "横浜市保土ケ谷区");
         assert_eq!(tokenizer.input, "神奈川県横浜市保土ケ谷区川辺町2番地9");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "横浜市保土ケ谷区".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "川辺町2番地9");
     }
 
@@ -149,16 +149,10 @@ mod tests {
             "横浜市西区".to_string(),
         ]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "横浜市保土ケ谷区".to_string());
         assert_eq!(tokenizer.input, "神奈川県横浜市保土ヶ谷区川辺町2番地9");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "横浜市保土ケ谷区".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "川辺町2番地9");
     }
 
