@@ -7,29 +7,32 @@ impl Tokenizer<CityNameNotFound> {
     pub(crate) fn read_city_with_county_name_completion(
         &self,
         candidates: &[String],
-    ) -> Result<Tokenizer<CityNameFound>, Tokenizer<End>> {
+    ) -> Result<(String, Tokenizer<CityNameFound>), Tokenizer<End>> {
         if let Ok(highest_match) =
             SequenceMatcher::get_most_similar_match(&self.rest, candidates, None)
         {
             if let Ok(complemented_address) = complement_county_name(&self.rest, &highest_match) {
-                return Ok(Tokenizer {
-                    input: self.input.clone(),
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::City(City {
-                            city_name: highest_match.clone(),
-                            representative_point: None,
-                        }),
-                    ),
-                    prefecture_name: self.prefecture_name.clone(),
-                    city_name: Some(highest_match.clone()),
-                    town_name: None,
-                    rest: complemented_address
-                        .chars()
-                        .skip(highest_match.chars().count())
-                        .collect(),
-                    _state: PhantomData::<CityNameFound>,
-                });
+                return Ok((
+                    highest_match.clone(),
+                    Tokenizer {
+                        input: self.input.clone(),
+                        tokens: append_token(
+                            &self.tokens,
+                            Token::City(City {
+                                city_name: highest_match.clone(),
+                                representative_point: None,
+                            }),
+                        ),
+                        prefecture_name: self.prefecture_name.clone(),
+                        city_name: Some(highest_match.clone()),
+                        town_name: None,
+                        rest: complemented_address
+                            .chars()
+                            .skip(highest_match.chars().count())
+                            .collect(),
+                        _state: PhantomData::<CityNameFound>,
+                    },
+                ));
             }
         }
         Err(Tokenizer {
@@ -57,7 +60,7 @@ fn complement_county_name(vague_address: &str, with: &str) -> Result<String, &'s
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token};
+    use crate::domain::common::token::{Prefecture, Token};
     use crate::domain::geolonia;
     use crate::tokenizer::read_city_with_county_name_completion::complement_county_name;
     use crate::tokenizer::{CityNameNotFound, Tokenizer};
@@ -105,16 +108,10 @@ mod tests {
             "秩父郡東秩父村".to_string(),
         ]);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "秩父郡東秩父村");
         assert_eq!(tokenizer.input, "埼玉県東秩父村大字御堂634番地");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "秩父郡東秩父村".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "大字御堂634番地");
     }
 
@@ -135,15 +132,9 @@ mod tests {
         let result = tokenizer
             .read_city_with_county_name_completion(&geolonia::entity::Prefecture::fukui().cities);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "吉田郡永平寺町");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "吉田郡永平寺町".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "志比５－５");
     }
 
@@ -164,15 +155,9 @@ mod tests {
         let result = tokenizer
             .read_city_with_county_name_completion(&geolonia::entity::Prefecture::fukui().cities);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "今立郡池田町");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "今立郡池田町".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "稲荷２８－７");
     }
 
@@ -193,15 +178,9 @@ mod tests {
         let result = tokenizer
             .read_city_with_county_name_completion(&geolonia::entity::Prefecture::fukui().cities);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "南条郡南越前町");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "南条郡南越前町".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "今庄７４－７－１");
     }
 
@@ -223,15 +202,9 @@ mod tests {
             &geolonia::entity::Prefecture::yamagata().cities,
         );
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "西村山郡河北町");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "西村山郡河北町".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "大字吉田字馬場261");
     }
 
@@ -252,15 +225,9 @@ mod tests {
         let result = tokenizer
             .read_city_with_county_name_completion(&geolonia::entity::Prefecture::saga().cities);
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "杵島郡大町町");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "杵島郡大町町".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "大字大町5017番地");
     }
 
@@ -282,15 +249,9 @@ mod tests {
             &geolonia::entity::Prefecture::yamagata().cities,
         );
         assert!(result.is_ok());
-        let tokenizer = result.unwrap();
+        let (city_name, tokenizer) = result.unwrap();
+        assert_eq!(city_name, "最上郡最上町");
         assert_eq!(tokenizer.tokens.len(), 2);
-        assert_eq!(
-            tokenizer.tokens[1],
-            Token::City(City {
-                city_name: "最上郡最上町".to_string(),
-                representative_point: None
-            })
-        );
         assert_eq!(tokenizer.rest, "法田2672-2");
     }
 }

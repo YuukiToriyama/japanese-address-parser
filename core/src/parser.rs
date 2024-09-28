@@ -93,7 +93,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 市町村名を特定
-    let tokenizer = match tokenizer.read_city(&prefecture.cities) {
+    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture.cities) {
         Ok(found) => found,
         Err(not_found) => {
             // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
@@ -110,13 +110,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         }
     };
     // その市町村の町名リストを取得
-    let city = match api
-        .get_city_master(
-            tokenizer.prefecture_name.as_ref().unwrap(),
-            tokenizer.city_name.as_ref().unwrap(),
-        )
-        .await
-    {
+    let city = match api.get_city_master(&prefecture_name, &city_name).await {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer),
@@ -259,7 +253,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         }
         Ok(result) => result,
     };
-    let tokenizer = match tokenizer.read_city(&prefecture.cities) {
+    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture.cities) {
         Ok(found) => found,
         Err(not_found) => {
             match not_found.read_city_with_county_name_completion(&prefecture.cities) {
@@ -273,10 +267,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
             }
         }
     };
-    let city = match api.get_city_master(
-        tokenizer.prefecture_name.as_ref().unwrap(),
-        tokenizer.city_name.as_ref().unwrap(),
-    ) {
+    let city = match api.get_city_master(&prefecture_name, &city_name) {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer),
