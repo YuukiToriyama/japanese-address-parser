@@ -19,6 +19,11 @@ async fn 異字体旧字体への対応テスト() {
 }
 
 #[tokio::test]
+async fn 異字体ではない表記ゆれへの対応テスト() {
+    run_data_driven_tests("./test_data/異字体ではない表記ゆれへの対応.csv").await
+}
+
+#[tokio::test]
 async fn 丁目が算用数字の場合への対応テスト() {
     run_data_driven_tests("./test_data/丁目が算用数字の場合への対応.csv").await
 }
