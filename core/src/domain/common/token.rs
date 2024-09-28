@@ -10,8 +10,8 @@ pub enum Token {
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Prefecture {
-    prefecture_name: String,
-    representative_point: Option<LatLng>,
+    pub(crate) prefecture_name: String,
+    pub(crate) representative_point: Option<LatLng>,
 }
 
 #[derive(Debug, PartialEq)]
