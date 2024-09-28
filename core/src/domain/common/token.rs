@@ -22,8 +22,8 @@ pub(crate) struct City {
 
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) struct Town {
-    town_name: String,
-    representative_point: Option<LatLng>,
+    pub(crate) town_name: String,
+    pub(crate) representative_point: Option<LatLng>,
 }
 
 #[derive(Debug, PartialEq, Clone)]
