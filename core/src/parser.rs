@@ -138,7 +138,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     };
 
     ParseResult {
-        address: Address::from(tokenizer),
+        address: Address::from(tokenizer.finish()),
         error: None,
     }
 }
@@ -298,7 +298,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     };
 
     ParseResult {
-        address: Address::from(tokenizer),
+        address: Address::from(tokenizer.finish()),
         error: None,
     }
 }
