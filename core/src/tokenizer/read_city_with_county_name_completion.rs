@@ -23,7 +23,6 @@ impl Tokenizer<CityNameNotFound> {
                                 representative_point: None,
                             }),
                         ),
-                        prefecture_name: self.prefecture_name.clone(),
                         rest: complemented_address
                             .chars()
                             .skip(highest_match.chars().count())
@@ -36,7 +35,6 @@ impl Tokenizer<CityNameNotFound> {
         Err(Tokenizer {
             input: self.input.clone(),
             tokens: self.tokens.clone(),
-            prefecture_name: self.prefecture_name.clone(),
             rest: self.rest.clone(),
             _state: PhantomData::<End>,
         })
@@ -91,7 +89,6 @@ mod tests {
                 prefecture_name: "埼玉県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: Some("埼玉県".to_string()),
             rest: "東秩父村大字御堂634番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -117,7 +114,6 @@ mod tests {
                 prefecture_name: "福井県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: None,
             rest: "永平寺町志比５－５".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -138,7 +134,6 @@ mod tests {
                 prefecture_name: "福井県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: None,
             rest: "池田町稲荷２８－７".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -159,7 +154,6 @@ mod tests {
                 prefecture_name: "福井県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: None,
             rest: "南越前町今庄７４－７－１".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -180,7 +174,6 @@ mod tests {
                 prefecture_name: "山形県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: None,
             rest: "河北町大字吉田字馬場261".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -202,7 +195,6 @@ mod tests {
                 prefecture_name: "佐賀県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: None,
             rest: "大町町大字大町5017番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -223,7 +215,6 @@ mod tests {
                 prefecture_name: "山形県".to_string(),
                 representative_point: None,
             })],
-            prefecture_name: None,
             rest: "最上町法田2672-2".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
