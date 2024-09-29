@@ -6,20 +6,20 @@ use crate::api::BlockingApi;
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
-use crate::tokenizer::Tokenizer;
+use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
 
 pub mod adapter;
 
-impl<T> From<Tokenizer<T>> for Address {
-    fn from(value: Tokenizer<T>) -> Self {
-        let mut address = Address::new("", "", "", value.rest.as_str());
+impl From<Tokenizer<End>> for Address {
+    fn from(value: Tokenizer<End>) -> Self {
+        let mut address = Address::new("", "", "", "");
         for token in value.tokens {
             match token {
                 Token::Prefecture(prefecture) => address.prefecture = prefecture.prefecture_name,
                 Token::City(city) => address.city = city.city_name,
                 Token::Town(town) => address.town = town.town_name,
-                _ => {}
+                Token::Rest(rest) => address.rest = rest,
             }
         }
         address
@@ -81,17 +81,20 @@ impl Parser {
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
     // 都道府県を特定
-    let Ok((prefecture_name, tokenizer)) = tokenizer.read_prefecture() else {
-        return ParseResult {
-            address: Address::from(tokenizer),
-            error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-        };
+    let (prefecture_name, tokenizer) = match tokenizer.read_prefecture() {
+        Ok(found) => found,
+        Err(tokenizer) => {
+            return ParseResult {
+                address: Address::from(tokenizer),
+                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
+            }
+        }
     };
     // その都道府県の市町村名リストを取得
     let prefecture = match api.get_prefecture_master(&prefecture_name).await {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -107,7 +110,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
                 _ => {
                     // それでも見つからない場合は終了
                     return ParseResult {
-                        address: Address::from(tokenizer),
+                        address: Address::from(tokenizer.finish()),
                         error: Some(Error::new_parse_error(ParseErrorKind::City)),
                     };
                 }
@@ -118,7 +121,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let city = match api.get_city_master(&prefecture_name, &city_name).await {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -129,13 +132,13 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
     else {
         return ParseResult {
-            address: Address::from(tokenizer),
+            address: Address::from(tokenizer.finish()),
             error: Some(Error::new_parse_error(ParseErrorKind::Town)),
         };
     };
 
     ParseResult {
-        address: Address::from(tokenizer),
+        address: Address::from(tokenizer.finish()),
         error: None,
     }
 }
@@ -244,16 +247,19 @@ mod tests {
 #[cfg(feature = "blocking")]
 pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
-    let Ok((prefecture_name, tokenizer)) = tokenizer.read_prefecture() else {
-        return ParseResult {
-            address: Address::from(tokenizer),
-            error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-        };
+    let (prefecture_name, tokenizer) = match tokenizer.read_prefecture() {
+        Ok(found) => found,
+        Err(tokenizer) => {
+            return ParseResult {
+                address: Address::from(tokenizer),
+                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
+            }
+        }
     };
     let prefecture = match api.get_prefecture_master(&prefecture_name) {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -266,7 +272,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
                 Ok(found) if cfg!(feature = "city-name-correction") => found,
                 _ => {
                     return ParseResult {
-                        address: Address::from(tokenizer),
+                        address: Address::from(tokenizer.finish()),
                         error: Some(Error::new_parse_error(ParseErrorKind::City)),
                     };
                 }
@@ -276,7 +282,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let city = match api.get_city_master(&prefecture_name, &city_name) {
         Err(error) => {
             return ParseResult {
-                address: Address::from(tokenizer),
+                address: Address::from(tokenizer.finish()),
                 error: Some(error),
             };
         }
@@ -286,13 +292,13 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
     else {
         return ParseResult {
-            address: Address::from(tokenizer),
+            address: Address::from(tokenizer.finish()),
             error: Some(Error::new_parse_error(ParseErrorKind::Town)),
         };
     };
 
     ParseResult {
-        address: Address::from(tokenizer),
+        address: Address::from(tokenizer.finish()),
         error: None,
     }
 }

@@ -89,8 +89,8 @@ impl Tokenizer<Init> {
             }
         }
         Err(Tokenizer {
-            tokens: vec![],
-            rest: self.rest.clone(),
+            tokens: vec![Token::Rest(self.rest.clone())],
+            rest: "".to_string(),
             _state: PhantomData::<End>,
         })
     }
@@ -98,6 +98,7 @@ impl Tokenizer<Init> {
 
 #[cfg(test)]
 mod tests {
+    use crate::domain::common::token::Token;
     use crate::tokenizer::Tokenizer;
 
     #[test]
@@ -139,7 +140,9 @@ mod tests {
         let result = tokenizer.read_prefecture();
         assert!(result.is_err());
         let tokenizer = result.unwrap_err();
-        assert_eq!(tokenizer.tokens, vec![]);
-        assert_eq!(tokenizer.rest, "東今日都港区芝公園4丁目2-8".to_string());
+        assert_eq!(
+            tokenizer.tokens,
+            vec![Token::Rest("東今日都港区芝公園4丁目2-8".to_string())]
+        );
     }
 }
