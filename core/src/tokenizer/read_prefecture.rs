@@ -88,11 +88,7 @@ impl Tokenizer<Init> {
                 ));
             }
         }
-        Err(Tokenizer {
-            tokens: vec![Token::Rest(self.rest.clone())],
-            rest: "".to_string(),
-            _state: PhantomData::<End>,
-        })
+        Err(self.finish())
     }
 }
 
