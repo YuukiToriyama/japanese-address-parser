@@ -10,66 +10,73 @@ impl Tokenizer<PrefectureNameFound> {
         &self,
         candidates: &Vec<String>,
     ) -> Result<(String, Tokenizer<CityNameFound>), Tokenizer<CityNameNotFound>> {
+        if let Some(found) = candidates
+            .iter()
+            .find(|&candidate| self.rest.starts_with(candidate))
+        {
+            return Ok((
+                found.to_string(),
+                Tokenizer {
+                    tokens: append_token(
+                        &self.tokens,
+                        Token::City(City {
+                            city_name: found.to_string(),
+                            representative_point: None,
+                        }),
+                    ),
+                    rest: self
+                        .rest
+                        .chars()
+                        .skip(found.chars().count())
+                        .collect::<String>(),
+                    _state: PhantomData::<CityNameFound>,
+                },
+            ));
+        }
+
+        // ここまでで市区町村名が読み取れない場合は、表記ゆれを含む可能性を検討する
+        let mut variant_list = vec![Variant::ケ];
+        match self.get_prefecture_name() {
+            Some("青森県") => {
+                variant_list.push(Variant::舘);
+            }
+            Some("宮城県") => {
+                variant_list.push(Variant::竈);
+            }
+            Some("茨城県") => {
+                variant_list.push(Variant::龍);
+                variant_list.push(Variant::嶋);
+            }
+            Some("東京都") => {
+                variant_list.push(Variant::檜);
+            }
+            Some("兵庫県") => {
+                variant_list.push(Variant::塚);
+            }
+            Some("高知県") => {
+                variant_list.push(Variant::梼);
+            }
+            Some("福岡県") => {
+                variant_list.push(Variant::恵);
+            }
+            _ => {}
+        }
         for candidate in candidates {
-            if self.rest.starts_with(candidate) {
+            let adapter = OrthographicalVariantAdapter {
+                variant_list: variant_list.clone(),
+            };
+            if let Some((city_name, rest)) = adapter.apply(self.rest.as_str(), candidate) {
                 return Ok((
-                    candidate.to_string(),
+                    city_name.clone(),
                     Tokenizer {
                         tokens: append_token(
                             &self.tokens,
                             Token::City(City {
-                                city_name: candidate.to_string(),
+                                city_name,
                                 representative_point: None,
                             }),
                         ),
-                        rest: self
-                            .rest
-                            .chars()
-                            .skip(candidate.chars().count())
-                            .collect::<String>(),
-                        _state: PhantomData::<CityNameFound>,
-                    },
-                ));
-            }
-            let mut variant_list = vec![Variant::ケ];
-            match self.get_prefecture_name() {
-                Some("青森県") => {
-                    variant_list.push(Variant::舘);
-                }
-                Some("宮城県") => {
-                    variant_list.push(Variant::竈);
-                }
-                Some("茨城県") => {
-                    variant_list.push(Variant::龍);
-                    variant_list.push(Variant::嶋);
-                }
-                Some("東京都") => {
-                    variant_list.push(Variant::檜);
-                }
-                Some("兵庫県") => {
-                    variant_list.push(Variant::塚);
-                }
-                Some("高知県") => {
-                    variant_list.push(Variant::梼);
-                }
-                Some("福岡県") => {
-                    variant_list.push(Variant::恵);
-                }
-                _ => {}
-            }
-            let adapter = OrthographicalVariantAdapter { variant_list };
-            if let Some(result) = adapter.apply(self.rest.as_str(), candidate) {
-                return Ok((
-                    result.0.clone(),
-                    Tokenizer {
-                        tokens: append_token(
-                            &self.tokens,
-                            Token::City(City {
-                                city_name: result.0,
-                                representative_point: None,
-                            }),
-                        ),
-                        rest: result.1,
+                        rest,
                         _state: PhantomData::<CityNameFound>,
                     },
                 ));
