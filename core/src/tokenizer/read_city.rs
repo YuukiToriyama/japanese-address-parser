@@ -8,7 +8,7 @@ use std::marker::PhantomData;
 impl Tokenizer<PrefectureNameFound> {
     pub(crate) fn read_city(
         &self,
-        candidates: &Vec<String>,
+        candidates: &[String],
     ) -> Result<(String, Tokenizer<CityNameFound>), Tokenizer<CityNameNotFound>> {
         if let Some(found) = candidates
             .iter()
