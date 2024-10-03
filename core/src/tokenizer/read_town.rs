@@ -18,76 +18,43 @@ impl Tokenizer<CityNameFound> {
         if rest.contains("丁目") {
             rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
-        if let Some((town_name, rest)) = find_town(&rest, &candidates) {
-            return Ok((
-                town_name.clone(),
-                Tokenizer {
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::Town(Town {
-                            town_name,
-                            representative_point: None,
-                        }),
-                    ),
-                    rest: if cfg!(feature = "format-house-number")
-                        && format_house_number(&rest).is_ok()
-                    {
-                        format_house_number(&rest).unwrap()
-                    } else {
-                        rest
-                    },
-                    _state: PhantomData::<TownNameFound>,
+        let (town_name, rest) = match find_town(&rest, &candidates) {
+            Some(found) => found,
+            None => {
+                // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
+                rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
+                match find_town(&rest, &candidates) {
+                    Some(found) => found,
+                    None => {
+                        // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
+                        rest = format!("大字{}", rest);
+                        match find_town(&rest, &candidates) {
+                            Some(found) => found,
+                            None => return Err(self.finish()),
+                        }
+                    }
+                }
+            }
+        };
+        Ok((
+            town_name.clone(),
+            Tokenizer {
+                tokens: append_token(
+                    &self.tokens,
+                    Token::Town(Town {
+                        town_name,
+                        representative_point: None,
+                    }),
+                ),
+                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
+                {
+                    format_house_number(&rest).unwrap()
+                } else {
+                    rest
                 },
-            ));
-        }
-        // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
-        rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
-        if let Some((town_name, rest)) = find_town(&rest, &candidates) {
-            return Ok((
-                town_name.clone(),
-                Tokenizer {
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::Town(Town {
-                            town_name,
-                            representative_point: None,
-                        }),
-                    ),
-                    rest: if cfg!(feature = "format-house-number")
-                        && format_house_number(&rest).is_ok()
-                    {
-                        format_house_number(&rest).unwrap()
-                    } else {
-                        rest
-                    },
-                    _state: PhantomData::<TownNameFound>,
-                },
-            ));
-        }
-        // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
-        if let Some((town_name, rest)) = find_town(&format!("大字{}", rest), &candidates) {
-            return Ok((
-                town_name.clone(),
-                Tokenizer {
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::Town(Town {
-                            town_name,
-                            representative_point: None,
-                        }),
-                    ),
-                    rest: if cfg!(feature = "format-house-number")
-                        && format_house_number(&rest).is_ok()
-                    {
-                        format_house_number(&rest).unwrap()
-                    } else {
-                        rest
-                    },
-                    _state: PhantomData::<TownNameFound>,
-                },
-            ));
-        }
-        Err(self.finish())
+                _state: PhantomData::<TownNameFound>,
+            },
+        ))
     }
 }
 
