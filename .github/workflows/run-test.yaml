@@ -2,9 +2,9 @@ name: Unit test & Integration test
 
 on:
   pull_request:
+    paths-ignore: [ '*.md' ]
   push:
     branches: [ 'main' ]
-    paths-ignore: [ '*.md' ]
 
 env:
   CARGO_TERM_COLOR: always
