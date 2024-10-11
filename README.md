@@ -9,12 +9,11 @@ A Rust library for parsing Japanese addresses.
 
 ## Usage
 
-Add this to your `Cargo.toml`
+Add the following to your `Cargo.toml`.
 
-```bash
-cargo add japanese-address-parser
-# or
-cargo add japanese-address-parser -F blocking
+```toml
+[dependencies]
+japanese-address-parser = "0.1"
 ```
 
 ### Async Version
