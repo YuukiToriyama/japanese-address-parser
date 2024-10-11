@@ -5,7 +5,7 @@
 ![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.73.0-orange)
 [![Unit test & Integration test](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml)
 
-A Rust Library to parse japanese addresses.
+A Rust library for parsing Japanese addresses.
 
 ## Usage
 
@@ -47,7 +47,7 @@ fn main() {
 [![npmjs](https://img.shields.io/npm/v/%40toriyama/japanese-address-parser)](https://www.npmjs.com/package/@toriyama/japanese-address-parser)
 
 This crate is designed to be buildable for `wasm32-unknown-unknown` with `wasm-pack`.
-Pre-compiled wasm module is available npmjs.com
+Pre-compiled wasm module is available on npmjs.com
 
 ```bash
 npm install @toriyama/japanese-address-parser
@@ -68,28 +68,28 @@ init().then(() => {
 
 [![PyPI - Version](https://img.shields.io/pypi/v/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/)
 
-This library can be called from Python world. For more detail, see [python module's README](python/README.md).
+This library can be called from the Python world. For more details, see [python module's README](python/README.md).
 
 ## Road to v1
 
-The goals that this library aims to achieve are below.
+The goals of this library are as follows.
 
-- Supports not only wasm target but also various platforms and architectures.
+- Supports not only wasm but also multiple platforms and architectures.
 - Enables more advanced normalization. For example, provides more detailed analysis than town level.
-- Provides latlng of the given address.
-- Enables processing of town names that have ceased to exist as a result of municipal mergers.
+- Returns the location of the given address.
+- Enables processing of town names that no longer exist due to municipal mergers.
 
 ## Support
 
 This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).
-If you have questions, please create an issue.
+If you have any questions, please create a new issue.
 
 ## Acknowledgements
 
-This software was developed inspired
+This software was inspired
 by [@geolonia/normalize-japanese-addresses](https://github.com/geolonia/normalize-japanese-addresses).  
-Also, the parsing process uses [Geolonia 住所データ](https://github.com/geolonia/japanese-addresses) provided
-by [株式会社Geolonia](https://www.geolonia.com/company/).
+In addition, the parsing process uses [Geolonia 住所データ](https://github.com/geolonia/japanese-addresses) which is
+provided by [株式会社Geolonia](https://www.geolonia.com/company/).
 
 ## License
 
