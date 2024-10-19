@@ -1,15 +1,18 @@
 # japanese-address-parser-py
-A python toolkit for processing japanese addresses
+
+A Python toolkit for processing Japanese addresses
 
 [![PyPI - Version](https://img.shields.io/pypi/v/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/japanese-address-parser-py)](https://pypi.org/project/japanese-address-parser-py/#history)
 [![Unit test & Integration test](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml)
 
 ## What is it?
-**japanese-address-parser-py** is a Python package for parsing japanese addresses.
-Any address can be processed into structured data.
+
+**japanese-address-parser-py** is a Python package for parsing Japanese addresses.
+Any address can be parsed into structured data.
 
 ## Installation from PyPI
+
 ```bash
 pip install japanese-address-parser-py
 ```
@@ -38,7 +41,6 @@ for address in address_list:
 {'town': '日本大通', 'city': '横浜市中区', 'prefecture': '神奈川県', 'rest': '1'}
 ```
 
-
 ```python
 from japanese_address_parser_py import Parser
 
@@ -59,8 +61,9 @@ print(parse_result.address["rest"])
 ```
 
 ## Development
-This library is written in Rust language. You need to set up a Rust development environment to build this library.
-Also, you need to install `maturin` because this library uses it in order to generate Python bindings.
+
+This library is written in Rust. You need to set up a Rust development environment to build this library.
+Also, you need to install `maturin` as this library uses it in order to generate Python bindings.
 
 ```bash
 # Install maturin
@@ -78,18 +81,19 @@ pip3 install dist/japanese_address_parser_py-[version]-cp37-abi3-[arch].whl
 ## Support
 
 This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).
-If you have questions, please create an issue.
+If you have any questions, please create a new issue.
 
 ## Where to get source code
+
 The source code is hosted on GitHub at:
 https://github.com/YuukiToriyama/japanese-address-parser
 
 ## Acknowledgements
 
-This software was developed inspired
+This software was inspired
 by [@geolonia/normalize-japanese-addresses](https://github.com/geolonia/normalize-japanese-addresses).  
-Also, the parsing process uses [Geolonia 住所データ](https://github.com/geolonia/japanese-addresses) provided
-by [株式会社Geolonia](https://www.geolonia.com/company/).
+In addition, the parsing process uses [Geolonia 住所データ](https://github.com/geolonia/japanese-addresses) which is
+provided by [株式会社Geolonia](https://www.geolonia.com/company/).
 
 ## License
 
