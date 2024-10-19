@@ -5,6 +5,7 @@ on:
     paths:
       - '**.rs'
       - '**/Cargo.toml'
+      - '!*.md'
 
 jobs:
   build:
