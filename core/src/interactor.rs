@@ -22,7 +22,7 @@ pub(crate) trait ChimeiRuijuInteractor {
     /// 町名マスタを取得
     async fn get_town_master(
         &self,
-        prefecture_name: &str,
+        prefecture: &Prefecture,
         city_name: &str,
         town_name: &str,
     ) -> Result<TownMaster, ApiError>;
@@ -59,11 +59,10 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
 
     async fn get_town_master(
         &self,
-        prefecture_name: &str,
+        prefecture: &Prefecture,
         city_name: &str,
         town_name: &str,
     ) -> Result<TownMaster, ApiError> {
-        let prefecture = Prefecture::try_from(prefecture_name).unwrap();
-        TownMasterRepository::get(&self.api_service, &prefecture, city_name, town_name).await
+        TownMasterRepository::get(&self.api_service, prefecture, city_name, town_name).await
     }
 }
