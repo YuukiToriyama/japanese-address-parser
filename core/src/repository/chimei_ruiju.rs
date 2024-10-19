@@ -1,3 +1,3 @@
 pub mod city;
 pub mod prefecture;
-mod town;
+pub mod town;
