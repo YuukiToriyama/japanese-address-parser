@@ -18,12 +18,12 @@ impl Tokenizer<Init> {
 
     pub(crate) fn read_prefecture(
         &self,
-    ) -> Result<(String, Tokenizer<PrefectureNameFound>), Tokenizer<End>> {
+    ) -> Result<(jisx0401::Prefecture, Tokenizer<PrefectureNameFound>), Tokenizer<End>> {
         match find_prefecture(&self.rest) {
             Some(prefecture) => {
                 let prefecture_name = prefecture.name_ja();
                 Ok((
-                    prefecture_name.to_string(),
+                    prefecture.clone(),
                     Tokenizer {
                         tokens: vec![Token::Prefecture(Prefecture {
                             prefecture_name: prefecture_name.to_string(),
@@ -51,6 +51,7 @@ fn find_prefecture(input: &str) -> Option<&jisx0401::Prefecture> {
 mod tests {
     use crate::domain::common::token::Token;
     use crate::tokenizer::Tokenizer;
+    use jisx0401::Prefecture;
 
     #[test]
     fn new() {
@@ -79,8 +80,8 @@ mod tests {
         let tokenizer = Tokenizer::new("東京都港区芝公園4丁目2-8");
         let result = tokenizer.read_prefecture();
         assert!(result.is_ok());
-        let (prefecture_name, tokenizer) = result.unwrap();
-        assert_eq!(prefecture_name, "東京都");
+        let (prefecture, tokenizer) = result.unwrap();
+        assert_eq!(prefecture, Prefecture::TOKYO);
         assert_eq!(tokenizer.tokens.len(), 1);
         assert_eq!(tokenizer.rest, "港区芝公園4丁目2-8");
     }
