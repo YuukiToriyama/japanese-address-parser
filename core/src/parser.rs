@@ -81,7 +81,7 @@ impl Parser {
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
     // 都道府県を特定
-    let (prefecture_name, tokenizer) = match tokenizer.read_prefecture() {
+    let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
         Ok(found) => found,
         Err(tokenizer) => {
             return ParseResult {
@@ -91,7 +91,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         }
     };
     // その都道府県の市町村名リストを取得
-    let prefecture = match api.get_prefecture_master(&prefecture_name).await {
+    let prefecture_master = match api.get_prefecture_master(prefecture.name_ja()).await {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer.finish()),
@@ -101,11 +101,11 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         Ok(result) => result,
     };
     // 市町村名を特定
-    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture.cities) {
+    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
         Ok(found) => found,
         Err(not_found) => {
             // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
-            match not_found.read_city_with_county_name_completion(&prefecture.cities) {
+            match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
                 Ok(found) if cfg!(feature = "city-name-correction") => found,
                 _ => {
                     // それでも見つからない場合は終了
@@ -118,7 +118,7 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
         }
     };
     // その市町村の町名リストを取得
-    let city = match api.get_city_master(&prefecture_name, &city_name).await {
+    let city = match api.get_city_master(prefecture.name_ja(), &city_name).await {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer.finish()),
@@ -247,7 +247,7 @@ mod tests {
 #[cfg(feature = "blocking")]
 pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
-    let (prefecture_name, tokenizer) = match tokenizer.read_prefecture() {
+    let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
         Ok(found) => found,
         Err(tokenizer) => {
             return ParseResult {
@@ -256,7 +256,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
             }
         }
     };
-    let prefecture = match api.get_prefecture_master(&prefecture_name) {
+    let prefecture_master = match api.get_prefecture_master(prefecture.name_ja()) {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer.finish()),
@@ -265,10 +265,10 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
         }
         Ok(result) => result,
     };
-    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture.cities) {
+    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
         Ok(found) => found,
         Err(not_found) => {
-            match not_found.read_city_with_county_name_completion(&prefecture.cities) {
+            match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
                 Ok(found) if cfg!(feature = "city-name-correction") => found,
                 _ => {
                     return ParseResult {
@@ -279,7 +279,7 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
             }
         }
     };
-    let city = match api.get_city_master(&prefecture_name, &city_name) {
+    let city = match api.get_city_master(prefecture.name_ja(), &city_name) {
         Err(error) => {
             return ParseResult {
                 address: Address::from(tokenizer.finish()),
