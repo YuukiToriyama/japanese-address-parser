@@ -1,3 +1,5 @@
+use crate::domain::common::token::Token;
+
 pub enum DataSource {
     /// Geolonia 住所データ
     /// https://github.com/geolonia/japanese-addresses
@@ -20,4 +22,17 @@ impl Default for ParserOptions {
 #[derive(Default)]
 pub(crate) struct Parser {
     pub(crate) options: ParserOptions,
+}
+
+impl Parser {
+    pub async fn parse(&self, address: &str) -> Vec<Token> {
+        match self.options.data_source {
+            DataSource::Geolonia => self.parse_with_geolonia(address).await,
+        }
+    }
+
+    #[inline]
+    async fn parse_with_geolonia(&self, address: &str) -> Vec<Token> {
+        unimplemented!()
+    }
 }
