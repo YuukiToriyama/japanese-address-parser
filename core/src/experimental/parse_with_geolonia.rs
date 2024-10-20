@@ -1,11 +1,7 @@
 use crate::api::AsyncApi;
 use crate::domain::common::token::Token;
-use crate::domain::geolonia::error::Error;
-use crate::experimental::parser::{DataSource, Parser};
-use crate::tokenizer::{
-    CityNameFound, CityNameNotFound, End, PrefectureNameFound, Tokenizer, TownNameFound,
-};
-use jisx0401::Prefecture;
+use crate::experimental::parser::Parser;
+use crate::tokenizer::Tokenizer;
 
 impl Parser {
     #[inline]
