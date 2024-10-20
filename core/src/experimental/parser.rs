@@ -9,12 +9,15 @@ pub enum DataSource {
 pub struct ParserOptions {
     /// 使用する住所データ
     pub(crate) data_source: DataSource,
+    /// 入力された住所が不正確で市区町村名を検出できない場合、あいまい検索で市区町村名を検出します
+    pub(crate) correct_incomplete_city_names: bool,
 }
 
 impl Default for ParserOptions {
     fn default() -> Self {
         Self {
             data_source: DataSource::Geolonia,
+            correct_incomplete_city_names: true,
         }
     }
 }
