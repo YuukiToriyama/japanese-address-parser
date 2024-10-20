@@ -33,9 +33,4 @@ impl Parser {
             DataSource::Geolonia => self.parse_with_geolonia(address).await,
         }
     }
-
-    #[inline]
-    async fn parse_with_geolonia(&self, address: &str) -> Vec<Token> {
-        unimplemented!()
-    }
 }
