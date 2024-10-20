@@ -83,3 +83,103 @@ impl Parser {
         tokenizer.finish().tokens
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::experimental::parser::{DataSource, Parser, ParserOptions};
+
+    #[tokio::test]
+    async fn 都道府県名が誤っている場合() {
+        let parser = Parser {
+            options: ParserOptions {
+                data_source: DataSource::Geolonia,
+                correct_incomplete_city_names: false,
+                verbose: false,
+            },
+        };
+        let result = parser.parse("奈川県横浜市磯子区洋光台3-10-3").await;
+        assert_eq!(
+            result,
+            vec![Token::Rest("奈川県横浜市磯子区洋光台3-10-3".to_string())]
+        )
+    }
+
+    #[tokio::test]
+    async fn 市区町村名が誤っている場合() {
+        let parser = Parser {
+            options: ParserOptions {
+                data_source: DataSource::Geolonia,
+                correct_incomplete_city_names: false,
+                verbose: false,
+            },
+        };
+        let result = parser.parse("神奈川県横浜県磯子市洋光台3-10-3").await;
+        assert_eq!(
+            result,
+            vec![
+                Token::Prefecture(Prefecture {
+                    prefecture_name: "神奈川県".to_string(),
+                    representative_point: None,
+                }),
+                Token::Rest("横浜県磯子市洋光台3-10-3".to_string())
+            ]
+        )
+    }
+
+    #[tokio::test]
+    async fn 町名が誤っている場合() {
+        let parser = Parser {
+            options: ParserOptions {
+                data_source: DataSource::Geolonia,
+                correct_incomplete_city_names: false,
+                verbose: false,
+            },
+        };
+        let result = parser.parse("神奈川県横浜市磯子区陽光台3-10-3").await;
+        assert_eq!(
+            result,
+            vec![
+                Token::Prefecture(Prefecture {
+                    prefecture_name: "神奈川県".to_string(),
+                    representative_point: None,
+                }),
+                Token::City(City {
+                    city_name: "横浜市磯子区".to_string(),
+                    representative_point: None,
+                }),
+                Token::Rest("陽光台3-10-3".to_string())
+            ]
+        )
+    }
+
+    #[tokio::test]
+    async fn パースに成功した場合() {
+        let parser = Parser {
+            options: ParserOptions {
+                data_source: DataSource::Geolonia,
+                correct_incomplete_city_names: false,
+                verbose: false,
+            },
+        };
+        let result = parser.parse("神奈川県横浜市磯子区洋光台3-10-3").await;
+        assert_eq!(
+            result,
+            vec![
+                Token::Prefecture(Prefecture {
+                    prefecture_name: "神奈川県".to_string(),
+                    representative_point: None,
+                }),
+                Token::City(City {
+                    city_name: "横浜市磯子区".to_string(),
+                    representative_point: None,
+                }),
+                Token::Town(Town {
+                    town_name: "洋光台三丁目".to_string(),
+                    representative_point: None,
+                }),
+                Token::Rest("10-3".to_string())
+            ]
+        )
+    }
+}
