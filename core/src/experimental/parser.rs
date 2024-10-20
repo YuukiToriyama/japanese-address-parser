@@ -11,6 +11,8 @@ pub struct ParserOptions {
     pub(crate) data_source: DataSource,
     /// 入力された住所が不正確で市区町村名を検出できない場合、あいまい検索で市区町村名を検出します
     pub(crate) correct_incomplete_city_names: bool,
+    /// ログの出力の有無
+    pub(crate) verbose: bool,
 }
 
 impl Default for ParserOptions {
@@ -18,6 +20,7 @@ impl Default for ParserOptions {
         Self {
             data_source: DataSource::Geolonia,
             correct_incomplete_city_names: true,
+            verbose: true,
         }
     }
 }

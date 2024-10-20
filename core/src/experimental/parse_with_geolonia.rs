@@ -17,7 +17,9 @@ impl Parser {
         let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
             Ok(found) => found,
             Err(not_found) => {
-                log::error!("都道府県名の検出に失敗しました");
+                if self.options.verbose {
+                    log::error!("都道府県名の検出に失敗しました")
+                }
                 return not_found.tokens;
             }
         };
@@ -29,7 +31,9 @@ impl Parser {
         {
             Ok(result) => result,
             Err(error) => {
-                log::error!("{}", error.error_message);
+                if self.options.verbose {
+                    log::error!("{}", error.error_message)
+                }
                 return tokenizer.finish().tokens;
             }
         };
@@ -41,12 +45,16 @@ impl Parser {
                     {
                         Ok(result) => result,
                         Err(not_found) => {
-                            log::error!("市区町村名の検出に失敗しました");
+                            if self.options.verbose {
+                                log::error!("市区町村名の検出に失敗しました")
+                            }
                             return not_found.tokens;
                         }
                     }
                 } else {
-                    log::error!("市区町村名の検出に失敗しました");
+                    if self.options.verbose {
+                        log::error!("市区町村名の検出に失敗しました")
+                    }
                     return not_found.finish().tokens;
                 }
             }
@@ -59,7 +67,9 @@ impl Parser {
         {
             Ok(result) => result,
             Err(error) => {
-                log::error!("{}", error.error_message);
+                if self.options.verbose {
+                    log::error!("{}", error.error_message)
+                }
                 return tokenizer.finish().tokens;
             }
         };
@@ -67,7 +77,9 @@ impl Parser {
             match tokenizer.read_town(city_master.towns.iter().map(|x| x.name.clone()).collect()) {
                 Ok(found) => found,
                 Err(not_found) => {
-                    log::error!("町名の検出に失敗しました");
+                    if self.options.verbose {
+                        log::error!("町名の検出に失敗しました")
+                    }
                     return not_found.tokens;
                 }
             };
