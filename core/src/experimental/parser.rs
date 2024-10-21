@@ -6,6 +6,29 @@ pub enum DataSource {
     Geolonia,
 }
 
+/// Options for Parser
+///
+/// パーサーのオプションを指定します。
+/// 何も変更しない場合は`ParserOptions::default()`を使用してください。
+///
+/// # Example
+/// ```
+/// use japanese_address_parser::experimental::parser::{DataSource, Parser, ParserOptions};
+///
+/// // Customize parser
+/// let parser = Parser {
+///     options: ParserOptions {
+///         data_source: DataSource::Geolonia,
+///         correct_incomplete_city_names: false,
+///         verbose: false,
+///     }
+/// };
+///
+/// // Use default options
+/// let parser = Parser {
+///     options: ParserOptions::default()
+/// };
+/// ```
 pub struct ParserOptions {
     /// 使用する住所データ
     pub data_source: DataSource,
