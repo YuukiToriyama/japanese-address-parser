@@ -8,11 +8,11 @@ pub enum DataSource {
 
 pub struct ParserOptions {
     /// 使用する住所データ
-    pub(crate) data_source: DataSource,
+    pub data_source: DataSource,
     /// 入力された住所が不正確で市区町村名を検出できない場合、あいまい検索で市区町村名を検出します
-    pub(crate) correct_incomplete_city_names: bool,
+    pub correct_incomplete_city_names: bool,
     /// ログの出力の有無
-    pub(crate) verbose: bool,
+    pub verbose: bool,
 }
 
 impl Default for ParserOptions {
