@@ -1,5 +1,6 @@
 use crate::domain::common::token::Token;
 
+#[derive(Debug)]
 pub enum DataSource {
     /// Geolonia 住所データ
     /// https://github.com/geolonia/japanese-addresses
@@ -29,6 +30,7 @@ pub enum DataSource {
 ///     options: ParserOptions::default()
 /// };
 /// ```
+#[derive(Debug)]
 pub struct ParserOptions {
     /// 使用する住所データ
     pub data_source: DataSource,
@@ -48,7 +50,7 @@ impl Default for ParserOptions {
     }
 }
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct Parser {
     pub options: ParserOptions,
 }
