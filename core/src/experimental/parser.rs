@@ -27,7 +27,7 @@ impl Default for ParserOptions {
 
 #[derive(Default)]
 pub struct Parser {
-    pub(crate) options: ParserOptions,
+    pub options: ParserOptions,
 }
 
 impl Parser {
