@@ -21,6 +21,7 @@ blocking = ["reqwest/blocking"]
 city-name-correction = []
 format-house-number = []
 eliminate-whitespaces = []
+experimental = []
 
 [[bench]]
 name = "core_benchmark"
@@ -28,6 +29,7 @@ harness = false
 
 [dependencies]
 itertools = "0.13.0"
+log.workspace = true
 rapidfuzz = "0.5.0"
 regex = { version = "1.10.6", default-features = false, features = ["std", "unicode-perl"] }
 serde.workspace = true
