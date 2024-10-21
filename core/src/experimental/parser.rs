@@ -1,9 +1,12 @@
 use crate::domain::common::token::Token;
 
+/// Data source for Parser
+///
+/// パーサーで使用するデータソースを指定します。
 #[derive(Debug)]
 pub enum DataSource {
     /// Geolonia 住所データ
-    /// https://github.com/geolonia/japanese-addresses
+    /// <https://github.com/geolonia/japanese-addresses>
     Geolonia,
 }
 
