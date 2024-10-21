@@ -50,12 +50,30 @@ impl Default for ParserOptions {
     }
 }
 
+/// Yet another address parser
+///
+/// 新型の住所パーサーです。オプションを指定しない場合は`Parser::default()`を使用できます。
 #[derive(Debug, Default)]
 pub struct Parser {
+    /// パーサーのオプションを指定します
     pub options: ParserOptions,
 }
 
 impl Parser {
+    /// Parse address into token sequence.
+    ///
+    /// 住所をパースしトークン列に変換します。
+    ///
+    /// # Example
+    /// ```
+    /// use japanese_address_parser::experimental::parser::Parser;
+    ///
+    /// async fn example() {
+    ///     let parser = Parser::default();
+    ///     let result = parser.parse("埼玉県所沢市上山口2135").await;
+    ///     println!("{:?}", result);
+    /// }
+    /// ```
     pub async fn parse(&self, address: &str) -> Vec<Token> {
         match self.options.data_source {
             DataSource::Geolonia => self.parse_with_geolonia(address).await,
