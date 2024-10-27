@@ -45,7 +45,7 @@ pub struct Options {
     verbose: Option<bool>,
 }
 
-#[wasm_bindgen(skip_typescript)]
+#[wasm_bindgen(skip_typescript, skip_jsdoc)]
 pub async fn parse_experimental(address: &str, options: JsValue) -> JsValue {
     let parser_options: ParserOptions = match serde_wasm_bindgen::from_value::<Options>(options) {
         Err(error) => {
