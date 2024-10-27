@@ -84,6 +84,7 @@ impl Parser {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct ParsedAddress {
     /// 都道府県名
     prefecture: String,
@@ -97,6 +98,7 @@ pub struct ParsedAddress {
     metadata: Metadata,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Metadata {
     /// 緯度
     ///
@@ -168,5 +170,142 @@ impl From<Vec<Token>> for ParsedAddress {
         }
 
         parsed_address
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::domain::common::latlng::LatLng;
+    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::experimental::parser::{Metadata, ParsedAddress};
+
+    #[test]
+    fn conversion_depthが0() {
+        let tokens = vec![Token::Rest(
+            "新浜県新浜市ニューポートシティ1-1-1".to_string(),
+        )];
+        let parsed_address = ParsedAddress::from(tokens);
+        assert_eq!(
+            parsed_address,
+            ParsedAddress {
+                prefecture: "".to_string(),
+                city: "".to_string(),
+                town: "".to_string(),
+                rest: "新浜県新浜市ニューポートシティ1-1-1".to_string(),
+                metadata: Metadata {
+                    latitude: None,
+                    longitude: None,
+                    depth: 0,
+                },
+            }
+        )
+    }
+
+    #[test]
+    fn conversion_depthが1() {
+        let tokens = vec![
+            Token::Prefecture(Prefecture {
+                prefecture_name: "東京都".to_string(),
+                representative_point: Some(LatLng {
+                    latitude: 139.748264,
+                    longitude: 35.68532,
+                }),
+            }),
+            Token::Rest("".to_string()),
+        ];
+        let parsed_address = ParsedAddress::from(tokens);
+        assert_eq!(
+            parsed_address,
+            ParsedAddress {
+                prefecture: "東京都".to_string(),
+                city: "".to_string(),
+                town: "".to_string(),
+                rest: "".to_string(),
+                metadata: Metadata {
+                    latitude: Some(139.748264),
+                    longitude: Some(35.68532),
+                    depth: 1,
+                },
+            }
+        )
+    }
+
+    #[test]
+    fn conversion_depthが2() {
+        let tokens = vec![
+            Token::Prefecture(Prefecture {
+                prefecture_name: "東京都".to_string(),
+                representative_point: Some(LatLng {
+                    latitude: 139.748264,
+                    longitude: 35.68532,
+                }),
+            }),
+            Token::City(City {
+                city_name: "台東区".to_string(),
+                representative_point: Some(LatLng {
+                    latitude: 139.764379,
+                    longitude: 35.711162,
+                }),
+            }),
+            Token::Rest("".to_string()),
+        ];
+        let parsed_address = ParsedAddress::from(tokens);
+        assert_eq!(
+            parsed_address,
+            ParsedAddress {
+                prefecture: "東京都".to_string(),
+                city: "台東区".to_string(),
+                town: "".to_string(),
+                rest: "".to_string(),
+                metadata: Metadata {
+                    latitude: Some(139.764379),
+                    longitude: Some(35.711162),
+                    depth: 2,
+                },
+            }
+        )
+    }
+
+    #[test]
+    fn conversion_depthが3() {
+        let tokens = vec![
+            Token::Prefecture(Prefecture {
+                prefecture_name: "東京都".to_string(),
+                representative_point: Some(LatLng {
+                    latitude: 139.748264,
+                    longitude: 35.68532,
+                }),
+            }),
+            Token::City(City {
+                city_name: "文京区".to_string(),
+                representative_point: Some(LatLng {
+                    latitude: 139.749542,
+                    longitude: 35.708143,
+                }),
+            }),
+            Token::Town(Town {
+                town_name: "本駒込六丁目".to_string(),
+                representative_point: Some(LatLng {
+                    latitude: 139.738043,
+                    longitude: 35.72791,
+                }),
+            }),
+            Token::Rest("16-3".to_string()),
+        ];
+        let parsed_address = ParsedAddress::from(tokens);
+        assert_eq!(
+            parsed_address,
+            ParsedAddress {
+                prefecture: "東京都".to_string(),
+                city: "文京区".to_string(),
+                town: "本駒込六丁目".to_string(),
+                rest: "16-3".to_string(),
+                metadata: Metadata {
+                    latitude: Some(139.738043),
+                    longitude: Some(35.72791),
+                    depth: 3,
+                },
+            }
+        )
     }
 }
