@@ -116,3 +116,57 @@ pub struct Metadata {
     /// - `3`: 町名まで検出できた場合
     depth: u8,
 }
+
+impl From<Vec<Token>> for ParsedAddress {
+    fn from(mut value: Vec<Token>) -> Self {
+        // 現在の実装では`Tokenizer`からもたらされる`Vec<Token>`は要素が順序よく並んでいるため、本来以下の実装は不要である
+        // ただし、ソート済みになっていることがコード上保証できないのが気になるため、ここでソートを行なっている。
+        value.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+        let mut parsed_address = ParsedAddress {
+            prefecture: "".to_string(),
+            city: "".to_string(),
+            town: "".to_string(),
+            rest: "".to_string(),
+            metadata: Metadata {
+                latitude: None,
+                longitude: None,
+                depth: 0,
+            },
+        };
+
+        for token in value {
+            match token {
+                Token::Prefecture(prefecture) => {
+                    parsed_address.prefecture = prefecture.prefecture_name;
+                    parsed_address.metadata.depth = 1;
+                    if let Some(lat_lng) = prefecture.representative_point {
+                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
+                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
+                    }
+                }
+                Token::City(city) => {
+                    parsed_address.city = city.city_name;
+                    parsed_address.metadata.depth = 2;
+                    if let Some(lat_lng) = city.representative_point {
+                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
+                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
+                    }
+                }
+                Token::Town(town) => {
+                    parsed_address.town = town.town_name;
+                    parsed_address.metadata.depth = 3;
+                    if let Some(lat_lng) = town.representative_point {
+                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
+                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
+                    }
+                }
+                Token::Rest(rest) => {
+                    parsed_address.rest = rest;
+                }
+            }
+        }
+
+        parsed_address
+    }
+}
