@@ -1,4 +1,5 @@
 use crate::domain::common::token::Token;
+use serde::Serialize;
 
 /// Data source for Parser
 ///
@@ -8,6 +9,12 @@ pub enum DataSource {
     /// Geolonia 住所データ
     /// <https://github.com/geolonia/japanese-addresses>
     Geolonia,
+}
+
+impl Default for DataSource {
+    fn default() -> Self {
+        DataSource::Geolonia
+    }
 }
 
 /// Options for Parser
@@ -85,7 +92,7 @@ impl Parser {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct ParsedAddress {
     /// 都道府県名
     prefecture: String,
@@ -99,7 +106,7 @@ pub struct ParsedAddress {
     metadata: Metadata,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Metadata {
     /// 緯度
     ///
