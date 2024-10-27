@@ -11,6 +11,12 @@ pub enum DataSource {
     Geolonia,
 }
 
+impl Default for DataSource {
+    fn default() -> Self {
+        DataSource::Geolonia
+    }
+}
+
 /// Options for Parser
 ///
 /// パーサーのオプションを指定します。
