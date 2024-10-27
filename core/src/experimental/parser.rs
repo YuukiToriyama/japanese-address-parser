@@ -77,10 +77,11 @@ impl Parser {
     ///     println!("{:?}", result);
     /// }
     /// ```
-    pub async fn parse(&self, address: &str) -> Vec<Token> {
-        match self.options.data_source {
+    pub async fn parse(&self, address: &str) -> ParsedAddress {
+        let tokens = match self.options.data_source {
             DataSource::Geolonia => self.parse_with_geolonia(address).await,
-        }
+        };
+        ParsedAddress::from(tokens)
     }
 }
 
