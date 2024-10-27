@@ -12,6 +12,15 @@
 <h2>YuukiToriyama/japanese-address-parser</h2>
 <p>Rust製の住所パーサーです</p>
 
+<h3>オプションを指定してください</h3>
+<div class="setting">
+    <input type="checkbox" id="auto_completion">
+    <label for="auto_completion">市区町村名の特定で完全一致するものが見つからなかった場合、あいまい検索を行ないます</label>
+    <br>
+    <input type="checkbox" id="enable_log_output">
+    <label for="enable_log_output">ブラウザコンソールへのログ出力を有効にします</label>
+</div>
+
 <h3>住所を入力してください</h3>
 <div class="input">
     <input class="address" id="input" type="text" placeholder="例) 東京都中央区日本橋一丁目1-1"/>
@@ -57,8 +66,8 @@
             alert("input: " + input)
             parse_experimental(input, {
                 dataSource: "geolonia",
-                correctIncompleteCityNames: true,
-                verbose: true,
+                correctIncompleteCityNames: document.getElementById("auto_completion").checked,
+                verbose: document.getElementById("enable_log_output").checked,
             }).then(result => {
                 document.getElementById("result").appendChild(
                     createRowForNightlyPage(input, result)
