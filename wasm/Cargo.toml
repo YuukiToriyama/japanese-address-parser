@@ -15,7 +15,7 @@ crate-type = ["cdylib"]
 
 [features]
 debug = []
-nightly = ["japanese-address-parser/format-house-number", "japanese-address-parser/eliminate-whitespaces"]
+nightly = ["japanese-address-parser/format-house-number", "japanese-address-parser/eliminate-whitespaces", "japanese-address-parser/experimental"]
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
