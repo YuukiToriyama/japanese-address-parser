@@ -98,7 +98,9 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser.parse("奈川県横浜市磯子区洋光台3-10-3").await;
+        let result = parser
+            .parse_with_geolonia("奈川県横浜市磯子区洋光台3-10-3")
+            .await;
         assert_eq!(
             result,
             vec![Token::Rest("奈川県横浜市磯子区洋光台3-10-3".to_string())]
@@ -114,7 +116,9 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser.parse("神奈川県横浜県磯子市洋光台3-10-3").await;
+        let result = parser
+            .parse_with_geolonia("神奈川県横浜県磯子市洋光台3-10-3")
+            .await;
         assert_eq!(
             result,
             vec![
@@ -136,7 +140,9 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser.parse("神奈川県横浜市磯子区陽光台3-10-3").await;
+        let result = parser
+            .parse_with_geolonia("神奈川県横浜市磯子区陽光台3-10-3")
+            .await;
         assert_eq!(
             result,
             vec![
@@ -162,7 +168,9 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser.parse("神奈川県横浜市磯子区洋光台3-10-3").await;
+        let result = parser
+            .parse_with_geolonia("神奈川県横浜市磯子区洋光台3-10-3")
+            .await;
         assert_eq!(
             result,
             vec![
