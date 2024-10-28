@@ -1,3 +1,6 @@
+#[cfg(feature = "nightly")]
+mod nightly;
+
 use japanese_address_parser::api::AsyncApi;
 use japanese_address_parser::parser;
 use std::sync::Arc;
