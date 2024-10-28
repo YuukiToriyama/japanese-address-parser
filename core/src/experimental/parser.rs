@@ -70,9 +70,9 @@ pub struct Parser {
 }
 
 impl Parser {
-    /// Parse address into token sequence.
+    /// Parse address into [ParsedAddress].
     ///
-    /// 住所をパースしトークン列に変換します。
+    /// 住所をパースし、[ParsedAddress]を返します。
     ///
     /// # Example
     /// ```
