@@ -95,15 +95,15 @@ impl Parser {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct ParsedAddress {
     /// 都道府県名
-    prefecture: String,
+    pub prefecture: String,
     /// 市区町村名
-    city: String,
+    pub city: String,
     /// 町名
-    town: String,
+    pub town: String,
     /// それ以降
-    rest: String,
+    pub rest: String,
     /// メタデータ
-    metadata: Metadata,
+    pub metadata: Metadata,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -112,19 +112,19 @@ pub struct Metadata {
     ///
     /// 住所のパースに成功し、緯度経度の情報が取得できる場合、緯度を返します。
     /// 緯度経度の情報はあくまで検出できた地域の代表点を表すものであり、入力された住所の実際の位置とは必ずしも一致しないことに注意してください。
-    latitude: Option<f64>,
+    pub latitude: Option<f64>,
     /// 軽度
     ///
     /// 住所のパースに成功し、緯度経度の情報が取得できる場合、軽度を返します。
     /// 緯度経度の情報はあくまで検出できた地域の代表点を表すものであり、入力された住所の実際の位置とは必ずしも一致しないことに注意してください。
-    longitude: Option<f64>,
+    pub longitude: Option<f64>,
     /// パース処理の深度
     ///
     /// - `0`: 何も検出できなかった場合
     /// - `1`: 都道府県名までは検出できた場合
     /// - `2`: 市区町村名までは検出できた場合
     /// - `3`: 町名まで検出できた場合
-    depth: u8,
+    pub depth: u8,
 }
 
 impl From<Vec<Token>> for ParsedAddress {
