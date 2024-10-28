@@ -5,7 +5,7 @@
     "Yuuki Toriyama <github@toriyama.dev>"
   ],
   "description": "A Rust Library to parse japanese addresses.",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "license": "MIT",
   "repository": {
     "type": "git",

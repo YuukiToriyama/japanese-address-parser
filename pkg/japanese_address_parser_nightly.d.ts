@@ -1,5 +1,32 @@
 /* tslint:disable */
 /* eslint-disable */
+export function start(): void;
+
+export function parse_experimental(
+    address: string,
+    options: ParseOptions
+): Promise<ParsedAddress>;
+
+export interface ParseOptions {
+    dataSource: "geolonia";
+    correctIncompleteCityNames: boolean | null;
+    verbose: boolean | null;
+}
+
+export interface Metadata {
+    latitude: number | undefined;
+    longitude: number | undefined;
+    depth: number;
+}
+
+export interface ParsedAddress {
+    prefecture: string;
+    city: string;
+    town: string;
+    rest: string;
+    metadata: Metadata;
+}
+
 
 export interface ParseResult {
     address: Address;
@@ -30,15 +57,18 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly start: () => void;
+  readonly parse_experimental: (a: number, b: number, c: number) => number;
   readonly __wbg_parser_free: (a: number, b: number) => void;
   readonly parser_new: () => number;
   readonly parser_parse: (a: number, b: number, c: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h079a5abf6f62fa69: (a: number, b: number, c: number) => void;
+  readonly _dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h4edbb680f56410f3: (a: number, b: number, c: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
-  readonly wasm_bindgen__convert__closures__invoke2_mut__h3072bd92d08d42a1: (a: number, b: number, c: number, d: number) => void;
+  readonly wasm_bindgen__convert__closures__invoke2_mut__h0c52004460763410: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbindgen_start: () => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
