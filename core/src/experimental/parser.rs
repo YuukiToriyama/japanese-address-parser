@@ -81,7 +81,11 @@ impl Parser {
     /// async fn example() {
     ///     let parser = Parser::default();
     ///     let result = parser.parse("埼玉県所沢市上山口2135").await;
-    ///     println!("{:?}", result);
+    ///     assert_eq!(result.prefecture, "埼玉県");
+    ///     assert_eq!(result.city, "所沢市");
+    ///     assert_eq!(result.town, "上山口");
+    ///     assert_eq!(result.rest, "2135");
+    ///     assert_eq!(result.metadata.depth, 3);
     /// }
     /// ```
     pub async fn parse(&self, address: &str) -> ParsedAddress {
