@@ -95,15 +95,15 @@ impl Parser {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct ParsedAddress {
     /// 都道府県名
-    prefecture: String,
+    pub prefecture: String,
     /// 市区町村名
-    city: String,
+    pub city: String,
     /// 町名
-    town: String,
+    pub town: String,
     /// それ以降
-    rest: String,
+    pub rest: String,
     /// メタデータ
-    metadata: Metadata,
+    pub metadata: Metadata,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
