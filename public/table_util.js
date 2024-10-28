@@ -14,6 +14,18 @@ const createRow = (input, parseResult) => {
     return tr
 }
 
+const createRowForNightlyPage = (input, parseResult) => {
+    const tr = document.createElement("tr")
+    tr.appendChild(createCell(`<p>${input}</p>`))
+    tr.appendChild(createCell(`<p>${parseResult.metadata.depth}</p>`))
+    tr.appendChild(createCell(`<p>${parseResult.prefecture}</p>`))
+    tr.appendChild(createCell(`<p>${parseResult.city}</p>`))
+    tr.appendChild(createCell(`<p>${parseResult.town}</p>`))
+    tr.appendChild(createCell(`<p>${parseResult.rest}</p>`))
+    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, null)}</code>`))
+    return tr
+}
+
 const createCell = (innerHtml) => {
     const td = document.createElement("td")
     td.innerHTML = innerHtml
