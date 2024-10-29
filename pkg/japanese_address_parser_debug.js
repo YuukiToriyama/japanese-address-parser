@@ -357,7 +357,7 @@ function __wbg_get_imports() {
             wasm.__wbindgen_free(deferred0_0, deferred0_1, 1);
         }
     };
-    imports.wbg.__wbg_fetch_f8d735ba6fe1b719 = function(arg0) {
+    imports.wbg.__wbg_fetch_9b133f5ec268a7b8 = function(arg0) {
         const ret = fetch(getObject(arg0));
         return addHeapObject(ret);
     };

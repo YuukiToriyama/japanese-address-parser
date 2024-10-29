@@ -335,7 +335,7 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_set_f975102236d3c502 = function(arg0, arg1, arg2) {
         getObject(arg0)[takeObject(arg1)] = takeObject(arg2);
     };
-    imports.wbg.__wbg_fetch_f8d735ba6fe1b719 = function(arg0) {
+    imports.wbg.__wbg_fetch_9b133f5ec268a7b8 = function(arg0) {
         const ret = fetch(getObject(arg0));
         return addHeapObject(ret);
     };
