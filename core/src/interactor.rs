@@ -6,7 +6,6 @@ use crate::repository::chimei_ruiju::town::TownMasterRepository;
 use crate::service::chimei_ruiju::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
-#[allow(dead_code)]
 pub(crate) trait ChimeiRuijuInteractor {
     /// 都道府県マスタを取得
     async fn get_prefecture_master(
@@ -28,7 +27,6 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
-#[allow(dead_code)]
 pub(crate) struct ChimeiRuijuInteractorImpl {
     api_service: ChimeiRuijuApiService,
 }
