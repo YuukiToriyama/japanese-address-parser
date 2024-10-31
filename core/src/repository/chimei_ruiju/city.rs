@@ -51,6 +51,7 @@ mod async_tests {
 
 #[cfg(feature = "blocking")]
 impl CityMasterRepository {
+    #[allow(dead_code)]
     pub fn get_blocking(
         api_service: &ChimeiRuijuApiService,
         prefecture: &Prefecture,

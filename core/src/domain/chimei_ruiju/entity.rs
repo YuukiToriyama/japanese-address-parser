@@ -30,6 +30,7 @@ pub struct TownMaster {
     coordinate: Coordinate,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 pub struct Block {
     /// 小字・通称名
@@ -42,6 +43,7 @@ pub struct Block {
     coordinate: Coordinate,
 }
 
+#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 pub struct Coordinate {
     /// 緯度
