@@ -6,5 +6,6 @@
 //!
 //! If you are eager to use this module, please enable `experimental` feature flag.
 
+mod parse_with_chimeiruiju;
 mod parse_with_geolonia;
 pub mod parser;
