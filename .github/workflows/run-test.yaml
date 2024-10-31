@@ -25,6 +25,7 @@ jobs:
         run: |
           cargo test
           cargo test --features=blocking
+          cargo test --features=experimental
       - name: Integration test
         working-directory: tests
         run: cargo test
