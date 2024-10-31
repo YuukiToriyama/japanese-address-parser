@@ -14,11 +14,23 @@
 
 <h3>オプションを指定してください</h3>
 <div class="setting">
-    <input type="checkbox" id="auto_completion">
-    <label for="auto_completion">市区町村名の特定で完全一致するものが見つからなかった場合、あいまい検索を行ないます</label>
-    <br>
-    <input type="checkbox" id="enable_log_output">
-    <label for="enable_log_output">ブラウザコンソールへのログ出力を有効にします</label>
+    <form id="radioGroup">
+        <fieldset style="width: fit-content">
+            <legend>パースに使用する住所データ</legend>
+            <div>
+                <input type="radio" id="use_chimeiruiju" name="dataSource" value="chimeiruiju" checked>
+                <label for="use_chimeiruiju">ChimeiRuiju</label>
+                <input type="radio" id="use_geolonia" name="dataSource" value="geolonia">
+                <label for="use_geolonia">Geolonia</label>
+            </div>
+        </fieldset>
+        <br>
+        <input type="checkbox" id="auto_completion">
+        <label for="auto_completion">市区町村名の特定で完全一致するものが見つからなかった場合、あいまい検索を行ないます</label>
+        <br>
+        <input type="checkbox" id="enable_log_output">
+        <label for="enable_log_output">ブラウザコンソールへのログ出力を有効にします</label>
+    </form>
 </div>
 
 <h3>住所を入力してください</h3>
@@ -65,7 +77,7 @@
             const input = inputTextArea.value
             alert("input: " + input)
             parse_experimental(input, {
-                dataSource: "geolonia",
+                dataSource: document.getElementById("radioGroup").dataSource.value,
                 correctIncompleteCityNames: document.getElementById("auto_completion").checked,
                 verbose: document.getElementById("enable_log_output").checked,
             }).then(result => {
