@@ -4,20 +4,15 @@ use serde::Serialize;
 /// Data source for Parser
 ///
 /// パーサーで使用するデータソースを指定します。
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub enum DataSource {
     /// ChimeiRuiju 住所データ
     /// <https://github.com/Cocon/chimei-ruiju>
     ChimeiRuiju,
     /// Geolonia 住所データ
     /// <https://github.com/geolonia/japanese-addresses>
+    #[default]
     Geolonia,
-}
-
-impl Default for DataSource {
-    fn default() -> Self {
-        DataSource::Geolonia
-    }
 }
 
 /// Options for Parser
