@@ -1,6 +1,6 @@
 use crate::domain::common::token::Token;
 use crate::experimental::parser::Parser;
-use crate::interactor::{ChimeiRuijuInteractor, ChimeiRuijuInteractorImpl};
+use crate::interactor::chimei_ruiju::{ChimeiRuijuInteractor, ChimeiRuijuInteractorImpl};
 use crate::tokenizer::Tokenizer;
 
 impl Parser {
