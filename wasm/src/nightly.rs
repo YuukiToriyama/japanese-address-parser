@@ -11,7 +11,7 @@ export function parse_experimental(
 ): Promise<ParsedAddress>;
 
 export interface ParseOptions {
-    dataSource: "geolonia";
+    dataSource: "chimeiruiju" | "geolonia";
     correctIncompleteCityNames: boolean | null;
     verbose: boolean | null;
 }
@@ -56,10 +56,10 @@ pub async fn parse_experimental(address: &str, options: JsValue) -> JsValue {
             ParserOptions::default()
         }
         Ok(options) => ParserOptions {
-            data_source: if options.data_source == "geolonia" {
-                DataSource::Geolonia
-            } else {
-                DataSource::default()
+            data_source: match options.data_source.as_str() {
+                "chimeiruiju" => DataSource::ChimeiRuiju,
+                "geolonia" => DataSource::Geolonia,
+                _ => DataSource::default(),
             },
             correct_incomplete_city_names: match options.correct_incomplete_city_names {
                 Some(boolean) => boolean,
