@@ -132,6 +132,7 @@ mod async_tests {
 
 #[cfg(feature = "blocking")]
 impl PrefectureMasterRepository {
+    #[allow(dead_code)]
     pub fn get_blocking(
         api_service: &ChimeiRuijuApiService,
         prefecture: Prefecture,

@@ -7,6 +7,7 @@ use jisx0401::Prefecture;
 pub struct TownMasterRepository {}
 
 impl TownMasterRepository {
+    #[allow(dead_code)]
     pub async fn get(
         api_service: &ChimeiRuijuApiService,
         prefecture: &Prefecture,
@@ -42,6 +43,7 @@ mod async_tests {
 
 #[cfg(feature = "blocking")]
 impl TownMasterRepository {
+    #[allow(dead_code)]
     pub fn get_blocking(
         api_service: &ChimeiRuijuApiService,
         prefecture: &Prefecture,
