@@ -28,7 +28,7 @@ pub struct TownMaster {
     /// 街区リスト
     blocks: Vec<Block>,
     /// 緯度経度
-    coordinate: Coordinate,
+    pub(crate) coordinate: Coordinate,
 }
 
 #[allow(dead_code)]

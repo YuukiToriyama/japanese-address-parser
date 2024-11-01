@@ -73,7 +73,7 @@ impl Parser {
             }
         };
         // 町名の検出
-        let (_, tokenizer) = match tokenizer.read_town(city_master.towns) {
+        let (town_name, tokenizer) = match tokenizer.read_town(city_master.towns) {
             Ok(found) => found,
             Err(not_found) => {
                 if self.options.verbose {
@@ -81,6 +81,14 @@ impl Parser {
                 }
                 return not_found.tokens;
             }
+        };
+
+        // 町村マスタの取得
+        if let Ok(town_master) = interactor
+            .get_town_master(&prefecture, &city_name, &town_name)
+            .await
+        {
+            lat_lng.replace(town_master.coordinate.to_lat_lng());
         };
 
         log::info!("{:?}", lat_lng);

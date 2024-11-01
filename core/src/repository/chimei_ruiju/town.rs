@@ -3,11 +3,9 @@ use crate::domain::chimei_ruiju::error::ApiError;
 use crate::service::chimei_ruiju::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
-#[allow(dead_code)]
 pub struct TownMasterRepository {}
 
 impl TownMasterRepository {
-    #[allow(dead_code)]
     pub async fn get(
         api_service: &ChimeiRuijuApiService,
         prefecture: &Prefecture,
