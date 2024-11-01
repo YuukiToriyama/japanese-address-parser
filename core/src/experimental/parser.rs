@@ -1,3 +1,4 @@
+use crate::domain::common::latlng::LatLng;
 use crate::domain::common::token::Token;
 use serde::Serialize;
 
@@ -180,6 +181,17 @@ impl From<Vec<Token>> for ParsedAddress {
             }
         }
 
+        parsed_address
+    }
+}
+
+impl From<(Vec<Token>, Option<LatLng>)> for ParsedAddress {
+    fn from((tokens, lat_lng): (Vec<Token>, Option<LatLng>)) -> Self {
+        let mut parsed_address = ParsedAddress::from(tokens);
+        if let Some(lat_lng) = lat_lng {
+            parsed_address.metadata.longitude = Some(lat_lng.longitude);
+            parsed_address.metadata.latitude = Some(lat_lng.latitude);
+        }
         parsed_address
     }
 }
