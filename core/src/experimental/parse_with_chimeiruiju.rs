@@ -6,7 +6,10 @@ use crate::tokenizer::Tokenizer;
 use std::option::Option;
 
 impl Parser {
-    pub(crate) async fn parse_with_chimeiruiju(&self, address: &str) -> Vec<Token> {
+    pub(crate) async fn parse_with_chimeiruiju(
+        &self,
+        address: &str,
+    ) -> (Vec<Token>, Option<LatLng>) {
         let interactor = ChimeiRuijuInteractorImpl::default();
         let tokenizer = Tokenizer::new(address);
         let mut lat_lng: Option<LatLng> = None;
@@ -18,7 +21,7 @@ impl Parser {
                 if self.options.verbose {
                     log::error!("都道府県名の検出に失敗しました")
                 }
-                return not_found.tokens;
+                return (not_found.tokens, lat_lng);
             }
         };
 
@@ -32,7 +35,7 @@ impl Parser {
                 if self.options.verbose {
                     log::error!("{}", error)
                 }
-                return tokenizer.finish().tokens;
+                return (tokenizer.finish().tokens, lat_lng);
             }
         };
         // 市区町村名の検出
@@ -47,14 +50,14 @@ impl Parser {
                             if self.options.verbose {
                                 log::error!("市区町村名の検出に失敗しました")
                             }
-                            return not_found.tokens;
+                            return (not_found.tokens, lat_lng);
                         }
                     }
                 } else {
                     if self.options.verbose {
                         log::error!("市区町村名の検出に失敗しました")
                     }
-                    return not_found.finish().tokens;
+                    return (not_found.finish().tokens, lat_lng);
                 }
             }
         };
@@ -69,7 +72,7 @@ impl Parser {
                 if self.options.verbose {
                     log::error!("{}", error)
                 }
-                return tokenizer.finish().tokens;
+                return (tokenizer.finish().tokens, lat_lng);
             }
         };
         // 町名の検出
@@ -79,7 +82,7 @@ impl Parser {
                 if self.options.verbose {
                     log::error!("町名の検出に失敗しました")
                 }
-                return not_found.tokens;
+                return (not_found.tokens, lat_lng);
             }
         };
 
@@ -91,8 +94,7 @@ impl Parser {
             lat_lng.replace(town_master.coordinate.to_lat_lng());
         };
 
-        log::info!("{:?}", lat_lng);
-        tokenizer.finish().tokens
+        (tokenizer.finish().tokens, lat_lng)
     }
 }
 
@@ -110,11 +112,11 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser
+        let (tokens, _) = parser
             .parse_with_chimeiruiju("奈川県横浜市磯子区洋光台3-10-3")
             .await;
         assert_eq!(
-            result,
+            tokens,
             vec![Token::Rest("奈川県横浜市磯子区洋光台3-10-3".to_string())]
         )
     }
@@ -128,11 +130,11 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser
+        let (tokens, _) = parser
             .parse_with_chimeiruiju("神奈川県横浜県磯子市洋光台3-10-3")
             .await;
         assert_eq!(
-            result,
+            tokens,
             vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "神奈川県".to_string(),
@@ -152,11 +154,11 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser
+        let (tokens, _) = parser
             .parse_with_chimeiruiju("神奈川県横浜市磯子区陽光台3-10-3")
             .await;
         assert_eq!(
-            result,
+            tokens,
             vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "神奈川県".to_string(),
@@ -180,11 +182,11 @@ mod tests {
                 verbose: false,
             },
         };
-        let result = parser
+        let (tokens, _) = parser
             .parse_with_chimeiruiju("神奈川県横浜市磯子区洋光台3-10-3")
             .await;
         assert_eq!(
-            result,
+            tokens,
             vec![
                 Token::Prefecture(Prefecture {
                     prefecture_name: "神奈川県".to_string(),

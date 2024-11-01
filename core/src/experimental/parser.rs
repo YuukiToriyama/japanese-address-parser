@@ -88,11 +88,12 @@ impl Parser {
     /// }
     /// ```
     pub async fn parse(&self, address: &str) -> ParsedAddress {
-        let tokens = match self.options.data_source {
-            DataSource::ChimeiRuiju => self.parse_with_chimeiruiju(address).await,
-            DataSource::Geolonia => self.parse_with_geolonia(address).await,
-        };
-        ParsedAddress::from(tokens)
+        match self.options.data_source {
+            DataSource::ChimeiRuiju => {
+                ParsedAddress::from(self.parse_with_chimeiruiju(address).await)
+            }
+            DataSource::Geolonia => ParsedAddress::from(self.parse_with_geolonia(address).await),
+        }
     }
 }
 
