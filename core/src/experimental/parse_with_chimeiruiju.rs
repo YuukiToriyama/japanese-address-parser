@@ -91,7 +91,7 @@ mod tests {
             },
         };
         let result = parser
-            .parse_with_geolonia("奈川県横浜市磯子区洋光台3-10-3")
+            .parse_with_chimeiruiju("奈川県横浜市磯子区洋光台3-10-3")
             .await;
         assert_eq!(
             result,
@@ -109,7 +109,7 @@ mod tests {
             },
         };
         let result = parser
-            .parse_with_geolonia("神奈川県横浜県磯子市洋光台3-10-3")
+            .parse_with_chimeiruiju("神奈川県横浜県磯子市洋光台3-10-3")
             .await;
         assert_eq!(
             result,
@@ -133,7 +133,7 @@ mod tests {
             },
         };
         let result = parser
-            .parse_with_geolonia("神奈川県横浜市磯子区陽光台3-10-3")
+            .parse_with_chimeiruiju("神奈川県横浜市磯子区陽光台3-10-3")
             .await;
         assert_eq!(
             result,
@@ -161,7 +161,7 @@ mod tests {
             },
         };
         let result = parser
-            .parse_with_geolonia("神奈川県横浜市磯子区洋光台3-10-3")
+            .parse_with_chimeiruiju("神奈川県横浜市磯子区洋光台3-10-3")
             .await;
         assert_eq!(
             result,
