@@ -1,3 +1,4 @@
+use crate::domain::common::latlng::LatLng;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -17,7 +18,7 @@ pub struct CityMaster {
     /// 町名リスト
     pub(crate) towns: Vec<String>,
     /// 緯度経度
-    coordinate: Coordinate,
+    pub(crate) coordinate: Coordinate,
 }
 
 #[derive(Deserialize, Debug)]
@@ -50,4 +51,13 @@ pub struct Coordinate {
     pub(crate) latitude: f64,
     /// 経度
     pub(crate) longitude: f64,
+}
+
+impl Coordinate {
+    pub(crate) fn to_lat_lng(&self) -> LatLng {
+        LatLng {
+            latitude: self.latitude,
+            longitude: self.longitude,
+        }
+    }
 }

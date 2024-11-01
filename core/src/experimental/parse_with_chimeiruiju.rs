@@ -1,12 +1,15 @@
+use crate::domain::common::latlng::LatLng;
 use crate::domain::common::token::Token;
 use crate::experimental::parser::Parser;
 use crate::interactor::chimei_ruiju::{ChimeiRuijuInteractor, ChimeiRuijuInteractorImpl};
 use crate::tokenizer::Tokenizer;
+use std::option::Option;
 
 impl Parser {
     pub(crate) async fn parse_with_chimeiruiju(&self, address: &str) -> Vec<Token> {
         let interactor = ChimeiRuijuInteractorImpl::default();
         let tokenizer = Tokenizer::new(address);
+        let mut lat_lng: Option<LatLng> = None;
 
         // 都道府県名の検出
         let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
@@ -19,9 +22,12 @@ impl Parser {
             }
         };
 
-        // 市区町村名の検出
+        // 都道府県マスタの取得
         let prefecture_master = match interactor.get_prefecture_master(&prefecture).await {
-            Ok(result) => result,
+            Ok(result) => {
+                lat_lng.replace(result.coordinate.to_lat_lng());
+                result
+            }
             Err(error) => {
                 if self.options.verbose {
                     log::error!("{}", error)
@@ -29,6 +35,7 @@ impl Parser {
                 return tokenizer.finish().tokens;
             }
         };
+        // 市区町村名の検出
         let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
             Ok(found) => found,
             Err(not_found) => {
@@ -52,9 +59,12 @@ impl Parser {
             }
         };
 
-        // 町名の検出
+        // 市区町村マスタの取得
         let city_master = match interactor.get_city_master(&prefecture, &city_name).await {
-            Ok(result) => result,
+            Ok(result) => {
+                lat_lng.replace(result.coordinate.to_lat_lng());
+                result
+            }
             Err(error) => {
                 if self.options.verbose {
                     log::error!("{}", error)
@@ -62,6 +72,7 @@ impl Parser {
                 return tokenizer.finish().tokens;
             }
         };
+        // 町名の検出
         let (_, tokenizer) = match tokenizer.read_town(city_master.towns) {
             Ok(found) => found,
             Err(not_found) => {
@@ -72,6 +83,7 @@ impl Parser {
             }
         };
 
+        log::info!("{:?}", lat_lng);
         tokenizer.finish().tokens
     }
 }
