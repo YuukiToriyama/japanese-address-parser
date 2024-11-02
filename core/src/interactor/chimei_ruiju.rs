@@ -56,7 +56,6 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         CityMasterRepository::get(&self.api_service, prefecture, city_name).await
     }
 
-    #[allow(dead_code)]
     async fn get_town_master(
         &self,
         prefecture: &Prefecture,
