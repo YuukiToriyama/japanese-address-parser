@@ -21,6 +21,7 @@ pub mod entity;
 #[cfg_attr(docsrs, doc(cfg(feature = "experimental")))]
 pub mod experimental;
 mod formatter;
+mod interactor;
 pub mod parser;
 mod repository;
 mod service;

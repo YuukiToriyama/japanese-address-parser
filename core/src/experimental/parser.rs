@@ -1,20 +1,19 @@
+use crate::domain::common::latlng::LatLng;
 use crate::domain::common::token::Token;
 use serde::Serialize;
 
 /// Data source for Parser
 ///
 /// パーサーで使用するデータソースを指定します。
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub enum DataSource {
+    /// ChimeiRuiju 住所データ
+    /// <https://github.com/Cocon/chimei-ruiju>
+    ChimeiRuiju,
     /// Geolonia 住所データ
     /// <https://github.com/geolonia/japanese-addresses>
+    #[default]
     Geolonia,
-}
-
-impl Default for DataSource {
-    fn default() -> Self {
-        DataSource::Geolonia
-    }
 }
 
 /// Options for Parser
@@ -89,10 +88,12 @@ impl Parser {
     /// }
     /// ```
     pub async fn parse(&self, address: &str) -> ParsedAddress {
-        let tokens = match self.options.data_source {
-            DataSource::Geolonia => self.parse_with_geolonia(address).await,
-        };
-        ParsedAddress::from(tokens)
+        match self.options.data_source {
+            DataSource::ChimeiRuiju => {
+                ParsedAddress::from(self.parse_with_chimeiruiju(address).await)
+            }
+            DataSource::Geolonia => ParsedAddress::from(self.parse_with_geolonia(address).await),
+        }
     }
 }
 
@@ -181,6 +182,17 @@ impl From<Vec<Token>> for ParsedAddress {
             }
         }
 
+        parsed_address
+    }
+}
+
+impl From<(Vec<Token>, Option<LatLng>)> for ParsedAddress {
+    fn from((tokens, lat_lng): (Vec<Token>, Option<LatLng>)) -> Self {
+        let mut parsed_address = ParsedAddress::from(tokens);
+        if let Some(lat_lng) = lat_lng {
+            parsed_address.metadata.longitude = Some(lat_lng.longitude);
+            parsed_address.metadata.latitude = Some(lat_lng.latitude);
+        }
         parsed_address
     }
 }
