@@ -53,12 +53,6 @@ pub(crate) struct City {
     pub(crate) representative_point: Option<LatLng>,
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct Town {
-    pub(crate) town_name: String,
-    pub(crate) representative_point: Option<LatLng>,
-}
-
 pub(crate) fn append_token(tokens: &[Token], token: Token) -> Vec<Token> {
     [tokens.to_owned(), vec![token]].concat()
 }
