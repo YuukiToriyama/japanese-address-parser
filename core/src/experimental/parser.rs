@@ -168,13 +168,9 @@ impl From<Vec<Token>> for ParsedAddress {
                         parsed_address.metadata.longitude = Some(lat_lng.longitude);
                     }
                 }
-                Token::Town(town) => {
-                    parsed_address.town = town.town_name;
+                Token::Town(town_name) => {
+                    parsed_address.town = town_name;
                     parsed_address.metadata.depth = 3;
-                    if let Some(lat_lng) = town.representative_point {
-                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
-                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
-                    }
                 }
                 Token::Rest(rest) => {
                     parsed_address.rest = rest;
@@ -200,7 +196,7 @@ impl From<(Vec<Token>, Option<LatLng>)> for ParsedAddress {
 #[cfg(test)]
 mod tests {
     use crate::domain::common::latlng::LatLng;
-    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::domain::common::token::{City, Prefecture, Token};
     use crate::experimental::parser::{Metadata, ParsedAddress};
 
     #[test]
@@ -307,16 +303,14 @@ mod tests {
                     longitude: 35.708143,
                 }),
             }),
-            Token::Town(Town {
-                town_name: "本駒込六丁目".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.738043,
-                    longitude: 35.72791,
-                }),
-            }),
+            Token::Town("本駒込六丁目".to_string()),
             Token::Rest("16-3".to_string()),
         ];
-        let parsed_address = ParsedAddress::from(tokens);
+        let lat_lng = Some(LatLng {
+            latitude: 139.738043,
+            longitude: 35.72791,
+        });
+        let parsed_address = ParsedAddress::from((tokens, lat_lng));
         assert_eq!(
             parsed_address,
             ParsedAddress {

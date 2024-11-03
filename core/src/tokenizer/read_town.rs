@@ -1,4 +1,4 @@
-use crate::domain::common::token::{append_token, Token, Town};
+use crate::domain::common::token::{append_token, Token};
 use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
@@ -39,13 +39,7 @@ impl Tokenizer<CityNameFound> {
         Ok((
             town_name.clone(),
             Tokenizer {
-                tokens: append_token(
-                    &self.tokens,
-                    Token::Town(Town {
-                        town_name,
-                        representative_point: None,
-                    }),
-                ),
+                tokens: append_token(&self.tokens, Token::Town(town_name)),
                 rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
                 {
                     format_house_number(&rest).unwrap()
