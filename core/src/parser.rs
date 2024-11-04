@@ -6,6 +6,7 @@ use crate::api::BlockingApi;
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
+use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
 
@@ -39,25 +40,14 @@ impl From<Tokenizer<End>> for Address {
 /// }
 /// ```
 pub struct Parser {
-    async_api: Arc<AsyncApi>,
-    #[cfg(feature = "blocking")]
-    blocking_api: Arc<BlockingApi>,
+    interactor: Arc<GeoloniaInteractorImpl>,
 }
 
 impl Default for Parser {
     /// Constructs a new `Parser`.
-    #[cfg(feature = "blocking")]
     fn default() -> Self {
         Self {
-            async_api: Arc::new(Default::default()),
-            blocking_api: Arc::new(Default::default()),
-        }
-    }
-    /// Constructs a new `Parser`.
-    #[cfg(not(feature = "blocking"))]
-    fn default() -> Self {
-        Self {
-            async_api: Arc::new(Default::default()),
+            interactor: Arc::new(Default::default()),
         }
     }
 }
@@ -65,13 +55,137 @@ impl Default for Parser {
 impl Parser {
     /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
-        parse(self.async_api.clone(), address).await
+        let interasctor = self.interactor.clone();
+        let tokenizer = Tokenizer::new(address);
+        // 都道府県を特定
+        let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
+            Ok(found) => found,
+            Err(tokenizer) => {
+                return ParseResult {
+                    address: Address::from(tokenizer),
+                    error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
+                }
+            }
+        };
+        // その都道府県の市町村名リストを取得
+        let prefecture_master = match interasctor
+            .get_prefecture_master(prefecture.name_ja())
+            .await
+        {
+            Err(error) => {
+                return ParseResult {
+                    address: Address::from(tokenizer.finish()),
+                    error: Some(error),
+                };
+            }
+            Ok(result) => result,
+        };
+        // 市町村名を特定
+        let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
+            Ok(found) => found,
+            Err(not_found) => {
+                // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
+                match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
+                    Ok(found) if cfg!(feature = "city-name-correction") => found,
+                    _ => {
+                        // それでも見つからない場合は終了
+                        return ParseResult {
+                            address: Address::from(tokenizer.finish()),
+                            error: Some(Error::new_parse_error(ParseErrorKind::City)),
+                        };
+                    }
+                }
+            }
+        };
+        // その市町村の町名リストを取得
+        let city = match interasctor
+            .get_city_master(prefecture.name_ja(), &city_name)
+            .await
+        {
+            Err(error) => {
+                return ParseResult {
+                    address: Address::from(tokenizer.finish()),
+                    error: Some(error),
+                };
+            }
+            Ok(result) => result,
+        };
+        // 町名を特定
+        let Ok((_, tokenizer)) =
+            tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
+        else {
+            return ParseResult {
+                address: Address::from(tokenizer.finish()),
+                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
+            };
+        };
+
+        ParseResult {
+            address: Address::from(tokenizer.finish()),
+            error: None,
+        }
     }
 
     /// Parses the given `address` synchronously.
     #[cfg(feature = "blocking")]
     pub fn parse_blocking(&self, address: &str) -> ParseResult {
-        parse_blocking(self.blocking_api.clone(), address)
+        let interactor = self.interactor.clone();
+        let tokenizer = Tokenizer::new(address);
+        let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
+            Ok(found) => found,
+            Err(tokenizer) => {
+                return ParseResult {
+                    address: Address::from(tokenizer),
+                    error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
+                }
+            }
+        };
+        let prefecture_master =
+            match interactor.get_blocking_prefecture_master(prefecture.name_ja()) {
+                Err(error) => {
+                    return ParseResult {
+                        address: Address::from(tokenizer.finish()),
+                        error: Some(error),
+                    };
+                }
+                Ok(result) => result,
+            };
+        let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
+            Ok(found) => found,
+            Err(not_found) => {
+                match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
+                    Ok(found) if cfg!(feature = "city-name-correction") => found,
+                    _ => {
+                        return ParseResult {
+                            address: Address::from(tokenizer.finish()),
+                            error: Some(Error::new_parse_error(ParseErrorKind::City)),
+                        };
+                    }
+                }
+            }
+        };
+        let city = match interactor.get_blocking_city_master(prefecture.name_ja(), &city_name) {
+            Err(error) => {
+                return ParseResult {
+                    address: Address::from(tokenizer.finish()),
+                    error: Some(error),
+                };
+            }
+            Ok(result) => result,
+        };
+        let Ok((_, tokenizer)) =
+            tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
+        else {
+            return ParseResult {
+                address: Address::from(tokenizer.finish()),
+                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
+            };
+        };
+
+        ParseResult {
+            address: Address::from(tokenizer.finish()),
+            error: None,
+        }
     }
 }
 
