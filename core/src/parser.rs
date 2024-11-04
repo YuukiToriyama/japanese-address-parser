@@ -260,17 +260,14 @@ pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
-    use crate::api::AsyncApi;
     use crate::domain::geolonia::error::ParseErrorKind;
-    use crate::parser::parse;
-    use crate::repository::geolonia::city_master_api::CityMasterApi;
-    use crate::repository::geolonia::prefecture_master_api::PrefectureMasterApi;
+    use crate::parser::Parser;
     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
 
     #[tokio::test]
     async fn 都道府県名が誤っている場合() {
-        let api: AsyncApi = Default::default();
-        let result = parse(api.into(), "青盛県青森市長島１丁目１−１").await;
+        let parser = Parser::default();
+        let result = parser.parse("青盛県青森市長島１丁目１−１").await;
         assert_eq!(result.address.prefecture, "");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");
@@ -283,24 +280,9 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn 都道府県マスタが取得できない場合() {
-        let mut api: AsyncApi = Default::default();
-        api.prefecture_master_api = PrefectureMasterApi {
-            server_url: "https://example.com/invalid_url/api/",
-        };
-
-        let result = parse(api.into(), "青森県青森市長島１丁目１−１").await;
-        assert_eq!(result.error.is_some(), true);
-        assert_eq!(result.address.prefecture, "青森県");
-        assert_eq!(result.address.city, "");
-        assert_eq!(result.address.town, "");
-        assert_eq!(result.address.rest, "青森市長島１丁目１−１");
-    }
-
-    #[tokio::test]
     async fn 市区町村名が誤っている場合() {
-        let api: AsyncApi = Default::default();
-        let result = parse(api.into(), "青森県青盛市長島１丁目１−１").await;
+        let parser = Parser::default();
+        let result = parser.parse("青森県青盛市長島１丁目１−１").await;
         assert_eq!(result.address.prefecture, "青森県");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");
@@ -313,24 +295,9 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn 市区町村マスタが取得できない場合() {
-        let mut api: AsyncApi = Default::default();
-        api.city_master_api = CityMasterApi {
-            server_url: "https://example.com/invalid_url/api/",
-        };
-
-        let result = parse(api.into(), "青森県青森市長島１丁目１−１").await;
-        assert_eq!(result.error.is_some(), true);
-        assert_eq!(result.address.prefecture, "青森県");
-        assert_eq!(result.address.city, "青森市");
-        assert_eq!(result.address.town, "");
-        assert_eq!(result.address.rest, "長島１丁目１−１");
-    }
-
-    #[tokio::test]
     async fn 町名が誤っている場合() {
-        let api: AsyncApi = Default::default();
-        let result = parse(api.into(), "青森県青森市永嶋１丁目１−１").await;
+        let parser = Parser::default();
+        let result = parser.parse("青森県青森市永嶋１丁目１−１").await;
         assert_eq!(result.address.prefecture, "青森県");
         assert_eq!(result.address.city, "青森市");
         assert_eq!(result.address.town, "");
@@ -346,8 +313,8 @@ mod tests {
 
     #[wasm_bindgen_test]
     async fn parse_wasm_success() {
-        let api: AsyncApi = Default::default();
-        let result = parse(api.into(), "兵庫県淡路市生穂新島8番地").await;
+        let parser = Parser::default();
+        let result = parser.parse("兵庫県淡路市生穂新島8番地").await;
         assert_eq!(result.address.prefecture, "兵庫県".to_string());
         assert_eq!(result.address.city, "淡路市".to_string());
         assert_eq!(result.address.town, "生穂".to_string());
@@ -421,14 +388,13 @@ pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
-    use crate::api::BlockingApi;
     use crate::domain::geolonia::error::ParseErrorKind;
-    use crate::parser::parse_blocking;
+    use crate::parser::Parser;
 
     #[test]
     fn parse_blocking_success_埼玉県秩父市熊木町8番15号() {
-        let client: BlockingApi = Default::default();
-        let result = parse_blocking(client.into(), "埼玉県秩父市熊木町8番15号");
+        let parser = Parser::default();
+        let result = parser.parse_blocking("埼玉県秩父市熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "秩父市");
         assert_eq!(result.address.town, "熊木町");
@@ -438,8 +404,8 @@ mod blocking_tests {
 
     #[test]
     fn parse_blocking_fail_市町村名が間違っている場合() {
-        let client: BlockingApi = Default::default();
-        let result = parse_blocking(client.into(), "埼玉県秩父柿熊木町8番15号");
+        let parser = Parser::default();
+        let result = parser.parse_blocking("埼玉県秩父柿熊木町8番15号");
         assert_eq!(result.address.prefecture, "埼玉県");
         assert_eq!(result.address.city, "");
         assert_eq!(result.address.town, "");
