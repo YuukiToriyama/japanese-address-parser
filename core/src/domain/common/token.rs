@@ -1,4 +1,3 @@
-use crate::domain::common::latlng::LatLng;
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Equal, Greater, Less};
 
@@ -39,12 +38,6 @@ impl PartialOrd for Token {
             },
         }
     }
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct Prefecture {
-    pub(crate) prefecture_name: String,
-    pub(crate) representative_point: Option<LatLng>,
 }
 
 pub(crate) fn append_token(tokens: &[Token], token: Token) -> Vec<Token> {
