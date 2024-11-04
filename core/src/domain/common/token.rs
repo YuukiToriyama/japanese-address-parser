@@ -5,7 +5,7 @@ use std::cmp::Ordering::{Equal, Greater, Less};
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
     Prefecture(Prefecture),
-    City(City),
+    City(String),
     Town(String),
     Rest(String),
 }
@@ -47,28 +47,19 @@ pub(crate) struct Prefecture {
     pub(crate) representative_point: Option<LatLng>,
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct City {
-    pub(crate) city_name: String,
-    pub(crate) representative_point: Option<LatLng>,
-}
-
 pub(crate) fn append_token(tokens: &[Token], token: Token) -> Vec<Token> {
     [tokens.to_owned(), vec![token]].concat()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token};
+    use crate::domain::common::token::{Prefecture, Token};
 
     #[test]
     fn sort_token_vector() {
         let mut tokens = vec![
             Token::Rest("2-1".to_string()),
-            Token::City(City {
-                city_name: "小金井市".to_string(),
-                representative_point: None,
-            }),
+            Token::City("小金井市".to_string()),
             Token::Prefecture(Prefecture {
                 prefecture_name: "東京都".to_string(),
                 representative_point: None,
@@ -83,10 +74,7 @@ mod tests {
                     prefecture_name: "東京都".to_string(),
                     representative_point: None,
                 }),
-                Token::City(City {
-                    city_name: "小金井市".to_string(),
-                    representative_point: None,
-                }),
+                Token::City("小金井市".to_string()),
                 Token::Town("貫井北町四丁目".to_string()),
                 Token::Rest("2-1".to_string()),
             ]

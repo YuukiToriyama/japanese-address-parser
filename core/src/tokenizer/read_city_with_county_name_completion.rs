@@ -1,4 +1,4 @@
-use crate::domain::common::token::{append_token, City, Token};
+use crate::domain::common::token::{append_token, Token};
 use crate::tokenizer::{CityNameFound, CityNameNotFound, End, Tokenizer};
 use crate::util::sequence_matcher::SequenceMatcher;
 use std::marker::PhantomData;
@@ -15,13 +15,7 @@ impl Tokenizer<CityNameNotFound> {
                 return Ok((
                     highest_match.clone(),
                     Tokenizer {
-                        tokens: append_token(
-                            &self.tokens,
-                            Token::City(City {
-                                city_name: highest_match.clone(),
-                                representative_point: None,
-                            }),
-                        ),
+                        tokens: append_token(&self.tokens, Token::City(highest_match.clone())),
                         rest: complemented_address
                             .chars()
                             .skip(highest_match.chars().count())

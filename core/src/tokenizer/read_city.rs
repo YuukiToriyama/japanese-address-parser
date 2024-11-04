@@ -1,4 +1,4 @@
-use crate::domain::common::token::{append_token, City, Token};
+use crate::domain::common::token::{append_token, Token};
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
@@ -17,13 +17,7 @@ impl Tokenizer<PrefectureNameFound> {
             return Ok((
                 found.to_string(),
                 Tokenizer {
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::City(City {
-                            city_name: found.to_string(),
-                            representative_point: None,
-                        }),
-                    ),
+                    tokens: append_token(&self.tokens, Token::City(found.to_string())),
                     rest: self
                         .rest
                         .chars()
@@ -69,13 +63,7 @@ impl Tokenizer<PrefectureNameFound> {
                 return Ok((
                     city_name.clone(),
                     Tokenizer {
-                        tokens: append_token(
-                            &self.tokens,
-                            Token::City(City {
-                                city_name,
-                                representative_point: None,
-                            }),
-                        ),
+                        tokens: append_token(&self.tokens, Token::City(city_name)),
                         rest,
                         _state: PhantomData::<CityNameFound>,
                     },
