@@ -4,7 +4,6 @@ use crate::repository::geolonia::city::CityMasterRepository;
 use crate::repository::geolonia::prefecture::PrefectureMasterRepository;
 use crate::service::geolonia::GeoloniaApiService;
 
-#[allow(dead_code)]
 pub(crate) trait GeoloniaInteractor {
     /// 都道府県マスタを取得(非同期)
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error>;
@@ -25,7 +24,6 @@ pub(crate) trait GeoloniaInteractor {
     ) -> Result<City, Error>;
 }
 
-#[allow(dead_code)]
 pub(crate) struct GeoloniaInteractorImpl {
     api_service: GeoloniaApiService,
 }
