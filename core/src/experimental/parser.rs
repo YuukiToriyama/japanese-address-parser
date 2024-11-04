@@ -160,13 +160,9 @@ impl From<Vec<Token>> for ParsedAddress {
                         parsed_address.metadata.longitude = Some(lat_lng.longitude);
                     }
                 }
-                Token::City(city) => {
-                    parsed_address.city = city.city_name;
+                Token::City(city_name) => {
+                    parsed_address.city = city_name;
                     parsed_address.metadata.depth = 2;
-                    if let Some(lat_lng) = city.representative_point {
-                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
-                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
-                    }
                 }
                 Token::Town(town_name) => {
                     parsed_address.town = town_name;
@@ -196,7 +192,7 @@ impl From<(Vec<Token>, Option<LatLng>)> for ParsedAddress {
 #[cfg(test)]
 mod tests {
     use crate::domain::common::latlng::LatLng;
-    use crate::domain::common::token::{City, Prefecture, Token};
+    use crate::domain::common::token::{Prefecture, Token};
     use crate::experimental::parser::{Metadata, ParsedAddress};
 
     #[test]
@@ -260,16 +256,14 @@ mod tests {
                     longitude: 35.68532,
                 }),
             }),
-            Token::City(City {
-                city_name: "台東区".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.764379,
-                    longitude: 35.711162,
-                }),
-            }),
+            Token::City("台東区".to_string()),
             Token::Rest("".to_string()),
         ];
-        let parsed_address = ParsedAddress::from(tokens);
+        let lat_lng = Some(LatLng {
+            latitude: 139.764379,
+            longitude: 35.711162,
+        });
+        let parsed_address = ParsedAddress::from((tokens, lat_lng));
         assert_eq!(
             parsed_address,
             ParsedAddress {
@@ -296,13 +290,7 @@ mod tests {
                     longitude: 35.68532,
                 }),
             }),
-            Token::City(City {
-                city_name: "文京区".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.749542,
-                    longitude: 35.708143,
-                }),
-            }),
+            Token::City("文京区".to_string()),
             Token::Town("本駒込六丁目".to_string()),
             Token::Rest("16-3".to_string()),
         ];
