@@ -1,12 +1,12 @@
-use crate::api::AsyncApi;
 use crate::domain::common::token::Token;
 use crate::experimental::parser::Parser;
+use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::Tokenizer;
 
 impl Parser {
     #[inline]
     pub(crate) async fn parse_with_geolonia(&self, address: &str) -> Vec<Token> {
-        let geolonia_api = AsyncApi::default();
+        let interactor = GeoloniaInteractorImpl::default();
         let tokenizer = Tokenizer::new(address);
 
         // 都道府県名の検出
@@ -21,10 +21,7 @@ impl Parser {
         };
 
         // 市区町村名の検出
-        let prefecture_master = match geolonia_api
-            .get_prefecture_master(prefecture.name_ja())
-            .await
-        {
+        let prefecture_master = match interactor.get_prefecture_master(prefecture.name_ja()).await {
             Ok(result) => result,
             Err(error) => {
                 if self.options.verbose {
@@ -57,7 +54,7 @@ impl Parser {
         };
 
         // 町名の検出
-        let city_master = match geolonia_api
+        let city_master = match interactor
             .get_city_master(prefecture.name_ja(), &city_name)
             .await
         {
