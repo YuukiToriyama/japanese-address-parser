@@ -30,6 +30,14 @@ pub(crate) struct GeoloniaInteractorImpl {
     api_service: GeoloniaApiService,
 }
 
+impl Default for GeoloniaInteractorImpl {
+    fn default() -> Self {
+        Self {
+            api_service: GeoloniaApiService {},
+        }
+    }
+}
+
 impl GeoloniaInteractor for GeoloniaInteractorImpl {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         PrefectureMasterRepository::get(&self.api_service, prefecture_name).await
