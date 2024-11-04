@@ -42,7 +42,7 @@ fn complement_county_name(vague_address: &str, with: &str) -> Result<String, &'s
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{Prefecture, Token};
+    use crate::domain::common::token::Token;
     use crate::domain::geolonia;
     use crate::tokenizer::read_city_with_county_name_completion::complement_county_name;
     use crate::tokenizer::{CityNameNotFound, Tokenizer};
@@ -72,10 +72,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_秩父郡東秩父村() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "埼玉県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("埼玉県".to_string())],
             rest: "東秩父村大字御堂634番地".to_string(), // 「秩父郡」が省略されている
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -95,10 +92,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_吉田郡永平寺町() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "福井県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("福井県".to_string())],
             rest: "永平寺町志比５－５".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -114,10 +108,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_今立郡池田町() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "福井県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("福井県".to_string())],
             rest: "池田町稲荷２８－７".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -133,10 +124,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_南条郡南越前町() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "福井県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("福井県".to_string())],
             rest: "南越前町今庄７４－７－１".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -152,10 +140,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_西村山郡河北町() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "山形県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("山形県".to_string())],
             rest: "河北町大字吉田字馬場261".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -172,10 +157,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_杵島郡大町町() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "佐賀県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("佐賀県".to_string())],
             rest: "大町町大字大町5017番地".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
@@ -191,10 +173,7 @@ mod tests {
     #[test]
     fn read_city_with_county_name_completion_最上郡最上町() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "山形県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("山形県".to_string())],
             rest: "最上町法田2672-2".to_string(),
             _state: PhantomData::<CityNameNotFound>,
         };
