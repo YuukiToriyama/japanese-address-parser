@@ -1,3 +1,4 @@
+#![allow(deprecated)]
 pub use crate::repository::geolonia::city_master_api;
 pub use crate::repository::geolonia::prefecture_master_api;
 
