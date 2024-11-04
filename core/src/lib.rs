@@ -13,6 +13,7 @@ compile_error! {
     "The `blocking` feature is not supported with wasm target."
 }
 
+#[deprecated(since = "0.1.23", note = "This module will be deleted in v0.2")]
 pub mod api;
 pub(crate) mod domain;
 #[deprecated(since = "0.1.6", note = "This module will be deleted in v0.2")]
