@@ -16,9 +16,9 @@ impl From<Tokenizer<End>> for Address {
         let mut address = Address::new("", "", "", "");
         for token in value.tokens {
             match token {
-                Token::Prefecture(prefecture) => address.prefecture = prefecture.prefecture_name,
-                Token::City(city) => address.city = city.city_name,
-                Token::Town(town) => address.town = town.town_name,
+                Token::Prefecture(prefecture_name) => address.prefecture = prefecture_name,
+                Token::City(city_name) => address.city = city_name,
+                Token::Town(town_name) => address.town = town_name,
                 Token::Rest(rest) => address.rest = rest,
             }
         }

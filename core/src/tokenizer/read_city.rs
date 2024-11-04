@@ -1,4 +1,4 @@
-use crate::domain::common::token::{append_token, City, Token};
+use crate::domain::common::token::{append_token, Token};
 use crate::parser::adapter::orthographical_variant_adapter::{
     OrthographicalVariantAdapter, OrthographicalVariants, Variant,
 };
@@ -17,13 +17,7 @@ impl Tokenizer<PrefectureNameFound> {
             return Ok((
                 found.to_string(),
                 Tokenizer {
-                    tokens: append_token(
-                        &self.tokens,
-                        Token::City(City {
-                            city_name: found.to_string(),
-                            representative_point: None,
-                        }),
-                    ),
+                    tokens: append_token(&self.tokens, Token::City(found.to_string())),
                     rest: self
                         .rest
                         .chars()
@@ -69,13 +63,7 @@ impl Tokenizer<PrefectureNameFound> {
                 return Ok((
                     city_name.clone(),
                     Tokenizer {
-                        tokens: append_token(
-                            &self.tokens,
-                            Token::City(City {
-                                city_name,
-                                representative_point: None,
-                            }),
-                        ),
+                        tokens: append_token(&self.tokens, Token::City(city_name)),
                         rest,
                         _state: PhantomData::<CityNameFound>,
                     },
@@ -93,17 +81,14 @@ impl Tokenizer<PrefectureNameFound> {
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{Prefecture, Token};
+    use crate::domain::common::token::Token;
     use crate::tokenizer::{PrefectureNameFound, Tokenizer};
     use std::marker::PhantomData;
 
     #[test]
     fn read_city_成功() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "神奈川県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("神奈川県".to_string())],
             rest: "横浜市保土ケ谷区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };
@@ -122,10 +107,7 @@ mod tests {
     #[test]
     fn read_city_orthographical_variant_adapterで成功() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "神奈川県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("神奈川県".to_string())],
             rest: "横浜市保土ヶ谷区川辺町2番地9".to_string(), // 「ヶ」と「ケ」の表記ゆれ
             _state: PhantomData::<PrefectureNameFound>,
         };
@@ -144,10 +126,7 @@ mod tests {
     #[test]
     fn read_city_失敗() {
         let tokenizer = Tokenizer {
-            tokens: vec![Token::Prefecture(Prefecture {
-                prefecture_name: "神奈川県".to_string(),
-                representative_point: None,
-            })],
+            tokens: vec![Token::Prefecture("神奈川県".to_string())],
             rest: "京都市上京区川辺町2番地9".to_string(),
             _state: PhantomData::<PrefectureNameFound>,
         };

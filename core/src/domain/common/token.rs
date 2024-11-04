@@ -1,12 +1,11 @@
-use crate::domain::common::latlng::LatLng;
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Equal, Greater, Less};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
-    Prefecture(Prefecture),
-    City(City),
-    Town(Town),
+    Prefecture(String),
+    City(String),
+    Town(String),
     Rest(String),
 }
 
@@ -41,65 +40,29 @@ impl PartialOrd for Token {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct Prefecture {
-    pub(crate) prefecture_name: String,
-    pub(crate) representative_point: Option<LatLng>,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct City {
-    pub(crate) city_name: String,
-    pub(crate) representative_point: Option<LatLng>,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) struct Town {
-    pub(crate) town_name: String,
-    pub(crate) representative_point: Option<LatLng>,
-}
-
 pub(crate) fn append_token(tokens: &[Token], token: Token) -> Vec<Token> {
     [tokens.to_owned(), vec![token]].concat()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::domain::common::token::Token;
 
     #[test]
     fn sort_token_vector() {
         let mut tokens = vec![
             Token::Rest("2-1".to_string()),
-            Token::City(City {
-                city_name: "小金井市".to_string(),
-                representative_point: None,
-            }),
-            Token::Prefecture(Prefecture {
-                prefecture_name: "東京都".to_string(),
-                representative_point: None,
-            }),
-            Token::Town(Town {
-                town_name: "貫井北町四丁目".to_string(),
-                representative_point: None,
-            }),
+            Token::City("小金井市".to_string()),
+            Token::Prefecture("東京都".to_string()),
+            Token::Town("貫井北町四丁目".to_string()),
         ];
         tokens.sort_by(|a, b| a.partial_cmp(b).unwrap());
         assert_eq!(
             tokens,
             vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "東京都".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "小金井市".to_string(),
-                    representative_point: None,
-                }),
-                Token::Town(Town {
-                    town_name: "貫井北町四丁目".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("東京都".to_string()),
+                Token::City("小金井市".to_string()),
+                Token::Town("貫井北町四丁目".to_string()),
                 Token::Rest("2-1".to_string()),
             ]
         );

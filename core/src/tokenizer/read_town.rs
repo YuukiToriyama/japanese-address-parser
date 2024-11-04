@@ -1,4 +1,4 @@
-use crate::domain::common::token::{append_token, Token, Town};
+use crate::domain::common::token::{append_token, Token};
 use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
@@ -39,13 +39,7 @@ impl Tokenizer<CityNameFound> {
         Ok((
             town_name.clone(),
             Tokenizer {
-                tokens: append_token(
-                    &self.tokens,
-                    Token::Town(Town {
-                        town_name,
-                        representative_point: None,
-                    }),
-                ),
+                tokens: append_token(&self.tokens, Token::Town(town_name)),
                 rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
                 {
                     format_house_number(&rest).unwrap()
@@ -107,7 +101,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token};
+    use crate::domain::common::token::Token;
     use crate::tokenizer::{CityNameFound, Tokenizer};
     use std::marker::PhantomData;
 
@@ -115,14 +109,8 @@ mod tests {
     fn read_town_成功() {
         let tokenizer = Tokenizer {
             tokens: vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "静岡県".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "静岡市清水区".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("静岡県".to_string()),
+                Token::City("静岡市清水区".to_string()),
             ],
             rest: "旭町6番8号".to_string(),
             _state: PhantomData::<CityNameFound>,
@@ -145,14 +133,8 @@ mod tests {
     fn read_town_orthographical_variant_adapterで成功() {
         let tokenizer = Tokenizer {
             tokens: vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "東京都".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "千代田区".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("東京都".to_string()),
+                Token::City("千代田区".to_string()),
             ],
             rest: "一ッ橋二丁目1番".to_string(), // 「ッ」と「ツ」の表記ゆれ
             _state: PhantomData::<CityNameFound>,
@@ -175,14 +157,8 @@ mod tests {
     fn read_town_invalid_town_name_format_filterで成功() {
         let tokenizer = Tokenizer {
             tokens: vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "京都府".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "京都市東山区".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("京都府".to_string()),
+                Token::City("京都市東山区".to_string()),
             ],
             rest: "本町22丁目489番".to_string(),
             _state: PhantomData::<CityNameFound>,
@@ -206,14 +182,8 @@ mod tests {
     fn read_town_大字が省略されている場合_成功() {
         let tokenizer = Tokenizer {
             tokens: vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "東京都".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "西多摩郡日の出町".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("東京都".to_string()),
+                Token::City("西多摩郡日の出町".to_string()),
             ],
             rest: "平井2780番地".to_string(), // 「大字」が省略されている
             _state: PhantomData::<CityNameFound>,
@@ -230,14 +200,8 @@ mod tests {
     fn read_town_失敗() {
         let tokenizer = Tokenizer {
             tokens: vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "静岡県".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "静岡市清水区".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("静岡県".to_string()),
+                Token::City("静岡市清水区".to_string()),
             ],
             rest: "".to_string(),
             _state: PhantomData::<CityNameFound>,
