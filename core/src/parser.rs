@@ -78,6 +78,7 @@ impl Parser {
 /// A function to parse the given address asynchronously.
 ///
 /// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
+#[deprecated(since = "0.1.23", note = "This module will be deleted in v0.2")]
 pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
     // 都道府県を特定
@@ -245,6 +246,7 @@ mod tests {
 ///
 /// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
 #[cfg(feature = "blocking")]
+#[deprecated(since = "0.1.23", note = "This module will be deleted in v0.2")]
 pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
     let tokenizer = Tokenizer::new(input);
     let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
