@@ -56,7 +56,7 @@ impl Default for Parser {
 impl Parser {
     /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
-        let interasctor = self.interactor.clone();
+        let interactor = self.interactor.clone();
         let tokenizer = Tokenizer::new(address);
         // 都道府県を特定
         let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
@@ -69,10 +69,7 @@ impl Parser {
             }
         };
         // その都道府県の市町村名リストを取得
-        let prefecture_master = match interasctor
-            .get_prefecture_master(prefecture.name_ja())
-            .await
-        {
+        let prefecture_master = match interactor.get_prefecture_master(prefecture.name_ja()).await {
             Err(error) => {
                 return ParseResult {
                     address: Address::from(tokenizer.finish()),
@@ -99,7 +96,7 @@ impl Parser {
             }
         };
         // その市町村の町名リストを取得
-        let city = match interasctor
+        let city = match interactor
             .get_city_master(prefecture.name_ja(), &city_name)
             .await
         {
