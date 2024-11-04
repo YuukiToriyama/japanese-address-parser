@@ -1,4 +1,4 @@
-use crate::domain::common::token::{Prefecture, Token};
+use crate::domain::common::token::Token;
 use crate::tokenizer::{End, Init, PrefectureNameFound, Tokenizer};
 use crate::util::extension::StrExt;
 use std::marker::PhantomData;
@@ -25,10 +25,7 @@ impl Tokenizer<Init> {
                 Ok((
                     prefecture.clone(),
                     Tokenizer {
-                        tokens: vec![Token::Prefecture(Prefecture {
-                            prefecture_name: prefecture_name.to_string(),
-                            representative_point: None,
-                        })],
+                        tokens: vec![Token::Prefecture(prefecture_name.to_string())],
                         rest: self
                             .rest
                             .chars()
