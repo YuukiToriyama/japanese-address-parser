@@ -100,7 +100,7 @@ impl Parser {
 
 #[cfg(test)]
 mod tests {
-    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::domain::common::token::Token;
     use crate::experimental::parser::{DataSource, Parser, ParserOptions};
 
     #[tokio::test]
@@ -136,10 +136,7 @@ mod tests {
         assert_eq!(
             tokens,
             vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "神奈川県".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("神奈川県".to_string()),
                 Token::Rest("横浜県磯子市洋光台3-10-3".to_string())
             ]
         )
@@ -160,14 +157,8 @@ mod tests {
         assert_eq!(
             tokens,
             vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "神奈川県".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "横浜市磯子区".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("神奈川県".to_string()),
+                Token::City("横浜市磯子区".to_string()),
                 Token::Rest("陽光台3-10-3".to_string())
             ]
         )
@@ -188,18 +179,9 @@ mod tests {
         assert_eq!(
             tokens,
             vec![
-                Token::Prefecture(Prefecture {
-                    prefecture_name: "神奈川県".to_string(),
-                    representative_point: None,
-                }),
-                Token::City(City {
-                    city_name: "横浜市磯子区".to_string(),
-                    representative_point: None,
-                }),
-                Token::Town(Town {
-                    town_name: "洋光台三丁目".to_string(),
-                    representative_point: None,
-                }),
+                Token::Prefecture("神奈川県".to_string()),
+                Token::City("横浜市磯子区".to_string()),
+                Token::Town("洋光台三丁目".to_string()),
                 Token::Rest("10-3".to_string())
             ]
         )

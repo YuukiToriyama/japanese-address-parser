@@ -152,29 +152,17 @@ impl From<Vec<Token>> for ParsedAddress {
 
         for token in value {
             match token {
-                Token::Prefecture(prefecture) => {
-                    parsed_address.prefecture = prefecture.prefecture_name;
+                Token::Prefecture(prefecture_name) => {
+                    parsed_address.prefecture = prefecture_name;
                     parsed_address.metadata.depth = 1;
-                    if let Some(lat_lng) = prefecture.representative_point {
-                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
-                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
-                    }
                 }
-                Token::City(city) => {
-                    parsed_address.city = city.city_name;
+                Token::City(city_name) => {
+                    parsed_address.city = city_name;
                     parsed_address.metadata.depth = 2;
-                    if let Some(lat_lng) = city.representative_point {
-                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
-                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
-                    }
                 }
-                Token::Town(town) => {
-                    parsed_address.town = town.town_name;
+                Token::Town(town_name) => {
+                    parsed_address.town = town_name;
                     parsed_address.metadata.depth = 3;
-                    if let Some(lat_lng) = town.representative_point {
-                        parsed_address.metadata.latitude = Some(lat_lng.latitude);
-                        parsed_address.metadata.longitude = Some(lat_lng.longitude);
-                    }
                 }
                 Token::Rest(rest) => {
                     parsed_address.rest = rest;
@@ -200,7 +188,7 @@ impl From<(Vec<Token>, Option<LatLng>)> for ParsedAddress {
 #[cfg(test)]
 mod tests {
     use crate::domain::common::latlng::LatLng;
-    use crate::domain::common::token::{City, Prefecture, Token, Town};
+    use crate::domain::common::token::Token;
     use crate::experimental::parser::{Metadata, ParsedAddress};
 
     #[test]
@@ -228,16 +216,14 @@ mod tests {
     #[test]
     fn conversion_depthが1() {
         let tokens = vec![
-            Token::Prefecture(Prefecture {
-                prefecture_name: "東京都".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.748264,
-                    longitude: 35.68532,
-                }),
-            }),
+            Token::Prefecture("東京都".to_string()),
             Token::Rest("".to_string()),
         ];
-        let parsed_address = ParsedAddress::from(tokens);
+        let lat_lng = Some(LatLng {
+            latitude: 139.748264,
+            longitude: 35.68532,
+        });
+        let parsed_address = ParsedAddress::from((tokens, lat_lng));
         assert_eq!(
             parsed_address,
             ParsedAddress {
@@ -257,23 +243,15 @@ mod tests {
     #[test]
     fn conversion_depthが2() {
         let tokens = vec![
-            Token::Prefecture(Prefecture {
-                prefecture_name: "東京都".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.748264,
-                    longitude: 35.68532,
-                }),
-            }),
-            Token::City(City {
-                city_name: "台東区".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.764379,
-                    longitude: 35.711162,
-                }),
-            }),
+            Token::Prefecture("東京都".to_string()),
+            Token::City("台東区".to_string()),
             Token::Rest("".to_string()),
         ];
-        let parsed_address = ParsedAddress::from(tokens);
+        let lat_lng = Some(LatLng {
+            latitude: 139.764379,
+            longitude: 35.711162,
+        });
+        let parsed_address = ParsedAddress::from((tokens, lat_lng));
         assert_eq!(
             parsed_address,
             ParsedAddress {
@@ -293,30 +271,16 @@ mod tests {
     #[test]
     fn conversion_depthが3() {
         let tokens = vec![
-            Token::Prefecture(Prefecture {
-                prefecture_name: "東京都".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.748264,
-                    longitude: 35.68532,
-                }),
-            }),
-            Token::City(City {
-                city_name: "文京区".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.749542,
-                    longitude: 35.708143,
-                }),
-            }),
-            Token::Town(Town {
-                town_name: "本駒込六丁目".to_string(),
-                representative_point: Some(LatLng {
-                    latitude: 139.738043,
-                    longitude: 35.72791,
-                }),
-            }),
+            Token::Prefecture("東京都".to_string()),
+            Token::City("文京区".to_string()),
+            Token::Town("本駒込六丁目".to_string()),
             Token::Rest("16-3".to_string()),
         ];
-        let parsed_address = ParsedAddress::from(tokens);
+        let lat_lng = Some(LatLng {
+            latitude: 139.738043,
+            longitude: 35.72791,
+        });
+        let parsed_address = ParsedAddress::from((tokens, lat_lng));
         assert_eq!(
             parsed_address,
             ParsedAddress {
