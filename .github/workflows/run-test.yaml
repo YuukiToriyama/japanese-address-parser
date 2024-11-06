@@ -49,3 +49,16 @@ jobs:
       - name: Build check for wasm crate
         working-directory: wasm
         run: wasm-pack build --target web --scope toriyama
+
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install minimum supported version
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.75.0
+      - name: Basic build
+        run: cargo build --verbose
+      - name: Build docs
+        run: cargo doc --verbose
