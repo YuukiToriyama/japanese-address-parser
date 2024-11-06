@@ -1,7 +1,7 @@
 use criterion::measurement::WallTime;
 use criterion::{BatchSize, BenchmarkGroup, BenchmarkId, Criterion};
 use japanese_address_parser::parser::adapter::orthographical_variant_adapter::{
-    OrthographicalVariantAdapter, OrthographicalVariants, Variant,
+    OrthographicalVariant, OrthographicalVariantAdapter,
 };
 
 pub fn bench_orthographical_variant_adapter(c: &mut Criterion) {
@@ -17,7 +17,11 @@ pub fn bench_orthographical_variant_adapter(c: &mut Criterion) {
                 "松ケ﨑東池の内町",
                 "松ガ﨑東池の内町",
             ],
-            variants_to_be_used: vec![Variant::ケ, Variant::崎, Variant::の],
+            variants_to_be_used: vec![
+                OrthographicalVariant::ケ,
+                OrthographicalVariant::崎,
+                OrthographicalVariant::の,
+            ],
         },
     );
     group.finish();
@@ -44,5 +48,5 @@ fn add_tests(group: &mut BenchmarkGroup<WallTime>, test_suite: TestSuite) {
 struct TestSuite {
     expected: &'static str,
     inputs: Vec<&'static str>,
-    variants_to_be_used: Vec<Variant>,
+    variants_to_be_used: Vec<OrthographicalVariant>,
 }

@@ -1,80 +1,83 @@
 use itertools::Itertools;
 
-pub type Variant = &'static [&'static str];
-
-pub trait OrthographicalVariants {
-    const の: Variant;
-    const ツ: Variant;
-    const ケ: Variant;
-    const 薮: Variant;
-    const 崎: Variant;
-    const 檜: Variant;
-    const 龍: Variant;
-    const 竈: Variant;
-    const 嶋: Variant;
-    const 舘: Variant;
-    const 脊: Variant;
-    const 渕: Variant;
-    const 己: Variant;
-    const 槇: Variant;
-    const 治: Variant;
-    const 佛: Variant;
-    const 澤: Variant;
-    const 塚: Variant;
-    const 恵: Variant;
-    const 穂: Variant;
-    const 梼: Variant;
-    const 蛍: Variant;
-    const 與: Variant;
-    const 瀧: Variant;
-    const 籠: Variant;
-    const 濱: Variant;
-    const 祗: Variant;
-    const 曾: Variant;
+#[derive(Clone)]
+pub enum OrthographicalVariant {
+    の,
+    ツ,
+    ケ,
+    薮,
+    崎,
+    檜,
+    龍,
+    竈,
+    嶋,
+    舘,
+    脊,
+    渕,
+    己,
+    槇,
+    治,
+    佛,
+    澤,
+    塚,
+    恵,
+    穂,
+    梼,
+    蛍,
+    與,
+    瀧,
+    籠,
+    濱,
+    祗,
+    曾,
 }
 
-impl OrthographicalVariants for Variant {
-    const の: Variant = &["の", "ノ", "之"];
-    const ツ: Variant = &["ツ", "ッ"];
-    const ケ: Variant = &["ケ", "ヶ", "が", "ガ"];
-    const 薮: Variant = &["薮", "藪", "籔"];
-    const 崎: Variant = &["崎", "﨑"];
-    const 檜: Variant = &["桧", "檜"];
-    const 龍: Variant = &["龍", "竜"];
-    const 竈: Variant = &["竈", "竃", "釜"];
-    const 嶋: Variant = &["嶋", "島"];
-    const 舘: Variant = &["舘", "館"];
-    const 脊: Variant = &["脊", "背"];
-    const 渕: Variant = &["渕", "淵"];
-    const 己: Variant = &["己", "巳"];
-    const 槇: Variant = &["槇", "槙"];
-    const 治: Variant = &["治", "冶"];
-    const 佛: Variant = &["佛", "仏"];
-    const 澤: Variant = &["澤", "沢"];
-    const 塚: Variant = &["塚", "塚"];
-    const 恵: Variant = &["恵", "惠"];
-    const 穂: Variant = &["穂", "穗"];
-    const 梼: Variant = &["梼", "檮"];
-    const 蛍: Variant = &["蛍", "螢"];
-    const 與: Variant = &["與", "与"];
-    const 瀧: Variant = &["瀧", "滝"];
-    const 籠: Variant = &["籠", "篭"];
-    const 濱: Variant = &["濱", "浜"];
-    const 祗: Variant = &["祗", "祇"];
-    const 曾: Variant = &["曾", "曽"];
+impl OrthographicalVariant {
+    fn value(&self) -> &'static [&'static str] {
+        match self {
+            OrthographicalVariant::の => &["の", "ノ", "之"],
+            OrthographicalVariant::ツ => &["ツ", "ッ"],
+            OrthographicalVariant::ケ => &["ケ", "ヶ", "が", "ガ"],
+            OrthographicalVariant::薮 => &["薮", "藪", "籔"],
+            OrthographicalVariant::崎 => &["崎", "﨑"],
+            OrthographicalVariant::檜 => &["桧", "檜"],
+            OrthographicalVariant::龍 => &["龍", "竜"],
+            OrthographicalVariant::竈 => &["竈", "竃", "釜"],
+            OrthographicalVariant::嶋 => &["嶋", "島"],
+            OrthographicalVariant::舘 => &["舘", "館"],
+            OrthographicalVariant::脊 => &["脊", "背"],
+            OrthographicalVariant::渕 => &["渕", "淵"],
+            OrthographicalVariant::己 => &["己", "巳"],
+            OrthographicalVariant::槇 => &["槇", "槙"],
+            OrthographicalVariant::治 => &["治", "冶"],
+            OrthographicalVariant::佛 => &["佛", "仏"],
+            OrthographicalVariant::澤 => &["澤", "沢"],
+            OrthographicalVariant::塚 => &["塚", "塚"],
+            OrthographicalVariant::恵 => &["恵", "惠"],
+            OrthographicalVariant::穂 => &["穂", "穗"],
+            OrthographicalVariant::梼 => &["梼", "檮"],
+            OrthographicalVariant::蛍 => &["蛍", "螢"],
+            OrthographicalVariant::與 => &["與", "与"],
+            OrthographicalVariant::瀧 => &["瀧", "滝"],
+            OrthographicalVariant::籠 => &["籠", "篭"],
+            OrthographicalVariant::濱 => &["濱", "浜"],
+            OrthographicalVariant::祗 => &["祗", "祇"],
+            OrthographicalVariant::曾 => &["曾", "曽"],
+        }
+    }
 }
 
 pub struct OrthographicalVariantAdapter {
-    pub variant_list: Vec<Variant>,
+    pub variant_list: Vec<OrthographicalVariant>,
 }
 
 impl OrthographicalVariantAdapter {
     pub fn apply(self, input: &str, region_name: &str) -> Option<(String, String)> {
         // 必要なパターンのみを選別する
-        let variant_list: Vec<&Variant> = self
+        let variant_list: Vec<&OrthographicalVariant> = self
             .variant_list
             .iter()
-            .filter(|v| v.iter().any(|c| input.contains(c)))
+            .filter(|v| v.value().iter().any(|c| input.contains(c)))
             .collect();
         if variant_list.is_empty() {
             return None;
@@ -87,7 +90,7 @@ impl OrthographicalVariantAdapter {
             let mut semi_candidates: Vec<String> = vec![];
             // variantから順列を作成
             // ["ケ", "ヶ", "が"] -> (ケ, ヶ), (ケ, が), (ヶ, ケ), (ヶ, が), (が, ケ), (が, ヶ)
-            for permutation in variant.iter().permutations(2) {
+            for permutation in variant.value().iter().permutations(2) {
                 for candidate in candidates.iter().filter(|c| c.contains(permutation[0])) {
                     // マッチ候補の中でパターンに引っかかるものがあれば文字を置き換えてマッチを試す
                     let edited_region_name = candidate.replace(permutation[0], permutation[1]);
