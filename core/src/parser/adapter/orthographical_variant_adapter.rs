@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 #[derive(Clone)]
 pub enum OrthographicalVariant {
     の,
@@ -103,24 +101,22 @@ impl OrthographicalVariantAdapter {
             let mut semi_candidates: Vec<String> = vec![];
             // variantから順列を作成
             // ["ケ", "ヶ", "が"] -> (ケ, ヶ), (ケ, が), (ヶ, ケ), (ヶ, が), (が, ケ), (が, ヶ)
-            for permutation in variant.value().iter().permutations(2) {
-                let (&a, &b) = (permutation[0], permutation[1]);
-                for candidate in candidates.iter().filter(|c| c.contains(a)) {
-                    // マッチ候補の中でパターンに引っかかるものがあれば文字を置き換えてマッチを試す
-                    let edited_region_name = modify_specific_character(candidate, a, b);
-                    if input.starts_with(&edited_region_name) {
+            for (a, b) in variant.permutations() {
+                for candidate in candidates.iter().filter(|x| x.contains(a)) {
+                    let modified_candidate = modify_specific_character(candidate, a, b);
+                    if input.starts_with(&modified_candidate) {
                         // マッチすれば早期リターン
                         return Some((
                             region_name.to_string(),
                             input
                                 .chars()
-                                .skip(edited_region_name.chars().count())
+                                .skip(modified_candidate.chars().count())
                                 .collect(),
                         ));
                     } else {
                         // マッチしなければsemi_candidatesに置き換え後の文字列をpush
-                        semi_candidates.push(edited_region_name);
-                    };
+                        semi_candidates.push(modified_candidate);
+                    }
                 }
             }
             candidates = semi_candidates;
