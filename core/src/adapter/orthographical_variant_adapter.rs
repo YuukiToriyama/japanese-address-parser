@@ -134,7 +134,7 @@ fn modify_specific_character(text: &str, from: char, to: char) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariant;
+    use crate::adapter::orthographical_variant_adapter::OrthographicalVariant;
 
     #[test]
     fn permutations() {

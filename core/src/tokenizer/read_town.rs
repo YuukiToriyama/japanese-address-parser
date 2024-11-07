@@ -1,11 +1,11 @@
+use crate::adapter::orthographical_variant_adapter::{
+    OrthographicalVariant, OrthographicalVariantAdapter,
+};
 use crate::domain::common::token::{append_token, Token};
 use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
-use crate::parser::adapter::orthographical_variant_adapter::{
-    OrthographicalVariant, OrthographicalVariantAdapter,
-};
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
 use std::marker::PhantomData;
 
