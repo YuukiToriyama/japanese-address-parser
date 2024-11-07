@@ -4,7 +4,7 @@ use crate::formatter::fullwidth_character::format_fullwidth_number;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
 use crate::parser::adapter::orthographical_variant_adapter::{
-    OrthographicalVariantAdapter, OrthographicalVariants, Variant,
+    OrthographicalVariant, OrthographicalVariantAdapter,
 };
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
 use std::marker::PhantomData;
@@ -65,31 +65,31 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
         }
         let adapter = OrthographicalVariantAdapter {
             variant_list: vec![
-                Variant::の,
-                Variant::ツ,
-                Variant::ケ,
-                Variant::薮,
-                Variant::崎,
-                Variant::檜,
-                Variant::竈,
-                Variant::舘,
-                Variant::脊,
-                Variant::渕,
-                Variant::己,
-                Variant::槇,
-                Variant::治,
-                Variant::佛,
-                Variant::澤,
-                Variant::恵,
-                Variant::穂,
-                Variant::梼,
-                Variant::蛍,
-                Variant::與,
-                Variant::瀧,
-                Variant::籠,
-                Variant::濱,
-                Variant::祗,
-                Variant::曾,
+                OrthographicalVariant::の,
+                OrthographicalVariant::ツ,
+                OrthographicalVariant::ケ,
+                OrthographicalVariant::薮,
+                OrthographicalVariant::崎,
+                OrthographicalVariant::檜,
+                OrthographicalVariant::竈,
+                OrthographicalVariant::舘,
+                OrthographicalVariant::脊,
+                OrthographicalVariant::渕,
+                OrthographicalVariant::己,
+                OrthographicalVariant::槇,
+                OrthographicalVariant::治,
+                OrthographicalVariant::佛,
+                OrthographicalVariant::澤,
+                OrthographicalVariant::恵,
+                OrthographicalVariant::穂,
+                OrthographicalVariant::梼,
+                OrthographicalVariant::蛍,
+                OrthographicalVariant::與,
+                OrthographicalVariant::瀧,
+                OrthographicalVariant::籠,
+                OrthographicalVariant::濱,
+                OrthographicalVariant::祗,
+                OrthographicalVariant::曾,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {

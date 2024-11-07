@@ -1,6 +1,6 @@
 use crate::domain::common::token::{append_token, Token};
 use crate::parser::adapter::orthographical_variant_adapter::{
-    OrthographicalVariantAdapter, OrthographicalVariants, Variant,
+    OrthographicalVariant, OrthographicalVariantAdapter,
 };
 use crate::tokenizer::{CityNameFound, CityNameNotFound, PrefectureNameFound, Tokenizer};
 use std::marker::PhantomData;
@@ -29,29 +29,29 @@ impl Tokenizer<PrefectureNameFound> {
         }
 
         // ここまでで市区町村名が読み取れない場合は、表記ゆれを含む可能性を検討する
-        let mut variant_list = vec![Variant::ケ];
+        let mut variant_list = vec![OrthographicalVariant::ケ];
         match self.get_prefecture_name() {
             Some("青森県") => {
-                variant_list.push(Variant::舘);
+                variant_list.push(OrthographicalVariant::舘);
             }
             Some("宮城県") => {
-                variant_list.push(Variant::竈);
+                variant_list.push(OrthographicalVariant::竈);
             }
             Some("茨城県") => {
-                variant_list.push(Variant::龍);
-                variant_list.push(Variant::嶋);
+                variant_list.push(OrthographicalVariant::龍);
+                variant_list.push(OrthographicalVariant::嶋);
             }
             Some("東京都") => {
-                variant_list.push(Variant::檜);
+                variant_list.push(OrthographicalVariant::檜);
             }
             Some("兵庫県") => {
-                variant_list.push(Variant::塚);
+                variant_list.push(OrthographicalVariant::塚);
             }
             Some("高知県") => {
-                variant_list.push(Variant::梼);
+                variant_list.push(OrthographicalVariant::梼);
             }
             Some("福岡県") => {
-                variant_list.push(Variant::恵);
+                variant_list.push(OrthographicalVariant::恵);
             }
             _ => {}
         }
