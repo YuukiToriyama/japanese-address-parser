@@ -11,8 +11,6 @@ use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
 
-pub mod adapter;
-
 impl From<Tokenizer<End>> for Address {
     fn from(value: Tokenizer<End>) -> Self {
         let mut address = Address::new("", "", "", "");

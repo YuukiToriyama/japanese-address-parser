@@ -1,7 +1,7 @@
-use crate::domain::common::token::{append_token, Token};
-use crate::parser::adapter::orthographical_variant_adapter::{
+use crate::adapter::orthographical_variant_adapter::{
     OrthographicalVariant, OrthographicalVariantAdapter,
 };
+use crate::domain::common::token::{append_token, Token};
 use crate::tokenizer::{CityNameFound, CityNameNotFound, PrefectureNameFound, Tokenizer};
 use std::marker::PhantomData;
 
