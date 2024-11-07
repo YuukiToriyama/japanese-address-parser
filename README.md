@@ -2,7 +2,7 @@
 
 [![Docs](https://docs.rs/japanese-address-parser/badge.svg)](https://docs.rs/japanese-address-parser)
 [![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser)](https://crates.io/crates/japanese-address-parser)
-![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.73.0-orange)
+![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.75.0-orange)
 [![Unit test & Integration test](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml)
 
 A Rust library for parsing Japanese addresses.
