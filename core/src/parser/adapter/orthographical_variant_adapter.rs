@@ -65,6 +65,19 @@ impl OrthographicalVariant {
             OrthographicalVariant::曾 => &['曾', '曽'],
         }
     }
+
+    fn permutations(&self) -> Vec<(char, char)> {
+        let characters = self.value();
+        let mut permutations: Vec<(char, char)> = vec![];
+        for n in 0..characters.len() {
+            for m in 0..characters.len() {
+                if n != m {
+                    permutations.push((characters[n], characters[m]));
+                }
+            }
+        }
+        permutations
+    }
 }
 
 pub struct OrthographicalVariantAdapter {
@@ -121,4 +134,31 @@ fn modify_specific_character(text: &str, from: char, to: char) -> String {
     text.chars()
         .map(|x| if x == from { to } else { x })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::parser::adapter::orthographical_variant_adapter::OrthographicalVariant;
+
+    #[test]
+    fn permutations() {
+        let variant = OrthographicalVariant::ケ;
+        assert_eq!(
+            variant.permutations(),
+            vec![
+                ('ケ', 'ヶ'),
+                ('ケ', 'が'),
+                ('ケ', 'ガ'),
+                ('ヶ', 'ケ'),
+                ('ヶ', 'が'),
+                ('ヶ', 'ガ'),
+                ('が', 'ケ'),
+                ('が', 'ヶ'),
+                ('が', 'ガ'),
+                ('ガ', 'ケ'),
+                ('ガ', 'ヶ'),
+                ('ガ', 'が'),
+            ]
+        );
+    }
 }
