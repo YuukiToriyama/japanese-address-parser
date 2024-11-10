@@ -183,7 +183,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_26(arg0, arg1, arg2) {
-    wasm.closure90_externref_shim(arg0, arg1, arg2);
+    wasm.closure92_externref_shim(arg0, arg1, arg2);
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
@@ -203,7 +203,7 @@ function handleError(f, args) {
     }
 }
 function __wbg_adapter_103(arg0, arg1, arg2, arg3) {
-    wasm.closure124_externref_shim(arg0, arg1, arg2, arg3);
+    wasm.closure126_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_RequestCredentials = ["omit", "same-origin", "include"];
@@ -556,8 +556,8 @@ function __wbg_get_imports() {
         const ret = wasm.memory;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper345 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 91, __wbg_adapter_26);
+    imports.wbg.__wbindgen_closure_wrapper341 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 93, __wbg_adapter_26);
         return ret;
     };
     imports.wbg.__wbindgen_init_externref_table = function() {
