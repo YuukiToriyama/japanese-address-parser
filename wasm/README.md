@@ -1,5 +1,7 @@
 # @toriyama/japanese-address-parser
 
+A Library for processing addresses of Japan written in Rust.
+
 [![npmjs](https://img.shields.io/npm/v/%40toriyama/japanese-address-parser)](https://www.npmjs.com/package/@toriyama/japanese-address-parser)
 [![install size](https://packagephobia.com/badge?p=@toriyama/japanese-address-parser)](https://packagephobia.com/result?p=@toriyama/japanese-address-parser)
 [![downloads](https://img.shields.io/npm/dm/@toriyama/japanese-address-parser.svg)](https://npmcharts.com/compare/@toriyama/japanese-address-parser?minimal=true)
