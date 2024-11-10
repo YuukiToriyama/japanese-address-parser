@@ -64,13 +64,14 @@ init().then(() => {
 
 ## How it works
 
-The input string is basically read in order from the beginning.  
+The input string is basically read in order from the beginning.
 Once the name of prefecture has been scanned, the names of city will be scanned, then the names of town and so on.  
-We don't have the list of city names or town names in this library, but fetch them via the internet each time.  
-Version 0.1 use [Geolonia住所データ](https://github.com/geolonia/japanese-addresses) authored
-by [Geolonia Inc](https://www.geolonia.com/company/).  
+We don't have the list of city names or town names in this library, but fetch them via the internet each time.
+Version 0.1 use [Geolonia住所データ](https://github.com/geolonia/japanese-addresses)
+authored by [Geolonia Inc](https://www.geolonia.com/company/).  
 Detection place names may fail in some cases, such as when there is a notation distortion or when county names are
 omitted. In such cases, this library tries fuzzy match instead of exact match.
+
 For more details, please visit [our repository](https://github.com/YuukiToriyama/japanese-address-parser).
 
 ## Contributing
