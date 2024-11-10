@@ -9,6 +9,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     environment: npmjs
+    permissions:
+      id-token: write
     defaults:
       run:
         working-directory: wasm
@@ -48,6 +50,6 @@ jobs:
       - name: Upload wasm to npmjs.com
         run: |
           cd pkg
-          npm publish --access public
+          npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_REGISTRY_TOKEN }}

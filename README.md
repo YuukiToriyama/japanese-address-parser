@@ -2,7 +2,7 @@
 
 [![Docs](https://docs.rs/japanese-address-parser/badge.svg)](https://docs.rs/japanese-address-parser)
 [![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser)](https://crates.io/crates/japanese-address-parser)
-![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.73.0-orange)
+![Rust Version](https://img.shields.io/badge/rust%20version-%3E%3D1.75.0-orange)
 [![Unit test & Integration test](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml/badge.svg?branch=main)](https://github.com/YuukiToriyama/japanese-address-parser/actions/workflows/run-test.yaml)
 
 A Rust library for parsing Japanese addresses.
@@ -48,20 +48,7 @@ fn main() {
 This crate is designed to be buildable for `wasm32-unknown-unknown` with `wasm-pack`.
 Pre-compiled wasm module is available on npmjs.com
 
-```bash
-npm install @toriyama/japanese-address-parser
-```
-
-```javascript
-import init, {Parser} from "@toriyama/japanese-address-parser"
-
-init().then(() => {
-    const parser = new Parser()
-    parser.parse("東京都千代田区丸の内1-1-1").then(parseResult => {
-        console.log(JSON.stringify(parseResult, null, "\t"))
-    })
-})
-```
+You can run this crate on your browser. For more details, see [wasm module's README](wasm/README.md).
 
 ## Python support(experimental)
 

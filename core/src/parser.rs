@@ -11,6 +11,7 @@ use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
 
+#[deprecated(since = "0.1.24", note = "This module will be deleted in v0.2")]
 pub mod adapter;
 
 impl From<Tokenizer<End>> for Address {
