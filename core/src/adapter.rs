@@ -1,0 +1,1 @@
+pub mod orthographical_variant_adapter;
