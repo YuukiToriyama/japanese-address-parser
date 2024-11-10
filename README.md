@@ -48,20 +48,7 @@ fn main() {
 This crate is designed to be buildable for `wasm32-unknown-unknown` with `wasm-pack`.
 Pre-compiled wasm module is available on npmjs.com
 
-```bash
-npm install @toriyama/japanese-address-parser
-```
-
-```javascript
-import init, {Parser} from "@toriyama/japanese-address-parser"
-
-init().then(() => {
-    const parser = new Parser()
-    parser.parse("東京都千代田区丸の内1-1-1").then(parseResult => {
-        console.log(JSON.stringify(parseResult, null, "\t"))
-    })
-})
-```
+You can run this crate on your browser. For more details, see [wasm module's README](wasm/README.md).
 
 ## Python support(experimental)
 
