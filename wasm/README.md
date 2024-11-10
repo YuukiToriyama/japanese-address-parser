@@ -21,13 +21,13 @@ yarn add @toriyama/japanese-address-parser
 ## Introduction
 
 `@toriyama/japanese-address-parser` is a library for parsing Japanese addresses.  
-You can split an address string into prefectures(都道府県), municipalities(市区町村), towns and villages(町村), and each
-subsequent element.
+You can split an address string into prefectures(都道府県), municipalities(市区町村), towns and villages(町村),
+and each subsequent element.
 
 This library is a JavaScript binding for [`japanese-address-parser`](https://crates.io/crates/japanese-address-parser)
 crate written in Rust by using wasm-pack.
-Node.js is not yet supported. If you are eager to use this library on Node.js, please write comments
-on [#128](https://github.com/YuukiToriyama/japanese-address-parser/issues/128) or pull-request!
+Node.js is not yet supported. If you are eager to use this library on Node.js,
+please write comments on [#128](https://github.com/YuukiToriyama/japanese-address-parser/issues/128) or pull-request!
 
 ## Demo
 
