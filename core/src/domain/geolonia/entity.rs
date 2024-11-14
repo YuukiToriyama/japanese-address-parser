@@ -6,18 +6,9 @@ pub struct Prefecture {
     pub cities: Vec<String>,
 }
 
-impl Prefecture {
-    // 主にテストコードで使用する
-    pub fn new(prefecture_name: &str, city_names: Vec<&str>) -> Self {
-        Prefecture {
-            name: prefecture_name.to_string(),
-            cities: city_names.iter().map(|s| s.to_string()).collect(),
-        }
-    }
-}
-
 #[derive(Debug)]
 pub struct City {
+    #[allow(dead_code)]
     pub name: String,
     pub towns: Vec<Town>,
 }
@@ -30,18 +21,6 @@ pub struct Town {
     // TODO: https://github.com/geolonia/japanese-addresses/issues/148 が解消されたらOptionを外すことができる
     pub lat: Option<f32>,
     pub lng: Option<f32>,
-}
-
-impl Town {
-    // 主にテストコードで使用する
-    pub fn new(town_name: &str, koaza_name: &str, lat: f32, lng: f32) -> Self {
-        Town {
-            name: town_name.to_string(),
-            koaza: koaza_name.to_string(),
-            lat: Some(lat),
-            lng: Some(lng),
-        }
-    }
 }
 
 #[derive(Serialize, PartialEq, Debug)]
@@ -63,10 +42,10 @@ impl Address {
     }
 }
 
-#[doc(hidden)]
+#[cfg(test)]
 impl Prefecture {
     /// only for testing
-    pub fn yamagata() -> Self {
+    pub(crate) fn yamagata() -> Self {
         Prefecture {
             name: "山形県".to_string(),
             cities: vec![
@@ -110,7 +89,7 @@ impl Prefecture {
     }
 
     /// only for testing
-    pub fn fukushima() -> Self {
+    pub(crate) fn fukushima() -> Self {
         Prefecture {
             name: "福島県".to_string(),
             cities: vec![
@@ -178,7 +157,7 @@ impl Prefecture {
     }
 
     /// only for testing
-    pub fn fukui() -> Self {
+    pub(crate) fn fukui() -> Self {
         Prefecture {
             name: "福井県".to_string(),
             cities: vec![
@@ -204,7 +183,7 @@ impl Prefecture {
     }
 
     /// only for testing
-    pub fn saga() -> Self {
+    pub(crate) fn saga() -> Self {
         Prefecture {
             name: "佐賀県".to_string(),
             cities: vec![
