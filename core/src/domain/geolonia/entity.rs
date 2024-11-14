@@ -1,20 +1,20 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, PartialEq, Debug)]
-pub struct Prefecture {
+pub(crate) struct Prefecture {
     pub name: String,
     pub cities: Vec<String>,
 }
 
 #[derive(Debug)]
-pub struct City {
+pub(crate) struct City {
     #[allow(dead_code)]
     pub name: String,
     pub towns: Vec<Town>,
 }
 
 #[derive(PartialEq, Deserialize, Debug)]
-pub struct Town {
+pub(crate) struct Town {
     #[serde(alias = "town")]
     pub name: String,
     pub koaza: String,
@@ -32,7 +32,12 @@ pub struct Address {
 }
 
 impl Address {
-    pub fn new(prefecture_name: &str, city_name: &str, town_name: &str, rest_name: &str) -> Self {
+    pub(crate) fn new(
+        prefecture_name: &str,
+        city_name: &str,
+        town_name: &str,
+        rest_name: &str,
+    ) -> Self {
         Address {
             prefecture: prefecture_name.to_string(),
             city: city_name.to_string(),

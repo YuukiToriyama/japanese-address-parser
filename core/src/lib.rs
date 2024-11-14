@@ -14,7 +14,7 @@ compile_error! {
 }
 
 mod adapter;
-pub(crate) mod domain;
+pub mod domain;
 #[cfg(feature = "experimental")]
 #[cfg_attr(docsrs, doc(cfg(feature = "experimental")))]
 pub mod experimental;
