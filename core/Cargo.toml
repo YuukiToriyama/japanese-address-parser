@@ -23,7 +23,6 @@ eliminate-whitespaces = []
 experimental = []
 
 [dependencies]
-itertools = "0.13.0" # 互換性のために残してあるが、`core::parser::adapter`を削除する際に忘れずに削除する
 log.workspace = true
 rapidfuzz = "0.5.0"
 regex = { version = "1.10.6", default-features = false, features = ["std", "unicode-perl"] }
