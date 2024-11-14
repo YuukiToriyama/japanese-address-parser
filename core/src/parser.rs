@@ -1,18 +1,11 @@
-#![allow(deprecated)]
 use std::sync::Arc;
 
-use crate::api::AsyncApi;
-#[cfg(feature = "blocking")]
-use crate::api::BlockingApi;
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
-
-#[deprecated(since = "0.1.24", note = "This module will be deleted in v0.2")]
-pub mod adapter;
 
 impl From<Tokenizer<End>> for Address {
     fn from(value: Tokenizer<End>) -> Self {
@@ -188,75 +181,6 @@ impl Parser {
     }
 }
 
-/// A function to parse the given address asynchronously.
-///
-/// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
-#[deprecated(since = "0.1.23", note = "This module will be deleted in v0.2")]
-pub async fn parse(api: Arc<AsyncApi>, input: &str) -> ParseResult {
-    let tokenizer = Tokenizer::new(input);
-    // 都道府県を特定
-    let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
-        Ok(found) => found,
-        Err(tokenizer) => {
-            return ParseResult {
-                address: Address::from(tokenizer),
-                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-            }
-        }
-    };
-    // その都道府県の市町村名リストを取得
-    let prefecture_master = match api.get_prefecture_master(prefecture.name_ja()).await {
-        Err(error) => {
-            return ParseResult {
-                address: Address::from(tokenizer.finish()),
-                error: Some(error),
-            };
-        }
-        Ok(result) => result,
-    };
-    // 市町村名を特定
-    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
-        Ok(found) => found,
-        Err(not_found) => {
-            // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
-            match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
-                Ok(found) if cfg!(feature = "city-name-correction") => found,
-                _ => {
-                    // それでも見つからない場合は終了
-                    return ParseResult {
-                        address: Address::from(tokenizer.finish()),
-                        error: Some(Error::new_parse_error(ParseErrorKind::City)),
-                    };
-                }
-            }
-        }
-    };
-    // その市町村の町名リストを取得
-    let city = match api.get_city_master(prefecture.name_ja(), &city_name).await {
-        Err(error) => {
-            return ParseResult {
-                address: Address::from(tokenizer.finish()),
-                error: Some(error),
-            };
-        }
-        Ok(result) => result,
-    };
-    // 町名を特定
-    let Ok((_, tokenizer)) =
-        tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
-    else {
-        return ParseResult {
-            address: Address::from(tokenizer.finish()),
-            error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-        };
-    };
-
-    ParseResult {
-        address: Address::from(tokenizer.finish()),
-        error: None,
-    }
-}
-
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
     use crate::domain::geolonia::error::ParseErrorKind;
@@ -319,69 +243,6 @@ mod tests {
         assert_eq!(result.address.town, "生穂".to_string());
         assert_eq!(result.address.rest, "新島8番地".to_string());
         assert_eq!(result.error, None);
-    }
-}
-
-/// A function to parse the given address synchronously.
-///
-/// publicにしていますが、直接の使用は推奨されません。[Parser]の利用を検討してください。
-#[cfg(feature = "blocking")]
-#[deprecated(since = "0.1.23", note = "This module will be deleted in v0.2")]
-pub fn parse_blocking(api: Arc<BlockingApi>, input: &str) -> ParseResult {
-    let tokenizer = Tokenizer::new(input);
-    let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
-        Ok(found) => found,
-        Err(tokenizer) => {
-            return ParseResult {
-                address: Address::from(tokenizer),
-                error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-            }
-        }
-    };
-    let prefecture_master = match api.get_prefecture_master(prefecture.name_ja()) {
-        Err(error) => {
-            return ParseResult {
-                address: Address::from(tokenizer.finish()),
-                error: Some(error),
-            };
-        }
-        Ok(result) => result,
-    };
-    let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
-        Ok(found) => found,
-        Err(not_found) => {
-            match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
-                Ok(found) if cfg!(feature = "city-name-correction") => found,
-                _ => {
-                    return ParseResult {
-                        address: Address::from(tokenizer.finish()),
-                        error: Some(Error::new_parse_error(ParseErrorKind::City)),
-                    };
-                }
-            }
-        }
-    };
-    let city = match api.get_city_master(prefecture.name_ja(), &city_name) {
-        Err(error) => {
-            return ParseResult {
-                address: Address::from(tokenizer.finish()),
-                error: Some(error),
-            };
-        }
-        Ok(result) => result,
-    };
-    let Ok((_, tokenizer)) =
-        tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
-    else {
-        return ParseResult {
-            address: Address::from(tokenizer.finish()),
-            error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-        };
-    };
-
-    ParseResult {
-        address: Address::from(tokenizer.finish()),
-        error: None,
     }
 }
 
