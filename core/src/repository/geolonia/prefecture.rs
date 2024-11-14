@@ -28,7 +28,6 @@ impl PrefectureMasterRepository {
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
     use crate::repository::geolonia::prefecture::PrefectureMasterRepository;
-    use crate::repository::geolonia::prefecture_master_api::PrefectureMasterApi;
     use crate::service::geolonia::GeoloniaApiService;
 
     #[tokio::test]
@@ -61,15 +60,12 @@ mod tests {
 
     #[tokio::test]
     async fn 非同期_誤った都道府県名_失敗() {
-        let prefecture_master_api: PrefectureMasterApi = Default::default();
-        let result = prefecture_master_api.get("大阪都").await;
+        let api_service = GeoloniaApiService {};
+        let result = PrefectureMasterRepository::get(&api_service, "大阪都").await;
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap().error_message,
-            format!(
-                "{}/大阪都/master.jsonを取得できませんでした",
-                prefecture_master_api.server_url
-            )
+            "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist/大阪都/master.jsonを取得できませんでした",
         );
     }
 }
