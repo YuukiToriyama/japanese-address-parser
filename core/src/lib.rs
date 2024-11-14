@@ -14,8 +14,6 @@ compile_error! {
 }
 
 mod adapter;
-#[deprecated(since = "0.1.23", note = "This module will be deleted in v0.2")]
-pub mod api;
 pub(crate) mod domain;
 #[cfg(feature = "experimental")]
 #[cfg_attr(docsrs, doc(cfg(feature = "experimental")))]
