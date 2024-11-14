@@ -10,7 +10,7 @@ resolver = "2"
 [workspace.package]
 version = "0.2.0-rc.1"
 edition = "2021"
-description = "A Rust Library to parse japanese addresses."
+description = "A library for processing addresses of Japan"
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 license = "MIT"
