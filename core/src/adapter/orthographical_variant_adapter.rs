@@ -32,6 +32,7 @@ pub enum OrthographicalVariant {
     鉋,
     鷆,
     斑,
+    櫻,
 }
 
 impl OrthographicalVariant {
@@ -69,6 +70,7 @@ impl OrthographicalVariant {
             OrthographicalVariant::鉋 => &['鉋', '飽'],
             OrthographicalVariant::鷆 => &['鷆', '鷏'],
             OrthographicalVariant::斑 => &['斑', '班'],
+            OrthographicalVariant::櫻 => &['櫻', '桜'],
         }
     }
 
