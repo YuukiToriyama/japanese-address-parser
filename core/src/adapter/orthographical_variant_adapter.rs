@@ -28,6 +28,7 @@ pub enum OrthographicalVariant {
     濱,
     祗,
     曾,
+    國,
 }
 
 impl OrthographicalVariant {
@@ -61,6 +62,7 @@ impl OrthographicalVariant {
             OrthographicalVariant::濱 => &['濱', '浜'],
             OrthographicalVariant::祗 => &['祗', '祇'],
             OrthographicalVariant::曾 => &['曾', '曽'],
+            OrthographicalVariant::國 => &['國', '国'],
         }
     }
 
