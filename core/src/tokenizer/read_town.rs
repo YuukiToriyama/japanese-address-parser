@@ -96,6 +96,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
                 OrthographicalVariant::斑,
                 OrthographicalVariant::櫻,
                 OrthographicalVariant::櫟,
+                OrthographicalVariant::冨,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {
