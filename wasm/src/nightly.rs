@@ -30,11 +30,6 @@ export interface ParsedAddress {
     metadata: Metadata;
 }"#;
 
-#[wasm_bindgen(start)]
-fn start() {
-    console_log::init_with_level(log::Level::Trace).expect("could not initialize log");
-}
-
 #[derive(Deserialize)]
 pub struct Options {
     #[serde(alias = "dataSource")]
