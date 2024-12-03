@@ -53,6 +53,9 @@ impl Tokenizer<PrefectureNameFound> {
             Some("福岡県") => {
                 variant_list.push(OrthographicalVariant::恵);
             }
+            Some("長崎県") => {
+                variant_list.push(OrthographicalVariant::諫);
+            }
             _ => {}
         }
         for candidate in candidates {
