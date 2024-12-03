@@ -73,6 +73,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
                 OrthographicalVariant::檜,
                 OrthographicalVariant::竈,
                 OrthographicalVariant::舘,
+                OrthographicalVariant::鰺,
                 OrthographicalVariant::脊,
                 OrthographicalVariant::渕,
                 OrthographicalVariant::己,
