@@ -13,7 +13,7 @@ Add the following to your `Cargo.toml`.
 
 ```toml
 [dependencies]
-japanese-address-parser = "0.1"
+japanese-address-parser = "0.2"
 ```
 
 ### Async Version
