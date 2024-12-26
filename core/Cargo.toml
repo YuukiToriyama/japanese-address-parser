@@ -30,7 +30,7 @@ serde.workspace = true
 reqwest = { version = "0.12.9", default-features = false, features = ["json", "rustls-tls"] }
 js-sys = "0.3.74"
 thiserror = "2.0.3"
-jisx0401 = "0.1.0-beta.3"
+jisx0401 = "0.1.1"
 
 [dev-dependencies]
 tokio.workspace = true
