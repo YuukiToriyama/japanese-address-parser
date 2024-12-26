@@ -23,23 +23,21 @@ eliminate-whitespaces = []
 experimental = []
 
 [dependencies]
-itertools = "0.13.0" # 互換性のために残してあるが、`core::parser::adapter`を削除する際に忘れずに削除する
 log.workspace = true
 rapidfuzz = "0.5.0"
-regex = { version = "1.10.6", default-features = false, features = ["std", "unicode-perl"] }
+regex = { version = "1.11.1", default-features = false, features = ["std", "unicode-perl"] }
 serde.workspace = true
-reqwest = { version = "0.12.5", default-features = false, features = ["json", "rustls-tls"] }
-js-sys = "0.3.67"
-thiserror = "1.0.63"
-jisx0401 = "0.1.0-beta.3"
+reqwest = { version = "0.12.9", default-features = false, features = ["json", "rustls-tls"] }
+js-sys = "0.3.74"
+thiserror = "2.0.3"
+jisx0401 = "0.1.1"
 
 [dev-dependencies]
-criterion = { version = "0.5.1", default-features = false, features = ["html_reports"] }
 tokio.workspace = true
 wasm-bindgen-test = { workspace = true }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-mockito = "1.4.0" # mockitoがwasm32に対応していないため
+mockito = "1.6.1" # mockitoがwasm32に対応していないため
 
 [package.metadata.docs.rs]
 all-features = true

@@ -33,6 +33,7 @@ impl Tokenizer<PrefectureNameFound> {
         match self.get_prefecture_name() {
             Some("青森県") => {
                 variant_list.push(OrthographicalVariant::舘);
+                variant_list.push(OrthographicalVariant::鰺);
             }
             Some("宮城県") => {
                 variant_list.push(OrthographicalVariant::竈);
@@ -52,6 +53,9 @@ impl Tokenizer<PrefectureNameFound> {
             }
             Some("福岡県") => {
                 variant_list.push(OrthographicalVariant::恵);
+            }
+            Some("長崎県") => {
+                variant_list.push(OrthographicalVariant::諫);
             }
             _ => {}
         }

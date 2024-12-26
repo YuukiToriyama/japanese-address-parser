@@ -5,6 +5,14 @@ use japanese_address_parser::parser;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::JsValue;
 
+#[wasm_bindgen(start)]
+fn start() {
+    #[cfg(feature = "debug")]
+    console_error_panic_hook::set_once();
+    #[cfg(feature = "nightly")]
+    console_log::init_with_level(log::Level::Trace).expect("could not initialize log");
+}
+
 #[wasm_bindgen(typescript_custom_section)]
 const TYPESCRIPT_TYPE: &'static str = r#"
 export interface ParseResult {
@@ -41,8 +49,6 @@ pub struct Parser {
 impl Parser {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        #[cfg(feature = "debug")]
-        console_error_panic_hook::set_once();
         Parser {
             parser: parser::Parser::default(),
         }

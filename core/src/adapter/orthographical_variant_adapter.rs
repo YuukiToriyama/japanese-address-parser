@@ -10,6 +10,7 @@ pub enum OrthographicalVariant {
     竈,
     嶋,
     舘,
+    鰺,
     脊,
     渕,
     己,
@@ -28,6 +29,14 @@ pub enum OrthographicalVariant {
     濱,
     祗,
     曾,
+    國,
+    鉋,
+    鷆,
+    斑,
+    櫻,
+    櫟,
+    冨,
+    諫,
 }
 
 impl OrthographicalVariant {
@@ -43,6 +52,7 @@ impl OrthographicalVariant {
             OrthographicalVariant::竈 => &['竈', '竃', '釜'],
             OrthographicalVariant::嶋 => &['嶋', '島'],
             OrthographicalVariant::舘 => &['舘', '館'],
+            OrthographicalVariant::鰺 => &['鰺', '鯵'],
             OrthographicalVariant::脊 => &['脊', '背'],
             OrthographicalVariant::渕 => &['渕', '淵'],
             OrthographicalVariant::己 => &['己', '巳'],
@@ -61,6 +71,14 @@ impl OrthographicalVariant {
             OrthographicalVariant::濱 => &['濱', '浜'],
             OrthographicalVariant::祗 => &['祗', '祇'],
             OrthographicalVariant::曾 => &['曾', '曽'],
+            OrthographicalVariant::國 => &['國', '国'],
+            OrthographicalVariant::鉋 => &['鉋', '飽'],
+            OrthographicalVariant::鷆 => &['鷆', '鷏'],
+            OrthographicalVariant::斑 => &['斑', '班'],
+            OrthographicalVariant::櫻 => &['櫻', '桜'],
+            OrthographicalVariant::櫟 => &['櫟', '擽'],
+            OrthographicalVariant::冨 => &['冨', '富'],
+            OrthographicalVariant::諫 => &['諫', '諌'],
         }
     }
 

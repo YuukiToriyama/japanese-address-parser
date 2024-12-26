@@ -1,4 +1,4 @@
 #[cfg(feature = "experimental")]
-pub mod chimei_ruiju;
-pub mod common;
+pub(crate) mod chimei_ruiju;
+pub(crate) mod common;
 pub mod geolonia;

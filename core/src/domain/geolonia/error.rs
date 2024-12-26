@@ -9,13 +9,13 @@ pub struct Error {
 }
 
 impl Error {
-    pub fn new_parse_error(parse_error_kind: ParseErrorKind) -> Self {
+    pub(crate) fn new_parse_error(parse_error_kind: ParseErrorKind) -> Self {
         Error {
             error_type: "ParseError".to_string(),
             error_message: parse_error_kind.to_string(),
         }
     }
-    pub fn new_api_error(api_error_kind: ApiErrorKind) -> Self {
+    pub(crate) fn new_api_error(api_error_kind: ApiErrorKind) -> Self {
         let error_message = match api_error_kind {
             ApiErrorKind::Fetch(url) => format!("{}を取得できませんでした", url),
             ApiErrorKind::Deserialize(url) => format!("{}のデシリアライズに失敗しました", url),
@@ -27,7 +27,7 @@ impl Error {
     }
 }
 
-pub enum ParseErrorKind {
+pub(crate) enum ParseErrorKind {
     Prefecture,
     City,
     Town,
@@ -44,7 +44,7 @@ impl Display for ParseErrorKind {
     }
 }
 
-pub enum ApiErrorKind {
+pub(crate) enum ApiErrorKind {
     Fetch(String),
     Deserialize(String),
 }
