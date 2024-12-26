@@ -11,13 +11,13 @@ A Library for processing addresses of Japan written in Rust.
 Install with npm:
 
 ```bash
-npm install @toriyama/japanese-address-parser
+npm install @toriyama/japanese-address-parser@0.2
 ```
 
 Install with yarn:
 
 ```bash
-yarn add @toriyama/japanese-address-parser
+yarn add @toriyama/japanese-address-parser@0.2
 ```
 
 ## Introduction

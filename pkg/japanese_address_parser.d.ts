@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export function start(): void;
 
 export interface ParseResult {
     address: Address;
@@ -30,17 +31,18 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly start: () => void;
   readonly __wbg_parser_free: (a: number, b: number) => void;
   readonly parser_new: () => number;
-  readonly parser_parse: (a: number, b: number, c: number) => number;
-  readonly __wbindgen_malloc: (a: number, b: number) => number;
-  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly __wbindgen_export_3: WebAssembly.Table;
-  readonly closure83_externref_shim: (a: number, b: number, c: number) => void;
+  readonly parser_parse: (a: number, b: number, c: number) => any;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
-  readonly closure117_externref_shim: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbindgen_export_2: WebAssembly.Table;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+  readonly __wbindgen_export_5: WebAssembly.Table;
+  readonly closure85_externref_shim: (a: number, b: number, c: any) => void;
+  readonly closure119_externref_shim: (a: number, b: number, c: any, d: any) => void;
   readonly __wbindgen_start: () => void;
 }
 
