@@ -103,21 +103,32 @@ pub struct OrthographicalVariantAdapter {
 
 impl OrthographicalVariantAdapter {
     pub fn apply(self, input: &str, region_name: &str) -> Option<(String, String)> {
-        // 必要なパターンのみを選別する
-        let variant_list: Vec<&OrthographicalVariant> = self
-            .variant_list
-            .iter()
-            .filter(|v| v.value().iter().any(|&c| input.contains(c)))
-            .collect();
-        if variant_list.is_empty() {
+        let variants = self.filter_variants(input);
+        if variants.is_empty() {
             return None;
         }
+        self.match_with_variants(input, region_name, variants)
+    }
 
+    fn filter_variants(&self, input: &str) -> Vec<&OrthographicalVariant> {
+        // 必要なパターンのみを選別する
+        self.variant_list
+            .iter()
+            .filter(|v| v.value().iter().any(|&c| input.contains(c)))
+            .collect()
+    }
+
+    fn match_with_variants(
+        &self,
+        input: &str,
+        target: &str,
+        variants: Vec<&OrthographicalVariant>,
+    ) -> Option<(String, String)> {
         // マッチ候補を容れておくためのVector
-        let mut candidates: Vec<String> = vec![region_name.to_string()];
+        let mut candidates = vec![target.to_string()];
         // パターンを一つづつ検証していく
-        for variant in variant_list {
-            let mut semi_candidates: Vec<String> = vec![];
+        for variant in variants {
+            let mut semi_candidates = vec![];
             // variantから順列を作成
             // ["ケ", "ヶ", "が"] -> (ケ, ヶ), (ケ, が), (ヶ, ケ), (ヶ, が), (が, ケ), (が, ヶ)
             for (a, b) in variant.permutations() {
@@ -126,7 +137,7 @@ impl OrthographicalVariantAdapter {
                     if input.starts_with(&modified_candidate) {
                         // マッチすれば早期リターン
                         return Some((
-                            region_name.to_string(),
+                            target.to_string(),
                             input
                                 .chars()
                                 .skip(modified_candidate.chars().count())
@@ -139,7 +150,7 @@ impl OrthographicalVariantAdapter {
                 }
             }
             candidates = semi_candidates;
-            candidates.push(region_name.to_string());
+            candidates.push(target.to_string());
         }
         None
     }
