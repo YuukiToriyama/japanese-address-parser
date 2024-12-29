@@ -84,11 +84,11 @@ impl OrthographicalVariant {
 
     fn permutations(&self) -> Vec<(char, char)> {
         let characters = self.value();
-        let mut permutations: Vec<(char, char)> = vec![];
-        for n in 0..characters.len() {
-            for m in 0..characters.len() {
-                if n != m {
-                    permutations.push((characters[n], characters[m]));
+        let mut permutations = Vec::with_capacity(characters.len() * (characters.len() - 1));
+        for &a in characters {
+            for &b in characters {
+                if a != b {
+                    permutations.push((a, b));
                 }
             }
         }
