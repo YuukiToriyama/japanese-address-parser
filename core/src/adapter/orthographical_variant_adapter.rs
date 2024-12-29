@@ -41,54 +41,55 @@ pub enum OrthographicalVariant {
 
 impl OrthographicalVariant {
     fn value(&self) -> &[char] {
+        use OrthographicalVariant::*;
         match self {
-            OrthographicalVariant::の => &['の', 'ノ', '之'],
-            OrthographicalVariant::ツ => &['ツ', 'ッ'],
-            OrthographicalVariant::ケ => &['ケ', 'ヶ', 'が', 'ガ'],
-            OrthographicalVariant::薮 => &['薮', '藪', '籔'],
-            OrthographicalVariant::崎 => &['崎', '﨑'],
-            OrthographicalVariant::檜 => &['桧', '檜'],
-            OrthographicalVariant::龍 => &['龍', '竜'],
-            OrthographicalVariant::竈 => &['竈', '竃', '釜'],
-            OrthographicalVariant::嶋 => &['嶋', '島'],
-            OrthographicalVariant::舘 => &['舘', '館'],
-            OrthographicalVariant::鰺 => &['鰺', '鯵'],
-            OrthographicalVariant::脊 => &['脊', '背'],
-            OrthographicalVariant::渕 => &['渕', '淵'],
-            OrthographicalVariant::己 => &['己', '巳'],
-            OrthographicalVariant::槇 => &['槇', '槙'],
-            OrthographicalVariant::治 => &['治', '冶'],
-            OrthographicalVariant::佛 => &['佛', '仏'],
-            OrthographicalVariant::澤 => &['澤', '沢'],
-            OrthographicalVariant::塚 => &['塚', '塚'],
-            OrthographicalVariant::恵 => &['恵', '惠'],
-            OrthographicalVariant::穂 => &['穂', '穗'],
-            OrthographicalVariant::梼 => &['梼', '檮'],
-            OrthographicalVariant::蛍 => &['蛍', '螢'],
-            OrthographicalVariant::與 => &['與', '与'],
-            OrthographicalVariant::瀧 => &['瀧', '滝'],
-            OrthographicalVariant::籠 => &['籠', '篭'],
-            OrthographicalVariant::濱 => &['濱', '浜'],
-            OrthographicalVariant::祗 => &['祗', '祇'],
-            OrthographicalVariant::曾 => &['曾', '曽'],
-            OrthographicalVariant::國 => &['國', '国'],
-            OrthographicalVariant::鉋 => &['鉋', '飽'],
-            OrthographicalVariant::鷆 => &['鷆', '鷏'],
-            OrthographicalVariant::斑 => &['斑', '班'],
-            OrthographicalVariant::櫻 => &['櫻', '桜'],
-            OrthographicalVariant::櫟 => &['櫟', '擽'],
-            OrthographicalVariant::冨 => &['冨', '富'],
-            OrthographicalVariant::諫 => &['諫', '諌'],
+            の => &['の', 'ノ', '之'],
+            ツ => &['ツ', 'ッ'],
+            ケ => &['ケ', 'ヶ', 'が', 'ガ'],
+            薮 => &['薮', '藪', '籔'],
+            崎 => &['崎', '﨑'],
+            檜 => &['桧', '檜'],
+            龍 => &['龍', '竜'],
+            竈 => &['竈', '竃', '釜'],
+            嶋 => &['嶋', '島'],
+            舘 => &['舘', '館'],
+            鰺 => &['鰺', '鯵'],
+            脊 => &['脊', '背'],
+            渕 => &['渕', '淵'],
+            己 => &['己', '巳'],
+            槇 => &['槇', '槙'],
+            治 => &['治', '冶'],
+            佛 => &['佛', '仏'],
+            澤 => &['澤', '沢'],
+            塚 => &['塚', '塚'],
+            恵 => &['恵', '惠'],
+            穂 => &['穂', '穗'],
+            梼 => &['梼', '檮'],
+            蛍 => &['蛍', '螢'],
+            與 => &['與', '与'],
+            瀧 => &['瀧', '滝'],
+            籠 => &['籠', '篭'],
+            濱 => &['濱', '浜'],
+            祗 => &['祗', '祇'],
+            曾 => &['曾', '曽'],
+            國 => &['國', '国'],
+            鉋 => &['鉋', '飽'],
+            鷆 => &['鷆', '鷏'],
+            斑 => &['斑', '班'],
+            櫻 => &['櫻', '桜'],
+            櫟 => &['櫟', '擽'],
+            冨 => &['冨', '富'],
+            諫 => &['諫', '諌'],
         }
     }
 
     fn permutations(&self) -> Vec<(char, char)> {
         let characters = self.value();
-        let mut permutations: Vec<(char, char)> = vec![];
-        for n in 0..characters.len() {
-            for m in 0..characters.len() {
-                if n != m {
-                    permutations.push((characters[n], characters[m]));
+        let mut permutations = Vec::with_capacity(characters.len() * (characters.len() - 1));
+        for &a in characters {
+            for &b in characters {
+                if a != b {
+                    permutations.push((a, b));
                 }
             }
         }
@@ -102,21 +103,32 @@ pub struct OrthographicalVariantAdapter {
 
 impl OrthographicalVariantAdapter {
     pub fn apply(self, input: &str, region_name: &str) -> Option<(String, String)> {
-        // 必要なパターンのみを選別する
-        let variant_list: Vec<&OrthographicalVariant> = self
-            .variant_list
-            .iter()
-            .filter(|v| v.value().iter().any(|&c| input.contains(c)))
-            .collect();
-        if variant_list.is_empty() {
+        let variants = self.filter_variants(input);
+        if variants.is_empty() {
             return None;
         }
+        self.match_with_variants(input, region_name, variants)
+    }
 
+    fn filter_variants(&self, input: &str) -> Vec<&OrthographicalVariant> {
+        // 必要なパターンのみを選別する
+        self.variant_list
+            .iter()
+            .filter(|v| v.value().iter().any(|&c| input.contains(c)))
+            .collect()
+    }
+
+    fn match_with_variants(
+        &self,
+        input: &str,
+        target: &str,
+        variants: Vec<&OrthographicalVariant>,
+    ) -> Option<(String, String)> {
         // マッチ候補を容れておくためのVector
-        let mut candidates: Vec<String> = vec![region_name.to_string()];
+        let mut candidates = vec![target.to_string()];
         // パターンを一つづつ検証していく
-        for variant in variant_list {
-            let mut semi_candidates: Vec<String> = vec![];
+        for variant in variants {
+            let mut semi_candidates = vec![];
             // variantから順列を作成
             // ["ケ", "ヶ", "が"] -> (ケ, ヶ), (ケ, が), (ヶ, ケ), (ヶ, が), (が, ケ), (が, ヶ)
             for (a, b) in variant.permutations() {
@@ -125,7 +137,7 @@ impl OrthographicalVariantAdapter {
                     if input.starts_with(&modified_candidate) {
                         // マッチすれば早期リターン
                         return Some((
-                            region_name.to_string(),
+                            target.to_string(),
                             input
                                 .chars()
                                 .skip(modified_candidate.chars().count())
@@ -138,7 +150,7 @@ impl OrthographicalVariantAdapter {
                 }
             }
             candidates = semi_candidates;
-            candidates.push(region_name.to_string());
+            candidates.push(target.to_string());
         }
         None
     }
