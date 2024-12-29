@@ -58,8 +58,8 @@ impl SequenceMatcher {
         possibilities: &[String],
         threshold: Option<f64>,
     ) -> Vec<Candidate> {
-        let mut highest_similarity: f64 = 0.0;
-        let mut highest_matches: Vec<Candidate> = vec![];
+        let mut highest_similarity = 0.0;
+        let mut highest_matches = Vec::with_capacity(possibilities.len());
         let length_of_longest_possibility = Self::get_length_of_longest_one(possibilities).unwrap();
         let input = Self::cut_text(input, length_of_longest_possibility);
         for possibility in possibilities {
@@ -68,7 +68,7 @@ impl SequenceMatcher {
                 if similarity > highest_similarity {
                     highest_matches.clear();
                 }
-                if threshold.is_none() || similarity > threshold.unwrap() {
+                if similarity > threshold.unwrap_or(0.0) {
                     highest_matches.push(Candidate {
                         similarity,
                         text: possibility.clone(),
