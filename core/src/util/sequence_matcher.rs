@@ -85,11 +85,7 @@ impl SequenceMatcher {
     }
 
     fn cut_text(input: &str, length: usize) -> String {
-        if input.chars().count() > length {
-            input.chars().take(length).collect::<String>()
-        } else {
-            input.to_string()
-        }
+        input.chars().take(length).collect()
     }
 
     fn evaluate_match_ratio(left: &str, right: &str) -> f64 {
