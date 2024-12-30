@@ -18,24 +18,20 @@ impl Tokenizer<CityNameFound> {
         if rest.contains("丁目") {
             rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
-        let (town_name, rest) = match find_town(&rest, &candidates) {
-            Some(found) => found,
-            None => {
+        let (town_name, rest) = find_town(&rest, &candidates)
+            .or_else(|| {
                 // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
-                rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
-                match find_town(&rest, &candidates) {
-                    Some(found) => found,
-                    None => {
-                        // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
-                        rest = format!("大字{}", rest);
-                        match find_town(&rest, &candidates) {
-                            Some(found) => found,
-                            None => return Err(self.finish()),
-                        }
-                    }
+                if let Some(it) = format_informal_town_name_notation(&rest) {
+                    rest = it
                 }
-            }
-        };
+                find_town(&rest, &candidates)
+            })
+            .or_else(|| {
+                // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
+                rest = format!("大字{}", rest);
+                find_town(&rest, &candidates)
+            })
+            .ok_or_else(|| self.finish())?;
         Ok((
             town_name.clone(),
             Tokenizer {
