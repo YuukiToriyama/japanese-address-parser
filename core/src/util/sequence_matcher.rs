@@ -40,7 +40,7 @@ impl SequenceMatcher {
         }
         // 類似度で並び替える
         candidates.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap());
-        let highest_similarity = candidates.first().unwrap().similarity;
+        let highest_similarity = candidates[0].similarity;
         // 類似度が一位のものだけを抽出する
         let highest_matches: Vec<String> = candidates
             .iter()
@@ -48,7 +48,7 @@ impl SequenceMatcher {
             .map(|candidate| candidate.text.clone())
             .collect();
         match &highest_matches.len() {
-            1 => Ok(highest_matches.first().unwrap().clone()),
+            1 => Ok(highest_matches[0].clone()),
             _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
         }
     }
