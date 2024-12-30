@@ -3,7 +3,7 @@ use crate::adapter::orthographical_variant_adapter::{
 };
 use crate::domain::common::token::{append_token, Token};
 use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
-use crate::formatter::fullwidth_character::format_fullwidth_number;
+use crate::formatter::fullwidth_character::format_fullwidth_numerals;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
@@ -14,7 +14,7 @@ impl Tokenizer<CityNameFound> {
         &self,
         candidates: Vec<String>,
     ) -> Result<(String, Tokenizer<TownNameFound>), Tokenizer<End>> {
-        let mut rest = format_fullwidth_number(&self.rest);
+        let mut rest = format_fullwidth_numerals(&self.rest);
         if rest.contains("丁目") {
             rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
