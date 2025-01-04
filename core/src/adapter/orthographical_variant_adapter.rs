@@ -37,6 +37,7 @@ pub enum OrthographicalVariant {
     櫟,
     冨,
     諫,
+    驒,
 }
 
 impl OrthographicalVariant {
@@ -80,6 +81,7 @@ impl OrthographicalVariant {
             櫟 => &['櫟', '擽'],
             冨 => &['冨', '富'],
             諫 => &['諫', '諌'],
+            驒 => &['驒', '騨'],
         }
     }
 
