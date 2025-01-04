@@ -40,7 +40,7 @@ impl SequenceMatcher {
         }
         // 類似度で並び替える
         candidates.sort_by(|a, b| b.similarity.partial_cmp(&a.similarity).unwrap());
-        let highest_similarity = candidates.first().unwrap().similarity;
+        let highest_similarity = candidates[0].similarity;
         // 類似度が一位のものだけを抽出する
         let highest_matches: Vec<String> = candidates
             .iter()
@@ -48,7 +48,7 @@ impl SequenceMatcher {
             .map(|candidate| candidate.text.clone())
             .collect();
         match &highest_matches.len() {
-            1 => Ok(highest_matches.first().unwrap().clone()),
+            1 => Ok(highest_matches[0].clone()),
             _ => Err(Error::MoreThanOneCandidateExist(highest_matches)),
         }
     }
@@ -58,8 +58,8 @@ impl SequenceMatcher {
         possibilities: &[String],
         threshold: Option<f64>,
     ) -> Vec<Candidate> {
-        let mut highest_similarity: f64 = 0.0;
-        let mut highest_matches: Vec<Candidate> = vec![];
+        let mut highest_similarity = 0.0;
+        let mut highest_matches = Vec::with_capacity(possibilities.len());
         let length_of_longest_possibility = Self::get_length_of_longest_one(possibilities).unwrap();
         let input = Self::cut_text(input, length_of_longest_possibility);
         for possibility in possibilities {
@@ -68,7 +68,7 @@ impl SequenceMatcher {
                 if similarity > highest_similarity {
                     highest_matches.clear();
                 }
-                if threshold.is_none() || similarity > threshold.unwrap() {
+                if similarity > threshold.unwrap_or(0.0) {
                     highest_matches.push(Candidate {
                         similarity,
                         text: possibility.clone(),
@@ -85,11 +85,7 @@ impl SequenceMatcher {
     }
 
     fn cut_text(input: &str, length: usize) -> String {
-        if input.chars().count() > length {
-            input.chars().take(length).collect::<String>()
-        } else {
-            input.to_string()
-        }
+        input.chars().take(length).collect()
     }
 
     fn evaluate_match_ratio(left: &str, right: &str) -> f64 {
