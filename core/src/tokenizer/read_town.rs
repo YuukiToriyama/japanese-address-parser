@@ -3,7 +3,7 @@ use crate::adapter::orthographical_variant_adapter::{
 };
 use crate::domain::common::token::{append_token, Token};
 use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
-use crate::formatter::fullwidth_character::format_fullwidth_number;
+use crate::formatter::fullwidth_character::format_fullwidth_numerals;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
@@ -14,28 +14,24 @@ impl Tokenizer<CityNameFound> {
         &self,
         candidates: Vec<String>,
     ) -> Result<(String, Tokenizer<TownNameFound>), Tokenizer<End>> {
-        let mut rest = format_fullwidth_number(&self.rest);
+        let mut rest = format_fullwidth_numerals(&self.rest);
         if rest.contains("丁目") {
             rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
-        let (town_name, rest) = match find_town(&rest, &candidates) {
-            Some(found) => found,
-            None => {
+        let (town_name, rest) = find_town(&rest, &candidates)
+            .or_else(|| {
                 // 「〇〇町L丁目M番N」ではなく「〇〇町L-M-N」と表記されているような場合
-                rest = format_informal_town_name_notation(&rest).unwrap_or(rest);
-                match find_town(&rest, &candidates) {
-                    Some(found) => found,
-                    None => {
-                        // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
-                        rest = format!("大字{}", rest);
-                        match find_town(&rest, &candidates) {
-                            Some(found) => found,
-                            None => return Err(self.finish()),
-                        }
-                    }
+                if let Some(it) = format_informal_town_name_notation(&rest) {
+                    rest = it
                 }
-            }
-        };
+                find_town(&rest, &candidates)
+            })
+            .or_else(|| {
+                // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
+                rest = format!("大字{}", rest);
+                find_town(&rest, &candidates)
+            })
+            .ok_or_else(|| self.finish())?;
         Ok((
             town_name.clone(),
             Tokenizer {
@@ -57,47 +53,14 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
         if input.starts_with(candidate) {
             return Some((
                 candidate.to_string(),
-                input
-                    .chars()
-                    .skip(candidate.chars().count())
-                    .collect::<String>(),
+                input.chars().skip(candidate.chars().count()).collect(),
             ));
         }
+        use OrthographicalVariant::*;
         let adapter = OrthographicalVariantAdapter {
             variant_list: vec![
-                OrthographicalVariant::の,
-                OrthographicalVariant::ツ,
-                OrthographicalVariant::ケ,
-                OrthographicalVariant::薮,
-                OrthographicalVariant::崎,
-                OrthographicalVariant::檜,
-                OrthographicalVariant::竈,
-                OrthographicalVariant::舘,
-                OrthographicalVariant::鰺,
-                OrthographicalVariant::脊,
-                OrthographicalVariant::渕,
-                OrthographicalVariant::己,
-                OrthographicalVariant::槇,
-                OrthographicalVariant::治,
-                OrthographicalVariant::佛,
-                OrthographicalVariant::澤,
-                OrthographicalVariant::恵,
-                OrthographicalVariant::穂,
-                OrthographicalVariant::梼,
-                OrthographicalVariant::蛍,
-                OrthographicalVariant::與,
-                OrthographicalVariant::瀧,
-                OrthographicalVariant::籠,
-                OrthographicalVariant::濱,
-                OrthographicalVariant::祗,
-                OrthographicalVariant::曾,
-                OrthographicalVariant::國,
-                OrthographicalVariant::鉋,
-                OrthographicalVariant::鷆,
-                OrthographicalVariant::斑,
-                OrthographicalVariant::櫻,
-                OrthographicalVariant::櫟,
-                OrthographicalVariant::冨,
+                の, ツ, ケ, 薮, 崎, 檜, 竈, 舘, 鰺, 脊, 渕, 己, 槇, 治, 佛, 澤, 恵, 穂, 梼, 蛍, 與,
+                瀧, 籠, 濱, 祗, 曾, 國, 鉋, 鷆, 斑, 櫻, 櫟, 冨,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {

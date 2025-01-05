@@ -1,21 +1,24 @@
 use crate::util::converter::JapaneseNumber;
 
 pub(crate) fn format_chome_with_arabic_numerals(target: &str) -> Option<String> {
-    let chome = if cfg!(target_arch = "wasm32") {
+    let chome = extract_chome(target)?;
+    let chome_int = chome.parse::<i8>().ok()?;
+    Some(target.replacen(&chome, chome_int.to_japanese_form()?.as_str(), 1))
+}
+
+fn extract_chome(target: &str) -> Option<String> {
+    if cfg!(target_arch = "wasm32") {
         js_sys::RegExp::new(r"\D+(\d+)丁目", "")
             .exec(target)?
             .get(1)
-            .as_string()?
+            .as_string()
     } else {
         regex::Regex::new(r"\D+(?<chome>\d+)丁目")
             .unwrap()
             .captures(target)?
-            .name("chome")?
-            .as_str()
-            .to_string()
-    };
-    let chome_int = chome.parse::<i8>().ok()?;
-    Some(target.replacen(&chome, chome_int.to_japanese_form()?.as_str(), 1))
+            .name("chome")
+            .map(|m| m.as_str().to_string())
+    }
 }
 
 #[cfg(all(test, not(target_arch = "wasm32")))]

@@ -18,52 +18,34 @@ impl Tokenizer<PrefectureNameFound> {
                 found.to_string(),
                 Tokenizer {
                     tokens: append_token(&self.tokens, Token::City(found.to_string())),
-                    rest: self
-                        .rest
-                        .chars()
-                        .skip(found.chars().count())
-                        .collect::<String>(),
+                    rest: self.rest.chars().skip(found.chars().count()).collect(),
                     _state: PhantomData::<CityNameFound>,
                 },
             ));
         }
 
         // ここまでで市区町村名が読み取れない場合は、表記ゆれを含む可能性を検討する
-        let mut variant_list = vec![OrthographicalVariant::ケ];
-        match self.get_prefecture_name() {
-            Some("青森県") => {
-                variant_list.push(OrthographicalVariant::舘);
-                variant_list.push(OrthographicalVariant::鰺);
-            }
-            Some("宮城県") => {
-                variant_list.push(OrthographicalVariant::竈);
-            }
-            Some("茨城県") => {
-                variant_list.push(OrthographicalVariant::龍);
-                variant_list.push(OrthographicalVariant::嶋);
-            }
-            Some("東京都") => {
-                variant_list.push(OrthographicalVariant::檜);
-            }
-            Some("兵庫県") => {
-                variant_list.push(OrthographicalVariant::塚);
-            }
-            Some("高知県") => {
-                variant_list.push(OrthographicalVariant::梼);
-            }
-            Some("福岡県") => {
-                variant_list.push(OrthographicalVariant::恵);
-            }
-            Some("長崎県") => {
-                variant_list.push(OrthographicalVariant::諫);
-            }
-            _ => {}
+        use OrthographicalVariant::*;
+        let mut variant_list = vec![ケ];
+        if let Some(pref_name) = self.get_prefecture_name() {
+            variant_list.extend(match pref_name {
+                "青森県" => vec![舘, 鰺],
+                "宮城県" => vec![竈],
+                "茨城県" => vec![龍, 嶋],
+                "東京都" => vec![檜],
+                "岐阜県" => vec![驒],
+                "兵庫県" => vec![塚],
+                "高知県" => vec![梼],
+                "福岡県" => vec![恵],
+                "長崎県" => vec![諫],
+                _ => vec![],
+            });
         }
         for candidate in candidates {
             let adapter = OrthographicalVariantAdapter {
                 variant_list: variant_list.clone(),
             };
-            if let Some((city_name, rest)) = adapter.apply(self.rest.as_str(), candidate) {
+            if let Some((city_name, rest)) = adapter.apply(&self.rest, candidate) {
                 return Ok((
                     city_name.clone(),
                     Tokenizer {
