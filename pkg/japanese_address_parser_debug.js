@@ -328,7 +328,7 @@ function __wbg_get_imports() {
         const ret = arg0.fetch(arg1);
         return ret;
     };
-    imports.wbg.__wbg_fetch_b335d17f45a8b5a1 = function(arg0) {
+    imports.wbg.__wbg_fetch_4465c2b10f21a927 = function(arg0) {
         const ret = fetch(arg0);
         return ret;
     };
@@ -526,7 +526,7 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper344 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper345 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 93, __wbg_adapter_26);
         return ret;
     };
