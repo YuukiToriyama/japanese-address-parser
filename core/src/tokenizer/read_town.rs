@@ -60,7 +60,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
         let adapter = OrthographicalVariantAdapter {
             variant_list: vec![
                 の, ツ, ケ, 薮, 崎, 檜, 竈, 舘, 鰺, 脊, 渕, 己, 槇, 治, 佛, 澤, 恵, 穂, 梼, 蛍, 與,
-                瀧, 籠, 濱, 祗, 曾, 國, 鉋, 鷆, 斑, 櫻, 櫟, 冨,
+                瀧, 籠, 濱, 祗, 曾, 國, 鉋, 鷆, 斑, 櫻, 櫟, 冨, 鶯,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {
