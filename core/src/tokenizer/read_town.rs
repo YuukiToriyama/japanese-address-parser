@@ -28,8 +28,11 @@ impl Tokenizer<CityNameFound> {
             })
             .or_else(|| {
                 // ここまでで町名の検出に成功しない場合は、「大字」の省略の可能性を検討する
-                rest = format!("大字{}", rest);
-                find_town(&rest, &candidates)
+                find_town(&format!("大字{}", rest), &candidates)
+            })
+            .or_else(|| {
+                // ここまでで町名の検出に成功しない場合は、「字」の省略の可能性を検討する
+                find_town(&format!("字{}", rest), &candidates)
             })
             .ok_or_else(|| self.finish())?;
         Ok((
@@ -60,7 +63,7 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
         let adapter = OrthographicalVariantAdapter {
             variant_list: vec![
                 の, ツ, ケ, 薮, 崎, 檜, 竈, 舘, 鰺, 脊, 渕, 己, 槇, 治, 佛, 澤, 恵, 穂, 梼, 蛍, 與,
-                瀧, 籠, 濱, 祗, 曾, 國, 鉋, 鷆, 斑, 櫻, 櫟, 冨,
+                瀧, 籠, 濱, 祗, 曾, 國, 鉋, 鷆, 斑, 櫻, 櫟, 冨, 鶯,
             ],
         };
         if let Some(result) = adapter.apply(input, candidate) {
@@ -165,6 +168,29 @@ mod tests {
         assert_eq!(town_name, "大字平井");
         assert_eq!(tokenizer.tokens.len(), 3);
         assert_eq!(tokenizer.rest, "2780番地");
+    }
+
+    #[test]
+    fn read_town_字が省略されている場合() {
+        let tokenizer = Tokenizer {
+            tokens: vec![
+                Token::Prefecture("埼玉県".to_string()),
+                Token::City("南埼玉郡宮代町".to_string()),
+            ],
+            rest: "東粂原111".to_string(),
+            _state: PhantomData::<CityNameFound>,
+        };
+        let result = tokenizer.read_town(vec![
+            "東姫宮一丁目".to_string(),
+            "字東".to_string(),
+            "字宮東".to_string(),
+            "大字東粂原".to_string(),
+        ]);
+        assert!(result.is_ok());
+        let (town_name, tokenizer) = result.unwrap();
+        assert_eq!(town_name, "大字東粂原");
+        assert_eq!(tokenizer.tokens.len(), 3);
+        assert_eq!(tokenizer.rest, "111");
     }
 
     #[test]
