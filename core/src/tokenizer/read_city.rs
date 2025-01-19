@@ -36,6 +36,7 @@ impl Tokenizer<PrefectureNameFound> {
                 "岐阜県" => vec![驒],
                 "大阪府" => vec![條],
                 "兵庫県" => vec![塚],
+                "奈良県" => vec![條],
                 "高知県" => vec![梼],
                 "福岡県" => vec![恵],
                 "長崎県" => vec![諫],
