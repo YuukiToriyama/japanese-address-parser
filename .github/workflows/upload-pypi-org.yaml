@@ -134,8 +134,8 @@ jobs:
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
         env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-          MATURIN_REPOSITORY: "pypi" # test.pypi.orgにアップロードする際は"testpypi"を設定する
+          MATURIN_PYPI_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }} # ${{ secrets.PYPI_API_TOKEN }}
+          MATURIN_REPOSITORY: "testpypi" # test.pypi.orgにアップロードする際は"testpypi"を設定する
         with:
           maturin-version: 1.8.1
           command: upload
