@@ -27,7 +27,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           target: x86_64
           args: --release --out dist --zig
           working-directory: python
@@ -51,7 +51,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           target: x64
           args: --release --out dist
           working-directory: python
@@ -73,7 +73,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           target: aarch64
           args: --release --out dist
           working-directory: python
@@ -92,7 +92,7 @@ jobs:
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           command: sdist
           args: --out dist
           working-directory: python
