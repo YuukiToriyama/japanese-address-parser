@@ -38,7 +38,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           target: ${{ matrix.platform.target }}
           args: --release --out dist --zig
           working-directory: python
@@ -68,7 +68,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           target: ${{ matrix.platform.target }}
           args: --release --out dist
           working-directory: python
@@ -96,7 +96,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           target: ${{ matrix.platform.target }}
           args: --release --out dist
           working-directory: python
@@ -114,7 +114,7 @@ jobs:
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           command: sdist
           args: --out dist
           working-directory: python
@@ -137,6 +137,6 @@ jobs:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
           MATURIN_REPOSITORY: "pypi" # test.pypi.orgにアップロードする際は"testpypi"を設定する
         with:
-          maturin-version: 1.7.8
+          maturin-version: 1.8.1
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
