@@ -59,6 +59,16 @@ jobs:
         with:
           toolchain: 1.75.0
       - name: Basic build
-        run: cargo build --verbose
+        run: |
+          # `litemap`と`zerofrom`の最新版でMSRVがv1.81.0になってしまっていて、Rust1.75.0でビルドしようとすると失敗するため以下を実行
+          # `litemap`と`zerofrom`においてMSRVが元に戻ったり、`japanese-address-parser`自体のMSRVが1.81.0以上になったら以下の処理は不要になるので除却する
+          cargo update litemap --precise 0.7.4
+          cargo update zerofrom --precise 0.1.5
+          cargo build --verbose
       - name: Build docs
-        run: cargo doc --verbose
+        run: |
+          # `litemap`と`zerofrom`の最新版でMSRVがv1.81.0になってしまっていて、Rust1.75.0でビルドしようとすると失敗するため以下を実行
+          # `litemap`と`zerofrom`においてMSRVが元に戻ったり、`japanese-address-parser`自体のMSRVが1.81.0以上になったら以下の処理は不要になるので除却する
+          cargo update litemap --precise 0.7.4
+          cargo update zerofrom --precise 0.1.5
+          cargo doc --verbose
