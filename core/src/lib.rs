@@ -5,6 +5,7 @@
 //! - `city-name-correction`*(enabled by default)*: Enable autocorrection if ambiguous city name was typed
 //! - `format-house-number`: Enable normalization of addresses after town name
 //! - `eliminate-whitespaces`*(experimental)*: Enable elimination of whitespaces from given text
+//! - `fix-halfwidth-katakana`*(experimental)*: Enable fixing halfwidth katakana with fullwidth ones
 //! - `experimental`: Enable experimental module
 
 #![cfg_attr(docsrs, feature(doc_cfg))]

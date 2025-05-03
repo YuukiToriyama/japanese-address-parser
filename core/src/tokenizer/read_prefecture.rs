@@ -1,17 +1,22 @@
 use crate::domain::common::token::Token;
+use crate::formatter::halfwidth_character::format_halfwidth_katakana;
 use crate::tokenizer::{End, Init, PrefectureNameFound, Tokenizer};
 use crate::util::extension::StrExt;
 use std::marker::PhantomData;
 
 impl Tokenizer<Init> {
     pub(crate) fn new(input: &str) -> Self {
+        let mut input = input.strip_variation_selectors();
+        if cfg!(feature = "eliminate-whitespaces") {
+            input = input.strip_whitespaces();
+        }
+        if cfg!(feature = "fix-halfwidth-katakana") {
+            input = format_halfwidth_katakana(&input);
+        }
+
         Self {
             tokens: vec![],
-            rest: if cfg!(feature = "eliminate-whitespaces") {
-                input.strip_variation_selectors().strip_whitespaces()
-            } else {
-                input.strip_variation_selectors()
-            },
+            rest: input,
             _state: PhantomData,
         }
     }
@@ -70,6 +75,14 @@ mod tests {
         let tokenizer = Tokenizer::new("東京都 目黒区 下目黒 4‐1‐1");
         assert_eq!(tokenizer.tokens, vec![]);
         assert_eq!(tokenizer.rest, "東京都目黒区下目黒4‐1‐1")
+    }
+
+    #[test]
+    #[cfg(feature = "fix-halfwidth-katakana")]
+    fn new_半角カタカナを修正() {
+        let tokenizer = Tokenizer::new("東京都品川区旗ﾉ台２丁目");
+        assert_eq!(tokenizer.tokens, vec![]);
+        assert_eq!(tokenizer.rest, "東京都品川区旗ノ台２丁目");
     }
 
     #[test]
