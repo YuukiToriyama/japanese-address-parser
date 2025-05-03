@@ -51,7 +51,15 @@ impl Tokenizer<CityNameFound> {
     }
 }
 
+/// Find out one of the most likely matches from the given candidates
 fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> {
+    // 候補の中から「丁目」を含むものとそれ以外のものを分類する
+    let (contains_chome, not_contains): (Vec<&String>, Vec<&String>) = candidates
+        .iter()
+        .partition(|candidate| candidate.contains("丁目"));
+    // 住居表示施行済みの候補から試すようにする
+    let candidates = [contains_chome, not_contains].concat();
+
     for candidate in candidates {
         if input.starts_with(candidate) {
             return Some((
