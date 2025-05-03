@@ -76,8 +76,41 @@ fn find_town(input: &str, candidates: &Vec<String>) -> Option<(String, String)> 
 #[cfg(test)]
 mod tests {
     use crate::domain::common::token::Token;
+    use crate::tokenizer::read_town::find_town;
     use crate::tokenizer::{CityNameFound, Tokenizer};
     use std::marker::PhantomData;
+
+    #[test]
+    fn find_town_住居表示実施未実施が混在する場合実施済みの候補を優先的に処理する() {
+        let candidates = vec![
+            "下多良".to_string(),
+            "下多良一丁目".to_string(),
+            "下多良二丁目".to_string(),
+            "下多良三丁目".to_string(),
+        ];
+
+        let result = find_town("下多良二丁目137", &candidates);
+        assert_eq!(
+            result.unwrap(),
+            ("下多良二丁目".to_string(), "137".to_string())
+        )
+    }
+
+    #[test]
+    fn find_town_同一の部分を持つ候補が複数ある場合住居表示実施済みの候補を優先的に処理する() {
+        let candidates = vec![
+            "薮田".to_string(),
+            "薮田中一丁目".to_string(),
+            "薮田東二丁目".to_string(),
+            "薮田南二丁目".to_string(),
+        ];
+
+        let result = find_town("藪田南二丁目1-1", &candidates);
+        assert_eq!(
+            result.unwrap(),
+            ("薮田南二丁目".to_string(), "1-1".to_string())
+        );
+    }
 
     #[test]
     fn read_town_成功() {
