@@ -53,3 +53,8 @@ async fn 郡名と町名が一致している場合() {
 async fn 異字体セレクタを含む場合への対応() {
     run_data_driven_tests("./test_data/異字体セレクタを含む場合への対応.csv").await
 }
+
+#[tokio::test]
+async fn 類似する町名候補が複数ある場合への対応() {
+    run_data_driven_tests("./test_data/類似する町名候補が複数ある場合への対応.csv").await
+}

@@ -20,7 +20,8 @@ blocking = ["reqwest/blocking"]
 city-name-correction = []
 format-house-number = []
 eliminate-whitespaces = []
-experimental = []
+fix-halfwidth-katakana = []
+experimental = ["fix-halfwidth-katakana"]
 
 [dependencies]
 log.workspace = true
