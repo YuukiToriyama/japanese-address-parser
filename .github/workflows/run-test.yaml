@@ -59,6 +59,12 @@ jobs:
         with:
           toolchain: 1.75.0
       - name: Basic build
-        run: cargo build --verbose
+        run: |
+          # `icu_locale_core@2.0.0`ではMSRVがv1.82.0になっており、Rust1.75.0でビルドできないため以下を実行
+          cargo update icu_locale_core --precise 2.0.0-beta1
+          cargo build --verbose
       - name: Build docs
-        run: cargo doc --verbose
+        run: |
+          # `icu_locale_core@2.0.0`ではMSRVがv1.82.0になっており、Rust1.75.0でビルドできないため以下を実行
+          cargo update icu_locale_core --precise 2.0.0-beta1
+          cargo doc --verbose
