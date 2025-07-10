@@ -51,7 +51,7 @@ jobs:
         run: wasm-pack build --target web --scope toriyama
 
   msrv:
-    runs-on: macos-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install minimum supported version
