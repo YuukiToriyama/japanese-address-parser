@@ -54,15 +54,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install minimum supported version
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: 1.75.0
-      - name: Basic build
+      - name: Prepare cargo-msrv
+        run: cargo install cargo-msrv --locked
+      - run: cargo msrv verify
         working-directory: core
-        run: |
-          cargo build --verbose
-      - name: Build docs
-        working-directory: core
-        run: |
-          cargo doc --verbose
