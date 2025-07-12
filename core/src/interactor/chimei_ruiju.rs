@@ -57,7 +57,10 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         prefecture: &Prefecture,
         city_name: &str,
     ) -> Result<CityMaster, ApiError> {
-        CityMasterRepository::get(&self.api_service, prefecture, city_name).await
+        let repository = CityMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        repository.get(prefecture, city_name).await
     }
 
     async fn get_town_master(
