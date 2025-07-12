@@ -24,6 +24,5 @@ mod http;
 mod interactor;
 pub mod parser;
 mod repository;
-mod service;
 mod tokenizer;
 mod util;
