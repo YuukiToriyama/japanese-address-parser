@@ -1,33 +1,37 @@
 use crate::domain::chimei_ruiju::entity::PrefectureMaster;
 use crate::domain::chimei_ruiju::error::ApiError;
-use crate::service::chimei_ruiju::ChimeiRuijuApiService;
+use crate::http::client::ApiClient;
 use jisx0401::Prefecture;
 
-pub struct PrefectureMasterRepository {}
+pub struct PrefectureMasterRepository<C: ApiClient> {
+    pub api_client: C,
+}
 
-impl PrefectureMasterRepository {
-    pub async fn get(
-        api_service: &ChimeiRuijuApiService,
-        prefecture: &Prefecture,
-    ) -> Result<PrefectureMaster, ApiError> {
+impl<C: ApiClient> PrefectureMasterRepository<C> {
+    pub async fn get(&self, prefecture: &Prefecture) -> Result<PrefectureMaster, ApiError> {
         let url = format!(
             "https://{}.chimei-ruiju.org/master.json",
             prefecture.name_en()
         );
-        api_service.get::<PrefectureMaster>(&url).await
+        self.api_client
+            .fetch::<PrefectureMaster>(&url)
+            .await
+            .map_err(|e| e.into())
     }
 }
 
 #[cfg(test)]
 mod async_tests {
+    use crate::http::reqwest_client::ReqwestApiClient;
     use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
-    use crate::service::chimei_ruiju::ChimeiRuijuApiService;
     use jisx0401::Prefecture;
 
     #[tokio::test]
     async fn 東京都() {
-        let api_service = ChimeiRuijuApiService {};
-        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::TOKYO).await;
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get(&Prefecture::TOKYO).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "東京都");
@@ -102,8 +106,10 @@ mod async_tests {
 
     #[tokio::test]
     async fn 富山県() {
-        let api_service = ChimeiRuijuApiService {};
-        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::TOYAMA).await;
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get(&Prefecture::TOYAMA).await;
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "富山県");
@@ -131,30 +137,27 @@ mod async_tests {
 }
 
 #[cfg(feature = "blocking")]
-impl PrefectureMasterRepository {
-    #[allow(dead_code)]
-    pub fn get_blocking(
-        api_service: &ChimeiRuijuApiService,
-        prefecture: Prefecture,
-    ) -> Result<PrefectureMaster, ApiError> {
+impl<C: ApiClient> PrefectureMasterRepository<C> {
+    pub fn get_blocking(&self, prefecture: &Prefecture) -> Result<PrefectureMaster, ApiError> {
         let url = format!(
             "https://{}.chimei-ruiju.org/master.json",
             prefecture.name_en()
         );
-        api_service.get_blocking::<PrefectureMaster>(&url)
+        self.api_client.fetch_blocking(&url).map_err(|e| e.into())
     }
 }
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
+    use crate::http::reqwest_client::ReqwestApiClient;
     use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
-    use crate::service::chimei_ruiju::ChimeiRuijuApiService;
     use jisx0401::Prefecture;
 
-    #[tokio::test]
-    async fn 高知県() {
-        let api_service = ChimeiRuijuApiService {};
-        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::KOCHI).await;
+    fn 高知県() {
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get_blocking(&Prefecture::KOCHI);
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "高知県");
@@ -199,10 +202,11 @@ mod blocking_tests {
         )
     }
 
-    #[tokio::test]
-    async fn 佐賀県() {
-        let api_service = ChimeiRuijuApiService {};
-        let result = PrefectureMasterRepository::get(&api_service, &Prefecture::SAGA).await;
+    fn 佐賀県() {
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get_blocking(&Prefecture::SAGA);
         assert!(result.is_ok());
         let entity = result.unwrap();
         assert_eq!(entity.name, "佐賀県");

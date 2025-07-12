@@ -1,5 +1,6 @@
 use crate::domain::chimei_ruiju::entity::{CityMaster, PrefectureMaster, TownMaster};
 use crate::domain::chimei_ruiju::error::ApiError;
+use crate::http::reqwest_client::ReqwestApiClient;
 use crate::repository::chimei_ruiju::city::CityMasterRepository;
 use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
 use crate::repository::chimei_ruiju::town::TownMasterRepository;
@@ -45,7 +46,10 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         &self,
         prefecture: &Prefecture,
     ) -> Result<PrefectureMaster, ApiError> {
-        PrefectureMasterRepository::get(&self.api_service, prefecture).await
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        repository.get(prefecture).await
     }
 
     async fn get_city_master(
