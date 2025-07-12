@@ -28,13 +28,8 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
+#[derive(Default)]
 pub(crate) struct ChimeiRuijuInteractorImpl {}
-
-impl Default for ChimeiRuijuInteractorImpl {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
     async fn get_prefecture_master(
