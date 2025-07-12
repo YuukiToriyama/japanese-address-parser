@@ -24,13 +24,8 @@ pub(crate) trait GeoloniaInteractor {
     ) -> Result<City, Error>;
 }
 
+#[derive(Default)]
 pub(crate) struct GeoloniaInteractorImpl {}
-
-impl Default for GeoloniaInteractorImpl {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl GeoloniaInteractor for GeoloniaInteractorImpl {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
