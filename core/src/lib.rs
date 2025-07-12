@@ -20,6 +20,7 @@ pub mod domain;
 #[cfg_attr(docsrs, doc(cfg(feature = "experimental")))]
 pub mod experimental;
 mod formatter;
+mod http;
 mod interactor;
 pub mod parser;
 mod repository;
