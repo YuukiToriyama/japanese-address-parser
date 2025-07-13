@@ -1,6 +1,7 @@
 use crate::domain::common::latlng::LatLng;
 use crate::domain::common::token::Token;
 use crate::experimental::parser::Parser;
+use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::chimei_ruiju::{ChimeiRuijuInteractor, ChimeiRuijuInteractorImpl};
 use crate::tokenizer::Tokenizer;
 use std::option::Option;
@@ -10,7 +11,7 @@ impl Parser {
         &self,
         address: &str,
     ) -> (Vec<Token>, Option<LatLng>) {
-        let interactor = ChimeiRuijuInteractorImpl::default();
+        let interactor = ChimeiRuijuInteractorImpl::<ReqwestApiClient>::default();
         let tokenizer = Tokenizer::new(address);
         let mut lat_lng: Option<LatLng> = None;
 

@@ -1,6 +1,6 @@
 use crate::domain::chimei_ruiju::entity::{CityMaster, PrefectureMaster, TownMaster};
 use crate::domain::chimei_ruiju::error::ApiError;
-use crate::http::reqwest_client::ReqwestApiClient;
+use crate::http::client::ApiClient;
 use crate::repository::chimei_ruiju::city::CityMasterRepository;
 use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
 use crate::repository::chimei_ruiju::town::TownMasterRepository;
@@ -28,29 +28,29 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
-pub(crate) struct ChimeiRuijuInteractorImpl {
-    prefecture_repository: PrefectureMasterRepository<ReqwestApiClient>,
-    city_repository: CityMasterRepository<ReqwestApiClient>,
-    town_repository: TownMasterRepository<ReqwestApiClient>,
+pub(crate) struct ChimeiRuijuInteractorImpl<C: ApiClient> {
+    prefecture_repository: PrefectureMasterRepository<C>,
+    city_repository: CityMasterRepository<C>,
+    town_repository: TownMasterRepository<C>,
 }
 
-impl Default for ChimeiRuijuInteractorImpl {
+impl<C: ApiClient> Default for ChimeiRuijuInteractorImpl<C> {
     fn default() -> Self {
         Self {
             prefecture_repository: PrefectureMasterRepository {
-                api_client: ReqwestApiClient {},
+                api_client: C::new(),
             },
             city_repository: CityMasterRepository {
-                api_client: ReqwestApiClient {},
+                api_client: C::new(),
             },
             town_repository: TownMasterRepository {
-                api_client: ReqwestApiClient {},
+                api_client: C::new(),
             },
         }
     }
 }
 
-impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
+impl<C: ApiClient> ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl<C> {
     async fn get_prefecture_master(
         &self,
         prefecture: &Prefecture,
