@@ -24,30 +24,36 @@ pub(crate) trait GeoloniaInteractor {
     ) -> Result<City, Error>;
 }
 
-#[derive(Default)]
-pub(crate) struct GeoloniaInteractorImpl {}
+pub(crate) struct GeoloniaInteractorImpl {
+    prefecture_repository: PrefectureMasterRepository<ReqwestApiClient>,
+    city_repository: CityMasterRepository<ReqwestApiClient>,
+}
+
+impl Default for GeoloniaInteractorImpl {
+    fn default() -> Self {
+        Self {
+            prefecture_repository: PrefectureMasterRepository {
+                api_client: ReqwestApiClient {},
+            },
+            city_repository: CityMasterRepository {
+                api_client: ReqwestApiClient {},
+            },
+        }
+    }
+}
 
 impl GeoloniaInteractor for GeoloniaInteractorImpl {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
-        let repository = PrefectureMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get(prefecture_name).await
+        self.prefecture_repository.get(prefecture_name).await
     }
 
     #[cfg(feature = "blocking")]
     fn get_blocking_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
-        let repository = PrefectureMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get_blocking(prefecture_name)
+        self.prefecture_repository.get_blocking(prefecture_name)
     }
 
     async fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
-        let repository = CityMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get(prefecture_name, city_name).await
+        self.city_repository.get(prefecture_name, city_name).await
     }
 
     #[cfg(feature = "blocking")]
@@ -56,9 +62,7 @@ impl GeoloniaInteractor for GeoloniaInteractorImpl {
         prefecture_name: &str,
         city_name: &str,
     ) -> Result<City, Error> {
-        let repository = CityMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get_blocking(prefecture_name, city_name)
+        self.city_repository
+            .get_blocking(prefecture_name, city_name)
     }
 }

@@ -28,18 +28,34 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
-#[derive(Default)]
-pub(crate) struct ChimeiRuijuInteractorImpl {}
+pub(crate) struct ChimeiRuijuInteractorImpl {
+    prefecture_repository: PrefectureMasterRepository<ReqwestApiClient>,
+    city_repository: CityMasterRepository<ReqwestApiClient>,
+    town_repository: TownMasterRepository<ReqwestApiClient>,
+}
+
+impl Default for ChimeiRuijuInteractorImpl {
+    fn default() -> Self {
+        Self {
+            prefecture_repository: PrefectureMasterRepository {
+                api_client: ReqwestApiClient {},
+            },
+            city_repository: CityMasterRepository {
+                api_client: ReqwestApiClient {},
+            },
+            town_repository: TownMasterRepository {
+                api_client: ReqwestApiClient {},
+            },
+        }
+    }
+}
 
 impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
     async fn get_prefecture_master(
         &self,
         prefecture: &Prefecture,
     ) -> Result<PrefectureMaster, ApiError> {
-        let repository = PrefectureMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get(prefecture).await
+        self.prefecture_repository.get(prefecture).await
     }
 
     async fn get_city_master(
@@ -47,10 +63,7 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         prefecture: &Prefecture,
         city_name: &str,
     ) -> Result<CityMaster, ApiError> {
-        let repository = CityMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get(prefecture, city_name).await
+        self.city_repository.get(prefecture, city_name).await
     }
 
     async fn get_town_master(
@@ -59,9 +72,8 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         city_name: &str,
         town_name: &str,
     ) -> Result<TownMaster, ApiError> {
-        let repository = TownMasterRepository {
-            api_client: ReqwestApiClient {},
-        };
-        repository.get(prefecture, city_name, town_name).await
+        self.town_repository
+            .get(prefecture, city_name, town_name)
+            .await
     }
 }
