@@ -1,9 +1,9 @@
 use crate::domain::chimei_ruiju::entity::{CityMaster, PrefectureMaster, TownMaster};
 use crate::domain::chimei_ruiju::error::ApiError;
+use crate::http::reqwest_client::ReqwestApiClient;
 use crate::repository::chimei_ruiju::city::CityMasterRepository;
 use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
 use crate::repository::chimei_ruiju::town::TownMasterRepository;
-use crate::service::chimei_ruiju::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
 pub(crate) trait ChimeiRuijuInteractor {
@@ -28,24 +28,18 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
-pub(crate) struct ChimeiRuijuInteractorImpl {
-    api_service: ChimeiRuijuApiService,
-}
-
-impl Default for ChimeiRuijuInteractorImpl {
-    fn default() -> Self {
-        Self {
-            api_service: ChimeiRuijuApiService {},
-        }
-    }
-}
+#[derive(Default)]
+pub(crate) struct ChimeiRuijuInteractorImpl {}
 
 impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
     async fn get_prefecture_master(
         &self,
         prefecture: &Prefecture,
     ) -> Result<PrefectureMaster, ApiError> {
-        PrefectureMasterRepository::get(&self.api_service, prefecture).await
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        repository.get(prefecture).await
     }
 
     async fn get_city_master(
@@ -53,7 +47,10 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         prefecture: &Prefecture,
         city_name: &str,
     ) -> Result<CityMaster, ApiError> {
-        CityMasterRepository::get(&self.api_service, prefecture, city_name).await
+        let repository = CityMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        repository.get(prefecture, city_name).await
     }
 
     async fn get_town_master(
@@ -62,6 +59,9 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         city_name: &str,
         town_name: &str,
     ) -> Result<TownMaster, ApiError> {
-        TownMasterRepository::get(&self.api_service, prefecture, city_name, town_name).await
+        let repository = TownMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        repository.get(prefecture, city_name, town_name).await
     }
 }

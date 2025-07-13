@@ -1,50 +1,50 @@
 use crate::domain::geolonia::entity::{City, Town};
 use crate::domain::geolonia::error::Error;
-use crate::service::geolonia::GeoloniaApiService;
+use crate::http::client::ApiClient;
 
-pub struct CityMasterRepository {}
+pub struct CityMasterRepository<C: ApiClient> {
+    pub api_client: C,
+}
 
-impl CityMasterRepository {
-    pub async fn get(
-        api_service: &GeoloniaApiService,
-        prefecture_name: &str,
-        city_name: &str,
-    ) -> Result<City, Error> {
+impl<C: ApiClient> CityMasterRepository<C> {
+    pub async fn get(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let server_url = "https://geolonia.github.io/japanese-addresses/api/ja";
         let endpoint = format!("{}/{}/{}.json", server_url, prefecture_name, city_name);
-        let towns = api_service.get::<Vec<Town>>(&endpoint).await?;
-        Ok(City {
-            name: city_name.to_string(),
-            towns,
-        })
+        match self.api_client.fetch::<Vec<Town>>(&endpoint).await {
+            Ok(towns) => Ok(City {
+                name: city_name.to_string(),
+                towns,
+            }),
+            Err(error) => Err(error.into()),
+        }
     }
 
     #[cfg(feature = "blocking")]
-    pub fn get_blocking(
-        api_service: &GeoloniaApiService,
-        prefecture_name: &str,
-        city_name: &str,
-    ) -> Result<City, Error> {
+    pub fn get_blocking(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
         let server_url = "https://geolonia.github.io/japanese-addresses/api/ja";
         let endpoint = format!("{}/{}/{}.json", server_url, prefecture_name, city_name);
-        let towns = api_service.get_blocking::<Vec<Town>>(&endpoint)?;
-        Ok(City {
-            name: city_name.to_string(),
-            towns,
-        })
+        match self.api_client.fetch_blocking::<Vec<Town>>(&endpoint) {
+            Ok(towns) => Ok(City {
+                name: city_name.to_string(),
+                towns,
+            }),
+            Err(error) => Err(error.into()),
+        }
     }
 }
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod async_tests {
     use crate::domain::geolonia::entity::Town;
+    use crate::http::reqwest_client::ReqwestApiClient;
     use crate::repository::geolonia::city::CityMasterRepository;
-    use crate::service::geolonia::GeoloniaApiService;
 
     #[tokio::test]
     async fn 非同期_石川県羽咋郡志賀町_成功() {
-        let api_service = GeoloniaApiService {};
-        let result = CityMasterRepository::get(&api_service, "石川県", "羽咋郡志賀町").await;
+        let repository = CityMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get("石川県", "羽咋郡志賀町").await;
         let city = result.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町");
         let town = Town {
@@ -58,8 +58,10 @@ mod async_tests {
 
     #[tokio::test]
     async fn 非同期_誤った市区町村名_失敗() {
-        let api_service = GeoloniaApiService {};
-        let result = CityMasterRepository::get(&api_service, "石川県", "敦賀市").await;
+        let repository = CityMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get("石川県", "敦賀市").await;
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap().error_message,
@@ -71,13 +73,15 @@ mod async_tests {
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::domain::geolonia::entity::Town;
+    use crate::http::reqwest_client::ReqwestApiClient;
     use crate::repository::geolonia::city::CityMasterRepository;
-    use crate::service::geolonia::GeoloniaApiService;
 
     #[test]
     fn 同期_石川県羽咋郡志賀町_成功() {
-        let api_service = GeoloniaApiService {};
-        let result = CityMasterRepository::get_blocking(&api_service, "石川県", "羽咋郡志賀町");
+        let repository = CityMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get_blocking("石川県", "羽咋郡志賀町");
         let city = result.unwrap();
         assert_eq!(city.name, "羽咋郡志賀町");
         let town = Town {
@@ -91,8 +95,10 @@ mod blocking_tests {
 
     #[test]
     fn 同期_誤った市区町村名_失敗() {
-        let api_service = GeoloniaApiService {};
-        let result = CityMasterRepository::get_blocking(&api_service, "石川県", "敦賀市");
+        let repository = CityMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get_blocking("石川県", "敦賀市");
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap().error_message,
