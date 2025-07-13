@@ -6,6 +6,10 @@ use serde::de::DeserializeOwned;
 pub(crate) struct ReqwestApiClient {}
 
 impl ApiClient for ReqwestApiClient {
+    fn new() -> Self {
+        ReqwestApiClient {}
+    }
+
     async fn fetch<T: DeserializeOwned>(&self, url: &str) -> Result<T, ApiClientError> {
         let response = reqwest::get(url)
             .await
