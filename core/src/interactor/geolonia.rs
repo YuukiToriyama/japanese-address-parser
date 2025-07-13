@@ -1,6 +1,6 @@
 use crate::domain::geolonia::entity::{City, Prefecture};
 use crate::domain::geolonia::error::Error;
-use crate::http::reqwest_client::ReqwestApiClient;
+use crate::http::client::ApiClient;
 use crate::repository::geolonia::city::CityMasterRepository;
 use crate::repository::geolonia::prefecture::PrefectureMasterRepository;
 
@@ -24,25 +24,25 @@ pub(crate) trait GeoloniaInteractor {
     ) -> Result<City, Error>;
 }
 
-pub(crate) struct GeoloniaInteractorImpl {
-    prefecture_repository: PrefectureMasterRepository<ReqwestApiClient>,
-    city_repository: CityMasterRepository<ReqwestApiClient>,
+pub(crate) struct GeoloniaInteractorImpl<C: ApiClient> {
+    prefecture_repository: PrefectureMasterRepository<C>,
+    city_repository: CityMasterRepository<C>,
 }
 
-impl Default for GeoloniaInteractorImpl {
+impl<C: ApiClient> Default for GeoloniaInteractorImpl<C> {
     fn default() -> Self {
         Self {
             prefecture_repository: PrefectureMasterRepository {
-                api_client: ReqwestApiClient {},
+                api_client: C::new(),
             },
             city_repository: CityMasterRepository {
-                api_client: ReqwestApiClient {},
+                api_client: C::new(),
             },
         }
     }
 }
 
-impl GeoloniaInteractor for GeoloniaInteractorImpl {
+impl<C: ApiClient> GeoloniaInteractor for GeoloniaInteractorImpl<C> {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_repository.get(prefecture_name).await
     }
