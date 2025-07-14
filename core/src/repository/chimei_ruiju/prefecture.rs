@@ -153,6 +153,7 @@ mod blocking_tests {
     use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
     use jisx0401::Prefecture;
 
+    #[test]
     fn 高知県() {
         let repository = PrefectureMasterRepository {
             api_client: ReqwestApiClient {},
@@ -202,6 +203,7 @@ mod blocking_tests {
         )
     }
 
+    #[test]
     fn 佐賀県() {
         let repository = PrefectureMasterRepository {
             api_client: ReqwestApiClient {},
