@@ -24,25 +24,25 @@ pub(crate) trait GeoloniaInteractor {
     ) -> Result<City, Error>;
 }
 
-pub(crate) struct GeoloniaInteractorImpl<C: ApiClient> {
-    prefecture_repository: PrefectureMasterRepository<C>,
-    city_repository: CityMasterRepository<C>,
+pub(crate) struct GeoloniaInteractorImpl<Client: ApiClient> {
+    prefecture_repository: PrefectureMasterRepository<Client>,
+    city_repository: CityMasterRepository<Client>,
 }
 
-impl<C: ApiClient> Default for GeoloniaInteractorImpl<C> {
+impl<Client: ApiClient> Default for GeoloniaInteractorImpl<Client> {
     fn default() -> Self {
         Self {
             prefecture_repository: PrefectureMasterRepository {
-                api_client: C::new(),
+                api_client: Client::new(),
             },
             city_repository: CityMasterRepository {
-                api_client: C::new(),
+                api_client: Client::new(),
             },
         }
     }
 }
 
-impl<C: ApiClient> GeoloniaInteractor for GeoloniaInteractorImpl<C> {
+impl<Client: ApiClient> GeoloniaInteractor for GeoloniaInteractorImpl<Client> {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         self.prefecture_repository.get(prefecture_name).await
     }

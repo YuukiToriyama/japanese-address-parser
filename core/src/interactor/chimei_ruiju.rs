@@ -28,29 +28,29 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
-pub(crate) struct ChimeiRuijuInteractorImpl<C: ApiClient> {
-    prefecture_repository: PrefectureMasterRepository<C>,
-    city_repository: CityMasterRepository<C>,
-    town_repository: TownMasterRepository<C>,
+pub(crate) struct ChimeiRuijuInteractorImpl<Client: ApiClient> {
+    prefecture_repository: PrefectureMasterRepository<Client>,
+    city_repository: CityMasterRepository<Client>,
+    town_repository: TownMasterRepository<Client>,
 }
 
-impl<C: ApiClient> Default for ChimeiRuijuInteractorImpl<C> {
+impl<Client: ApiClient> Default for ChimeiRuijuInteractorImpl<Client> {
     fn default() -> Self {
         Self {
             prefecture_repository: PrefectureMasterRepository {
-                api_client: C::new(),
+                api_client: Client::new(),
             },
             city_repository: CityMasterRepository {
-                api_client: C::new(),
+                api_client: Client::new(),
             },
             town_repository: TownMasterRepository {
-                api_client: C::new(),
+                api_client: Client::new(),
             },
         }
     }
 }
 
-impl<C: ApiClient> ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl<C> {
+impl<Client: ApiClient> ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl<Client> {
     async fn get_prefecture_master(
         &self,
         prefecture: &Prefecture,
