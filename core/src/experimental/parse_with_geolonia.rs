@@ -1,12 +1,13 @@
 use crate::domain::common::token::Token;
 use crate::experimental::parser::Parser;
+use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::Tokenizer;
 
 impl Parser {
     #[inline]
     pub(crate) async fn parse_with_geolonia(&self, address: &str) -> Vec<Token> {
-        let interactor = GeoloniaInteractorImpl::default();
+        let interactor = GeoloniaInteractorImpl::<ReqwestApiClient>::default();
         let tokenizer = Tokenizer::new(address);
 
         // 都道府県名の検出

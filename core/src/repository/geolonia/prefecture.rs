@@ -1,39 +1,42 @@
 use crate::domain::geolonia::entity::Prefecture;
 use crate::domain::geolonia::error::Error;
-use crate::service::geolonia::GeoloniaApiService;
+use crate::http::client::ApiClient;
 
-pub struct PrefectureMasterRepository {}
+pub struct PrefectureMasterRepository<C: ApiClient> {
+    pub api_client: C,
+}
 
-impl PrefectureMasterRepository {
-    pub async fn get(
-        api_service: &GeoloniaApiService,
-        prefecture_name: &str,
-    ) -> Result<Prefecture, Error> {
+impl<C: ApiClient> PrefectureMasterRepository<C> {
+    pub async fn get(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let server_url = "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist";
         let endpoint = format!("{}/{}/master.json", server_url, prefecture_name);
-        api_service.get::<Prefecture>(&endpoint).await
+        self.api_client
+            .fetch::<Prefecture>(&endpoint)
+            .await
+            .map_err(|e| e.into())
     }
 
     #[cfg(feature = "blocking")]
-    pub fn get_blocking(
-        api_service: &GeoloniaApiService,
-        prefecture_name: &str,
-    ) -> Result<Prefecture, Error> {
+    pub fn get_blocking(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
         let server_url = "https://yuukitoriyama.github.io/geolonia-japanese-addresses-accompanist";
         let endpoint = format!("{}/{}/master.json", server_url, prefecture_name);
-        api_service.get_blocking::<Prefecture>(&endpoint)
+        self.api_client
+            .fetch_blocking::<Prefecture>(&endpoint)
+            .map_err(|e| e.into())
     }
 }
 
 #[cfg(all(test, not(feature = "blocking")))]
 mod tests {
+    use crate::http::reqwest_client::ReqwestApiClient;
     use crate::repository::geolonia::prefecture::PrefectureMasterRepository;
-    use crate::service::geolonia::GeoloniaApiService;
 
     #[tokio::test]
     async fn 非同期_富山県_成功() {
-        let api_service = GeoloniaApiService {};
-        let result = PrefectureMasterRepository::get(&api_service, "富山県").await;
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get("富山県").await;
         let prefecture = result.unwrap();
         assert_eq!(prefecture.name, "富山県");
         let cities = vec![
@@ -60,8 +63,10 @@ mod tests {
 
     #[tokio::test]
     async fn 非同期_誤った都道府県名_失敗() {
-        let api_service = GeoloniaApiService {};
-        let result = PrefectureMasterRepository::get(&api_service, "大阪都").await;
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get("大阪都").await;
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap().error_message,
@@ -72,13 +77,15 @@ mod tests {
 
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
+    use crate::http::reqwest_client::ReqwestApiClient;
     use crate::repository::geolonia::prefecture::PrefectureMasterRepository;
-    use crate::service::geolonia::GeoloniaApiService;
 
     #[test]
     fn 同期_富山県_成功() {
-        let api_service = GeoloniaApiService {};
-        let result = PrefectureMasterRepository::get_blocking(&api_service, "富山県");
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get_blocking("富山県");
         let prefecture = result.unwrap();
         assert_eq!(prefecture.name, "富山県");
         let cities = vec![
@@ -105,8 +112,10 @@ mod blocking_tests {
 
     #[test]
     fn 同期_誤った都道府県名_失敗() {
-        let api_service = GeoloniaApiService {};
-        let result = PrefectureMasterRepository::get_blocking(&api_service, "大阪都");
+        let repository = PrefectureMasterRepository {
+            api_client: ReqwestApiClient {},
+        };
+        let result = repository.get_blocking("大阪都");
         assert!(result.is_err());
         assert_eq!(
             result.err().unwrap().error_message,
