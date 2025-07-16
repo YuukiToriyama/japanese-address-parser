@@ -13,6 +13,6 @@ export const __externref_table_alloc: () => number;
 export const __wbindgen_export_4: WebAssembly.Table;
 export const __wbindgen_export_5: WebAssembly.Table;
 export const _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h42709744e08c210b: (a: number, b: number) => void;
-export const closure149_externref_shim: (a: number, b: number, c: any) => void;
-export const closure184_externref_shim: (a: number, b: number, c: any, d: any) => void;
+export const closure148_externref_shim: (a: number, b: number, c: any) => void;
+export const closure264_externref_shim: (a: number, b: number, c: any, d: any) => void;
 export const __wbindgen_start: () => void;
