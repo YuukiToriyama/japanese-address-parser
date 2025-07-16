@@ -3,6 +3,7 @@ use std::sync::Arc;
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
+use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
@@ -35,7 +36,7 @@ impl From<Tokenizer<End>> for Address {
 /// }
 /// ```
 pub struct Parser {
-    interactor: Arc<GeoloniaInteractorImpl>,
+    interactor: Arc<GeoloniaInteractorImpl<ReqwestApiClient>>,
 }
 
 impl Default for Parser {

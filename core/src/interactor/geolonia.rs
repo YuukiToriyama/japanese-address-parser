@@ -1,8 +1,8 @@
 use crate::domain::geolonia::entity::{City, Prefecture};
 use crate::domain::geolonia::error::Error;
+use crate::http::client::ApiClient;
 use crate::repository::geolonia::city::CityMasterRepository;
 use crate::repository::geolonia::prefecture::PrefectureMasterRepository;
-use crate::service::geolonia::GeoloniaApiService;
 
 pub(crate) trait GeoloniaInteractor {
     /// 都道府県マスタを取得(非同期)
@@ -24,30 +24,36 @@ pub(crate) trait GeoloniaInteractor {
     ) -> Result<City, Error>;
 }
 
-pub(crate) struct GeoloniaInteractorImpl {
-    api_service: GeoloniaApiService,
+pub(crate) struct GeoloniaInteractorImpl<Client: ApiClient> {
+    prefecture_repository: PrefectureMasterRepository<Client>,
+    city_repository: CityMasterRepository<Client>,
 }
 
-impl Default for GeoloniaInteractorImpl {
+impl<Client: ApiClient> Default for GeoloniaInteractorImpl<Client> {
     fn default() -> Self {
         Self {
-            api_service: GeoloniaApiService {},
+            prefecture_repository: PrefectureMasterRepository {
+                api_client: Client::new(),
+            },
+            city_repository: CityMasterRepository {
+                api_client: Client::new(),
+            },
         }
     }
 }
 
-impl GeoloniaInteractor for GeoloniaInteractorImpl {
+impl<Client: ApiClient> GeoloniaInteractor for GeoloniaInteractorImpl<Client> {
     async fn get_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
-        PrefectureMasterRepository::get(&self.api_service, prefecture_name).await
+        self.prefecture_repository.get(prefecture_name).await
     }
 
     #[cfg(feature = "blocking")]
     fn get_blocking_prefecture_master(&self, prefecture_name: &str) -> Result<Prefecture, Error> {
-        PrefectureMasterRepository::get_blocking(&self.api_service, prefecture_name)
+        self.prefecture_repository.get_blocking(prefecture_name)
     }
 
     async fn get_city_master(&self, prefecture_name: &str, city_name: &str) -> Result<City, Error> {
-        CityMasterRepository::get(&self.api_service, prefecture_name, city_name).await
+        self.city_repository.get(prefecture_name, city_name).await
     }
 
     #[cfg(feature = "blocking")]
@@ -56,6 +62,7 @@ impl GeoloniaInteractor for GeoloniaInteractorImpl {
         prefecture_name: &str,
         city_name: &str,
     ) -> Result<City, Error> {
-        CityMasterRepository::get_blocking(&self.api_service, prefecture_name, city_name)
+        self.city_repository
+            .get_blocking(prefecture_name, city_name)
     }
 }

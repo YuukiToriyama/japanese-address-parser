@@ -1,9 +1,9 @@
 use crate::domain::chimei_ruiju::entity::{CityMaster, PrefectureMaster, TownMaster};
 use crate::domain::chimei_ruiju::error::ApiError;
+use crate::http::client::ApiClient;
 use crate::repository::chimei_ruiju::city::CityMasterRepository;
 use crate::repository::chimei_ruiju::prefecture::PrefectureMasterRepository;
 use crate::repository::chimei_ruiju::town::TownMasterRepository;
-use crate::service::chimei_ruiju::ChimeiRuijuApiService;
 use jisx0401::Prefecture;
 
 pub(crate) trait ChimeiRuijuInteractor {
@@ -28,24 +28,34 @@ pub(crate) trait ChimeiRuijuInteractor {
     ) -> Result<TownMaster, ApiError>;
 }
 
-pub(crate) struct ChimeiRuijuInteractorImpl {
-    api_service: ChimeiRuijuApiService,
+pub(crate) struct ChimeiRuijuInteractorImpl<Client: ApiClient> {
+    prefecture_repository: PrefectureMasterRepository<Client>,
+    city_repository: CityMasterRepository<Client>,
+    town_repository: TownMasterRepository<Client>,
 }
 
-impl Default for ChimeiRuijuInteractorImpl {
+impl<Client: ApiClient> Default for ChimeiRuijuInteractorImpl<Client> {
     fn default() -> Self {
         Self {
-            api_service: ChimeiRuijuApiService {},
+            prefecture_repository: PrefectureMasterRepository {
+                api_client: Client::new(),
+            },
+            city_repository: CityMasterRepository {
+                api_client: Client::new(),
+            },
+            town_repository: TownMasterRepository {
+                api_client: Client::new(),
+            },
         }
     }
 }
 
-impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
+impl<Client: ApiClient> ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl<Client> {
     async fn get_prefecture_master(
         &self,
         prefecture: &Prefecture,
     ) -> Result<PrefectureMaster, ApiError> {
-        PrefectureMasterRepository::get(&self.api_service, prefecture).await
+        self.prefecture_repository.get(prefecture).await
     }
 
     async fn get_city_master(
@@ -53,7 +63,7 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         prefecture: &Prefecture,
         city_name: &str,
     ) -> Result<CityMaster, ApiError> {
-        CityMasterRepository::get(&self.api_service, prefecture, city_name).await
+        self.city_repository.get(prefecture, city_name).await
     }
 
     async fn get_town_master(
@@ -62,6 +72,8 @@ impl ChimeiRuijuInteractor for ChimeiRuijuInteractorImpl {
         city_name: &str,
         town_name: &str,
     ) -> Result<TownMaster, ApiError> {
-        TownMasterRepository::get(&self.api_service, prefecture, city_name, town_name).await
+        self.town_repository
+            .get(prefecture, city_name, town_name)
+            .await
     }
 }
