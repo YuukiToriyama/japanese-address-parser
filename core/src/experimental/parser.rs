@@ -88,7 +88,41 @@ impl Parser {
     /// }
     /// ```
     pub async fn parse(&self, address: &str) -> ParsedAddress {
-        match self.options.data_source {
+        ParsedAddress::from(
+            self.parse_with_options(address, &ParserOptions::default())
+                .await,
+        )
+    }
+
+    /// Parse address into [ParsedAddress] with options.
+    ///
+    /// オプションを指定して住所をパースします。[ParsedAddress]を返します。
+    ///
+    /// # Example
+    /// ```
+    /// use japanese_address_parser::experimental::parser::{DataSource, Parser, ParserOptions};
+    ///
+    ///  async fn example() {
+    ///     let parser = Parser::default();
+    ///     let parser_options = &ParserOptions {
+    ///             data_source: DataSource::ChimeiRuiju,
+    ///             correct_incomplete_city_names: true,
+    ///             verbose: true,
+    ///     };
+    ///     let result = parser.parse_with_options("東京都中央区銀座1丁目1-1", parser_options).await;
+    ///     assert_eq!(result.prefecture, "東京都");
+    ///     assert_eq!(result.city, "中央区");
+    ///     assert_eq!(result.town, "銀座一丁目");
+    ///     assert_eq!(result.rest, "1-1");
+    ///     assert_eq!(result.metadata.depth, 3);
+    /// }
+    /// ```
+    pub async fn parse_with_options(
+        &self,
+        address: &str,
+        options: &ParserOptions,
+    ) -> ParsedAddress {
+        match options.data_source {
             DataSource::ChimeiRuiju => {
                 ParsedAddress::from(self.parse_with_chimeiruiju(address).await)
             }
