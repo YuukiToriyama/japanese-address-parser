@@ -66,9 +66,7 @@ pub async fn parse_experimental(address: &str, options: JsValue) -> JsValue {
             },
         },
     };
-    let parser = Parser {
-        options: parser_options,
-    };
-    let result = parser.parse(address).await;
+    let parser = Parser::default();
+    let result = parser.parse_with_options(address, options).await;
     serde_wasm_bindgen::to_value(&result).expect("could not serialize struct into json")
 }

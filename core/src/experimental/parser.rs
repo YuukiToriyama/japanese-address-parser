@@ -26,18 +26,14 @@ pub enum DataSource {
 /// use japanese_address_parser::experimental::parser::{DataSource, Parser, ParserOptions};
 ///
 /// // Customize parser
-/// let parser = Parser {
-///     options: ParserOptions {
-///         data_source: DataSource::Geolonia,
-///         correct_incomplete_city_names: false,
-///         verbose: false,
-///     }
+/// let options = ParserOptions {
+///     data_source: DataSource::Geolonia,
+///     correct_incomplete_city_names: false,
+///     verbose: false,
 /// };
 ///
 /// // Use default options
-/// let parser = Parser {
-///     options: ParserOptions::default()
-/// };
+/// let options = ParserOptions::default();
 /// ```
 #[derive(Debug)]
 pub struct ParserOptions {
@@ -64,8 +60,6 @@ impl Default for ParserOptions {
 /// 新型の住所パーサーです。オプションを指定しない場合は`Parser::default()`を使用できます。
 #[derive(Debug, Default)]
 pub struct Parser {
-    /// パーサーのオプションを指定します
-    pub options: ParserOptions,
 }
 
 impl Parser {
