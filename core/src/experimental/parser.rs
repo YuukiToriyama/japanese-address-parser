@@ -126,7 +126,9 @@ impl Parser {
             DataSource::ChimeiRuiju => {
                 ParsedAddress::from(self.parse_with_chimeiruiju(address, options).await)
             }
-            DataSource::Geolonia => ParsedAddress::from(self.parse_with_geolonia(address).await),
+            DataSource::Geolonia => {
+                ParsedAddress::from(self.parse_with_geolonia(address, options).await)
+            }
         }
     }
 }
