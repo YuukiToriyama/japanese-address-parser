@@ -124,7 +124,7 @@ impl Parser {
     ) -> ParsedAddress {
         match options.data_source {
             DataSource::ChimeiRuiju => {
-                ParsedAddress::from(self.parse_with_chimeiruiju(address).await)
+                ParsedAddress::from(self.parse_with_chimeiruiju(address, options).await)
             }
             DataSource::Geolonia => ParsedAddress::from(self.parse_with_geolonia(address).await),
         }
