@@ -82,10 +82,8 @@ impl Parser {
     /// }
     /// ```
     pub async fn parse(&self, address: &str) -> ParsedAddress {
-        ParsedAddress::from(
-            self.parse_with_options(address, &ParserOptions::default())
-                .await,
-        )
+        self.parse_with_options(address, &ParserOptions::default())
+            .await
     }
 
     /// Parse address into [ParsedAddress] with options.
