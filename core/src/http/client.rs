@@ -4,7 +4,7 @@ use serde::de::DeserializeOwned;
 /// HTTP client to fetch remote resources
 ///
 /// 住所データマスタを取得するためのHTTPクライアントはこのトレイトを実装する必要があります。
-#[trait_variant::make(Send)]
+#[cfg_attr(not(target_arch = "wasm32"), trait_variant::make(Send))]
 pub trait ApiClient {
     /// Initialize `ApiClient`
     ///
