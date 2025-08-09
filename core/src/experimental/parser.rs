@@ -1,6 +1,9 @@
 use crate::domain::common::latlng::LatLng;
 use crate::domain::common::token::Token;
+use crate::http::client::ApiClient;
+use crate::http::reqwest_client::ReqwestApiClient;
 use serde::Serialize;
+use std::marker::PhantomData;
 
 /// Data source for Parser
 ///
@@ -55,11 +58,33 @@ impl Default for ParserOptions {
     }
 }
 
-/// Yet another address parser
+/// Yet another address parser(experimental)
 ///
-/// 新型の住所パーサーです。オプションを指定しない場合は`Parser::default()`を使用できます。
-#[derive(Debug, Default)]
-pub struct Parser {
+/// 新型の住所パーサーです。試験的な機能のため、予告なしに破壊的変更が入る可能性があります。
+/// ジェネリクスで型を指定することでデータ通信に用いる`ApiClient`を差し替えることができます。
+///
+/// # Example
+/// ```
+/// use japanese_address_parser::experimental::parser::Parser;
+/// use japanese_address_parser::http::reqwest_client::ReqwestApiClient;
+///
+/// // デフォルトの`ApiClient`を使用する場合
+/// let parser = Parser::default();
+///
+/// // `ApiClient`を指定する場合
+/// let parser = Parser::<ReqwestApiClient>::default();
+/// ```
+#[derive(Debug)]
+pub struct Parser<Client: ApiClient = ReqwestApiClient> {
+    _client: PhantomData<Client>,
+}
+
+impl Default for Parser {
+    fn default() -> Self {
+        Parser {
+            _client: Default::default(),
+        }
+    }
 }
 
 impl Parser {
