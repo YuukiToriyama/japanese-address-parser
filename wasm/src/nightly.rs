@@ -1,3 +1,6 @@
+mod http_client;
+
+use crate::nightly::http_client::GlooNetClient;
 use japanese_address_parser::experimental::parser::{DataSource, Parser, ParserOptions};
 use serde::Deserialize;
 use wasm_bindgen::prelude::wasm_bindgen;
@@ -66,9 +69,7 @@ pub async fn parse_experimental(address: &str, options: JsValue) -> JsValue {
             },
         },
     };
-    let parser = Parser {
-        options: parser_options,
-    };
-    let result = parser.parse(address).await;
+    let parser = Parser::<GlooNetClient>::new();
+    let result = parser.parse_with_options(address, &parser_options).await;
     serde_wasm_bindgen::to_value(&result).expect("could not serialize struct into json")
 }
