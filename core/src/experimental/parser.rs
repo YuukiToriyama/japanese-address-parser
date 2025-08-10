@@ -1,6 +1,9 @@
 use crate::domain::common::latlng::LatLng;
 use crate::domain::common::token::Token;
+use crate::http::client::ApiClient;
+use crate::http::reqwest_client::ReqwestApiClient;
 use serde::Serialize;
+use std::marker::PhantomData;
 
 /// Data source for Parser
 ///
@@ -26,18 +29,14 @@ pub enum DataSource {
 /// use japanese_address_parser::experimental::parser::{DataSource, Parser, ParserOptions};
 ///
 /// // Customize parser
-/// let parser = Parser {
-///     options: ParserOptions {
-///         data_source: DataSource::Geolonia,
-///         correct_incomplete_city_names: false,
-///         verbose: false,
-///     }
+/// let options = ParserOptions {
+///     data_source: DataSource::Geolonia,
+///     correct_incomplete_city_names: false,
+///     verbose: false,
 /// };
 ///
 /// // Use default options
-/// let parser = Parser {
-///     options: ParserOptions::default()
-/// };
+/// let options = ParserOptions::default();
 /// ```
 #[derive(Debug)]
 pub struct ParserOptions {
@@ -59,16 +58,41 @@ impl Default for ParserOptions {
     }
 }
 
-/// Yet another address parser
+/// Yet another address parser(experimental)
 ///
-/// 新型の住所パーサーです。オプションを指定しない場合は`Parser::default()`を使用できます。
-#[derive(Debug, Default)]
-pub struct Parser {
-    /// パーサーのオプションを指定します
-    pub options: ParserOptions,
+/// 新型の住所パーサーです。試験的な機能のため、予告なしに破壊的変更が入る可能性があります。
+/// 住所マスタとのデータ通信に使用する`ApiClient`を指定したい場合は`Parser#new`メソッドを使用してください。
+///
+/// # Example
+/// ```
+/// use japanese_address_parser::experimental::parser::Parser;
+/// use japanese_address_parser::http::reqwest_client::ReqwestApiClient;
+///
+/// // デフォルトの`ApiClient`を使用する場合
+/// let parser = Parser::default();
+///
+/// // `ApiClient`を指定する場合
+/// let parser = Parser::<ReqwestApiClient>::new();
+/// ```
+#[derive(Debug)]
+pub struct Parser<Client: ApiClient = ReqwestApiClient> {
+    _client: PhantomData<Client>,
 }
 
-impl Parser {
+impl Default for Parser {
+    fn default() -> Self {
+        Parser {
+            _client: Default::default(),
+        }
+    }
+}
+
+impl<Client: ApiClient> Parser<Client> {
+    pub fn new() -> Self {
+        Parser {
+            _client: PhantomData::<Client>,
+        }
+    }
     /// Parse address into [ParsedAddress].
     ///
     /// 住所をパースし、[ParsedAddress]を返します。
@@ -88,11 +112,45 @@ impl Parser {
     /// }
     /// ```
     pub async fn parse(&self, address: &str) -> ParsedAddress {
-        match self.options.data_source {
+        self.parse_with_options(address, &ParserOptions::default())
+            .await
+    }
+
+    /// Parse address into [ParsedAddress] with options.
+    ///
+    /// オプションを指定して住所をパースします。[ParsedAddress]を返します。
+    ///
+    /// # Example
+    /// ```
+    /// use japanese_address_parser::experimental::parser::{DataSource, Parser, ParserOptions};
+    ///
+    ///  async fn example() {
+    ///     let parser = Parser::default();
+    ///     let parser_options = &ParserOptions {
+    ///             data_source: DataSource::ChimeiRuiju,
+    ///             correct_incomplete_city_names: true,
+    ///             verbose: true,
+    ///     };
+    ///     let result = parser.parse_with_options("東京都中央区銀座1丁目1-1", parser_options).await;
+    ///     assert_eq!(result.prefecture, "東京都");
+    ///     assert_eq!(result.city, "中央区");
+    ///     assert_eq!(result.town, "銀座一丁目");
+    ///     assert_eq!(result.rest, "1-1");
+    ///     assert_eq!(result.metadata.depth, 3);
+    /// }
+    /// ```
+    pub async fn parse_with_options(
+        &self,
+        address: &str,
+        options: &ParserOptions,
+    ) -> ParsedAddress {
+        match options.data_source {
             DataSource::ChimeiRuiju => {
-                ParsedAddress::from(self.parse_with_chimeiruiju(address).await)
+                ParsedAddress::from(self.parse_with_chimeiruiju(address, options).await)
             }
-            DataSource::Geolonia => ParsedAddress::from(self.parse_with_geolonia(address).await),
+            DataSource::Geolonia => {
+                ParsedAddress::from(self.parse_with_geolonia(address, options).await)
+            }
         }
     }
 }
