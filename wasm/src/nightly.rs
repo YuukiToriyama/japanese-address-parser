@@ -69,7 +69,7 @@ pub async fn parse_experimental(address: &str, options: JsValue) -> JsValue {
             },
         },
     };
-    let parser = Parser::<GlooNetClient>::default();
+    let parser = Parser::<GlooNetClient>::new();
     let result = parser.parse_with_options(address, &parser_options).await;
     serde_wasm_bindgen::to_value(&result).expect("could not serialize struct into json")
 }

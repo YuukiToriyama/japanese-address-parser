@@ -61,7 +61,7 @@ impl Default for ParserOptions {
 /// Yet another address parser(experimental)
 ///
 /// 新型の住所パーサーです。試験的な機能のため、予告なしに破壊的変更が入る可能性があります。
-/// ジェネリクスで型を指定することでデータ通信に用いる`ApiClient`を差し替えることができます。
+/// 住所マスタとのデータ通信に使用する`ApiClient`を指定したい場合は`Parser#new`メソッドを使用してください。
 ///
 /// # Example
 /// ```
@@ -72,14 +72,14 @@ impl Default for ParserOptions {
 /// let parser = Parser::default();
 ///
 /// // `ApiClient`を指定する場合
-/// let parser = Parser::<ReqwestApiClient>::default();
+/// let parser = Parser::<ReqwestApiClient>::new();
 /// ```
 #[derive(Debug)]
 pub struct Parser<Client: ApiClient = ReqwestApiClient> {
     _client: PhantomData<Client>,
 }
 
-impl<Client: ApiClient> Default for Parser<Client> {
+impl Default for Parser {
     fn default() -> Self {
         Parser {
             _client: Default::default(),
@@ -88,6 +88,11 @@ impl<Client: ApiClient> Default for Parser<Client> {
 }
 
 impl<Client: ApiClient> Parser<Client> {
+    pub fn new() -> Self {
+        Parser {
+            _client: PhantomData::<Client>,
+        }
+    }
     /// Parse address into [ParsedAddress].
     ///
     /// 住所をパースし、[ParsedAddress]を返します。
