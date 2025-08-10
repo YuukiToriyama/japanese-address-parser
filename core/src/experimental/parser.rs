@@ -79,7 +79,7 @@ pub struct Parser<Client: ApiClient = ReqwestApiClient> {
     _client: PhantomData<Client>,
 }
 
-impl Default for Parser {
+impl<Client: ApiClient> Default for Parser<Client> {
     fn default() -> Self {
         Parser {
             _client: Default::default(),
@@ -87,7 +87,7 @@ impl Default for Parser {
     }
 }
 
-impl Parser {
+impl<Client: ApiClient> Parser<Client> {
     /// Parse address into [ParsedAddress].
     ///
     /// 住所をパースし、[ParsedAddress]を返します。
