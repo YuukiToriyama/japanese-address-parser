@@ -1,3 +1,3 @@
-pub(crate) mod client;
-pub(crate) mod error;
-pub(crate) mod reqwest_client;
+pub mod client;
+pub mod error;
+pub mod reqwest_client;

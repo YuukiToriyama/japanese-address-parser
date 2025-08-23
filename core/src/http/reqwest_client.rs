@@ -3,7 +3,7 @@ use crate::http::error::ApiClientError;
 use serde::de::DeserializeOwned;
 
 /// An implementation of `ApiClient` with `reqwest`
-pub(crate) struct ReqwestApiClient {}
+pub struct ReqwestApiClient {}
 
 impl ApiClient for ReqwestApiClient {
     fn new() -> Self {

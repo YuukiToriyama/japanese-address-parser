@@ -33,6 +33,7 @@ js-sys = "0.3.74"
 thiserror = "2.0.3"
 jisx0401 = "0.1.1"
 strum = { version = "0.27.1", features = ["derive"] }
+trait-variant = "0.1.2"
 
 [dev-dependencies]
 tokio.workspace = true
