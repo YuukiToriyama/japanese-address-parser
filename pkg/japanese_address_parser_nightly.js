@@ -210,16 +210,18 @@ export function start() {
 }
 
 function __wbg_adapter_38(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hd1b7be2e2254c58d(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h42103d8f0395fa80(arg0, arg1);
 }
 
 function __wbg_adapter_41(arg0, arg1, arg2) {
-    wasm.closure186_externref_shim(arg0, arg1, arg2);
+    wasm.closure178_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_166(arg0, arg1, arg2, arg3) {
-    wasm.closure291_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_168(arg0, arg1, arg2, arg3) {
+    wasm.closure285_externref_shim(arg0, arg1, arg2, arg3);
 }
+
+const __wbindgen_enum_RequestCache = ["default", "no-store", "reload", "no-cache", "force-cache", "only-if-cached"];
 
 const __wbindgen_enum_RequestCredentials = ["omit", "same-origin", "include"];
 
@@ -326,7 +328,7 @@ function __wbg_get_imports() {
         const ret = arg0.call(arg1, arg2);
         return ret;
     }, arguments) };
-    imports.wbg.__wbg_clearTimeout_0b53d391c1b94dda = function(arg0) {
+    imports.wbg.__wbg_clearTimeout_6222fede17abcb1a = function(arg0) {
         const ret = clearTimeout(arg0);
         return ret;
     };
@@ -344,15 +346,15 @@ function __wbg_get_imports() {
         const ret = arg0.exec(getStringFromWasm0(arg1, arg2));
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
     };
-    imports.wbg.__wbg_fetch_11bff8299d0ecd2b = function(arg0) {
-        const ret = fetch(arg0);
-        return ret;
-    };
     imports.wbg.__wbg_fetch_509096533071c657 = function(arg0, arg1) {
         const ret = arg0.fetch(arg1);
         return ret;
     };
     imports.wbg.__wbg_fetch_a9bc66c159c18e19 = function(arg0) {
+        const ret = fetch(arg0);
+        return ret;
+    };
+    imports.wbg.__wbg_fetch_f156d10be9a5c88a = function(arg0) {
         const ret = fetch(arg0);
         return ret;
     };
@@ -449,7 +451,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_166(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_168(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -530,7 +532,7 @@ function __wbg_get_imports() {
         getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
         getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
     };
-    imports.wbg.__wbg_setTimeout_73ce8df12de4f2f2 = function(arg0, arg1) {
+    imports.wbg.__wbg_setTimeout_2b339866a2aa3789 = function(arg0, arg1) {
         const ret = setTimeout(arg0, arg1);
         return ret;
     };
@@ -542,6 +544,9 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbg_setbody_5923b78a95eedf29 = function(arg0, arg1) {
         arg0.body = arg1;
+    };
+    imports.wbg.__wbg_setcache_12f17c3a980650e4 = function(arg0, arg1) {
+        arg0.cache = __wbindgen_enum_RequestCache[arg1];
     };
     imports.wbg.__wbg_setcredentials_c3a22f1cd105a2c6 = function(arg0, arg1) {
         arg0.credentials = __wbindgen_enum_RequestCredentials[arg1];
@@ -651,12 +656,12 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper482 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 132, __wbg_adapter_38);
+    imports.wbg.__wbindgen_closure_wrapper478 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 127, __wbg_adapter_38);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper673 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 187, __wbg_adapter_41);
+    imports.wbg.__wbindgen_closure_wrapper675 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 179, __wbg_adapter_41);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
