@@ -40,6 +40,7 @@ pub enum OrthographicalVariant {
     驒,
     鶯,
     條,
+    廣,
     婁,
 }
 
@@ -87,6 +88,7 @@ impl OrthographicalVariant {
             驒 => &['驒', '騨'],
             鶯 => &['鶯', '鴬'],
             條 => &['條', '条'],
+            廣 => &['廣', '広'],
             婁 => &['婁', '娄'],
         }
     }
