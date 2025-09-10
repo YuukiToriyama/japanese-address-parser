@@ -44,6 +44,7 @@ pub enum OrthographicalVariant {
     婁,
     麴,
     炮,
+    邇,
 }
 
 impl OrthographicalVariant {
@@ -94,6 +95,7 @@ impl OrthographicalVariant {
             婁 => &['婁', '娄'],
             麴 => &['麴', '麹'],
             炮 => &['炮', '砲'],
+            邇 => &['邇', '爾', '迩'],
         }
     }
 
