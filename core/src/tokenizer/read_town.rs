@@ -21,10 +21,7 @@ impl Tokenizer<CityNameFound> {
         let (town_name, rest) = find_town(&rest, &candidates)
             .or_else(|| extract_town_name_assuming_jukyohyouji(&rest, &candidates))
             .or_else(|| extract_town_name_assuming_lack_of_oaza(&rest, &candidates))
-            .or_else(|| {
-                // ここまでで町名の検出に成功しない場合は、「字」の省略の可能性を検討する
-                find_town(&format!("字{}", rest), &candidates)
-            })
+            .or_else(|| extract_town_name_assuming_lack_of_aza(&rest, &candidates))
             .ok_or_else(|| self.finish())?;
         Ok((
             town_name.clone(),
@@ -64,6 +61,17 @@ fn extract_town_name_assuming_lack_of_oaza(
     find_town(&format!("大字{}", rest), candidates)
 }
 
+/// 「字」が省略されている可能性を考慮して町名の抽出を行なう
+///
+/// 「〇〇〜〜」という入力に対して、「字〇〇〜〜」である可能性を考慮して町名の抽出を試みます。
+/// 一致するものがある場合は結果を返しますが、ない場合はNoneを返します。
+fn extract_town_name_assuming_lack_of_aza(
+    rest: &str,
+    candidates: &[String],
+) -> Option<(String, String)> {
+    find_town(&format!("字{}", rest), candidates)
+}
+
 /// Find out one of the most likely matches from the given candidates
 fn find_town(input: &str, candidates: &[String]) -> Option<(String, String)> {
     // 候補の中から「丁目」を含むものとそれ以外のものを分類する
@@ -97,9 +105,7 @@ fn find_town(input: &str, candidates: &[String]) -> Option<(String, String)> {
 #[cfg(test)]
 mod tests {
     use crate::domain::common::token::Token;
-    use crate::tokenizer::read_town::{
-        extract_town_name_assuming_jukyohyouji, find_town,
-    };
+    use crate::tokenizer::read_town::{extract_town_name_assuming_jukyohyouji, find_town};
     use crate::tokenizer::{CityNameFound, Tokenizer};
     use std::marker::PhantomData;
 
