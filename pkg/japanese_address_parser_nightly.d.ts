@@ -2,31 +2,6 @@
 /* eslint-disable */
 export function start(): void;
 
-export interface ParseResult {
-    address: Address;
-    error: Error | undefined;
-}
-export interface Address {
-    prefecture: string;
-    city: string;
-    town: string;
-    rest: string;
-}
-export interface Error {
-    error_type: string;
-    error_message: string;
-}
-export class Parser {
-  free(): void;
-  constructor();
-  /**
-  * @param {string} address
-  * @returns {Promise<ParseResult>}
-  */
-  parse(address: string): Promise<ParseResult>;
-}
-
-
 export function parse_experimental(
     address: string,
     options: ParseOptions
@@ -53,24 +28,49 @@ export interface ParsedAddress {
 }
 
 
+export interface ParseResult {
+    address: Address;
+    error: Error | undefined;
+}
+export interface Address {
+    prefecture: string;
+    city: string;
+    town: string;
+    rest: string;
+}
+export interface Error {
+    error_type: string;
+    error_message: string;
+}
+export class Parser {
+  free(): void;
+  constructor();
+  /**
+  * @param {string} address
+  * @returns {Promise<ParseResult>}
+  */
+  parse(address: string): Promise<ParseResult>;
+}
+
+
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly parse_experimental: (a: number, b: number, c: any) => any;
   readonly start: () => void;
   readonly __wbg_parser_free: (a: number, b: number) => void;
   readonly parser_new: () => number;
   readonly parser_parse: (a: number, b: number, c: number) => any;
-  readonly parse_experimental: (a: number, b: number, c: any) => any;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_4: WebAssembly.Table;
   readonly __wbindgen_export_5: WebAssembly.Table;
-  readonly wasm_bindgen__convert__closures_____invoke__ha4bbb17102aba901: (a: number, b: number) => void;
-  readonly closure178_externref_shim: (a: number, b: number, c: any) => void;
-  readonly closure283_externref_shim: (a: number, b: number, c: any, d: any) => void;
+  readonly wasm_bindgen__convert__closures_____invoke__ha14a0693b4d373da: (a: number, b: number) => void;
+  readonly closure181_externref_shim: (a: number, b: number, c: any) => void;
+  readonly closure281_externref_shim: (a: number, b: number, c: any, d: any) => void;
   readonly __wbindgen_start: () => void;
 }
 
