@@ -11,12 +11,23 @@ impl ApiClient for ReqwestApiClient {
     }
 
     async fn fetch<T: DeserializeOwned>(&self, url: &str) -> Result<T, ApiClientError> {
-        let response = reqwest::get(url)
-            .await
-            .map_err(|e| ApiClientError::Request {
-                url: url.to_string(),
-                message: e.to_string(),
-            })?;
+        let response = if cfg!(target_arch = "wasm32") {
+            reqwest::get(url).await
+        } else {
+            let client = reqwest::Client::builder()
+                .user_agent(format!(
+                    "{}/{}",
+                    env!("CARGO_PKG_NAME"),
+                    env!("CARGO_PKG_VERSION")
+                ))
+                .build()
+                .unwrap();
+            client.get(url).send().await
+        }
+        .map_err(|e| ApiClientError::Request {
+            url: url.to_string(),
+            message: e.to_string(),
+        })?;
         let status = response.status();
         if !status.is_success() {
             return Err(ApiClientError::Request {
@@ -36,10 +47,21 @@ impl ApiClient for ReqwestApiClient {
 
     #[cfg(feature = "blocking")]
     fn fetch_blocking<T: DeserializeOwned>(&self, url: &str) -> Result<T, ApiClientError> {
-        let response = reqwest::blocking::get(url).map_err(|e| ApiClientError::Request {
-            url: url.to_string(),
-            message: e.to_string(),
-        })?;
+        let client = reqwest::blocking::Client::builder()
+            .user_agent(format!(
+                "{}/{}",
+                env!("CARGO_PKG_NAME"),
+                env!("CARGO_PKG_VERSION")
+            ))
+            .build()
+            .unwrap();
+        let response = client
+            .get(url)
+            .send()
+            .map_err(|e| ApiClientError::Request {
+                url: url.to_string(),
+                message: e.to_string(),
+            })?;
 
         let status = response.status();
         if !status.is_success() {
