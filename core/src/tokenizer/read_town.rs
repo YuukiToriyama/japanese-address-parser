@@ -6,6 +6,8 @@ use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numer
 use crate::formatter::fullwidth_character::format_fullwidth_numerals;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
+use crate::formatter::prepend_aza::prepend_aza;
+use crate::formatter::prepend_oaza::prepend_oaza;
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
 use std::marker::PhantomData;
 
@@ -58,7 +60,7 @@ fn extract_town_name_assuming_lack_of_oaza(
     rest: &str,
     candidates: &[String],
 ) -> Option<(String, String)> {
-    find_town(&format!("大字{}", rest), candidates)
+    prepend_oaza(rest).and_then(|it| find_town(&it, candidates))
 }
 
 /// 「字」が省略されている可能性を考慮して町名の抽出を行なう
@@ -69,7 +71,7 @@ fn extract_town_name_assuming_lack_of_aza(
     rest: &str,
     candidates: &[String],
 ) -> Option<(String, String)> {
-    find_town(&format!("字{}", rest), candidates)
+    prepend_aza(rest).and_then(|it| find_town(&it, candidates))
 }
 
 /// Find out one of the most likely matches from the given candidates
