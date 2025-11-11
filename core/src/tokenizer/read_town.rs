@@ -31,6 +31,10 @@ impl Tokenizer<CityNameFound> {
             vec![prepend_oaza],
             // ④ 先頭に「字」を補う
             vec![prepend_aza],
+            // ⑤ 「〇〇L-M-N」を「〇〇L丁目M-N」に変換する かつ 先頭に「大字」を補う
+            vec![format_informal_town_name_notation, prepend_oaza],
+            // ⑥ 「〇〇L-M-N」を「〇〇L丁目M-N」に変換する かつ 先頭に「字」を補う
+            vec![format_informal_town_name_notation, prepend_aza],
         ];
         for pattern in formatter_sets_patterns {
             match apply_all(&rest, &pattern).and_then(|it| find_town(&it, &candidates)) {
