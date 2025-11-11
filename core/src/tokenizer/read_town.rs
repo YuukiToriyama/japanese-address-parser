@@ -25,7 +25,7 @@ impl Tokenizer<CityNameFound> {
         let formatter_sets_patterns: Vec<Vec<Formatter>> = vec![
             // ① 何も処理を行わない
             vec![],
-            // ② 「〇〇町L-M-N」を「〇〇町L丁目M番N」に変換する
+            // ② 「〇〇町L-M-N」を「〇〇L丁目M-N」に変換する
             vec![format_informal_town_name_notation],
             // ③ 先頭に「大字」を補う
             vec![prepend_oaza],
