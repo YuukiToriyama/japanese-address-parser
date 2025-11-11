@@ -6,6 +6,9 @@ use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numer
 use crate::formatter::fullwidth_character::format_fullwidth_numerals;
 use crate::formatter::house_number::format_house_number;
 use crate::formatter::informal_town_name_notation::format_informal_town_name_notation;
+use crate::formatter::prepend_aza::prepend_aza;
+use crate::formatter::prepend_oaza::prepend_oaza;
+use crate::formatter::{apply_all, Formatter};
 use crate::tokenizer::{CityNameFound, End, Tokenizer, TownNameFound};
 use std::marker::PhantomData;
 
@@ -18,58 +21,40 @@ impl Tokenizer<CityNameFound> {
         if rest.contains("丁目") {
             rest = format_chome_with_arabic_numerals(&rest).unwrap_or(rest);
         }
-        let (town_name, rest) = find_town(&rest, &candidates)
-            .or_else(|| extract_town_name_assuming_jukyohyouji(&rest, &candidates))
-            .or_else(|| extract_town_name_assuming_lack_of_oaza(&rest, &candidates))
-            .or_else(|| extract_town_name_assuming_lack_of_aza(&rest, &candidates))
-            .ok_or_else(|| self.finish())?;
-        Ok((
-            town_name.clone(),
-            Tokenizer {
-                tokens: append_token(&self.tokens, Token::Town(town_name)),
-                rest: if cfg!(feature = "format-house-number") && format_house_number(&rest).is_ok()
-                {
-                    format_house_number(&rest).unwrap()
-                } else {
-                    rest
-                },
-                _state: PhantomData::<TownNameFound>,
-            },
-        ))
+
+        let formatter_sets_patterns: Vec<Vec<Formatter>> = vec![
+            // ① 何も処理を行わない
+            vec![],
+            // ② 「〇〇町L-M-N」を「〇〇L丁目M-N」に変換する
+            vec![format_informal_town_name_notation],
+            // ③ 先頭に「大字」を補う
+            vec![prepend_oaza],
+            // ④ 先頭に「字」を補う
+            vec![prepend_aza],
+        ];
+        for pattern in formatter_sets_patterns {
+            match apply_all(&rest, &pattern).and_then(|it| find_town(&it, &candidates)) {
+                None => continue,
+                Some((town_name, rest)) => {
+                    return Ok((
+                        town_name.clone(),
+                        Tokenizer {
+                            tokens: append_token(&self.tokens, Token::Town(town_name)),
+                            rest: if cfg!(feature = "format-house-number")
+                                && format_house_number(&rest).is_ok()
+                            {
+                                format_house_number(&rest).unwrap()
+                            } else {
+                                rest
+                            },
+                            _state: PhantomData::<TownNameFound>,
+                        },
+                    ))
+                }
+            }
+        }
+        Err(self.finish())
     }
-}
-
-/// 住居表示済みの町名である可能性を考慮して町名の抽出を行なう
-///
-/// 「〇〇町L-M-N」という入力に対して、「〇〇町L丁目M番N」である可能性を考慮して町名の抽出を試みます。
-/// 一致するものがある場合は結果を返しますが、ない場合はNoneを返します。
-fn extract_town_name_assuming_jukyohyouji(
-    rest: &str,
-    candidates: &[String],
-) -> Option<(String, String)> {
-    format_informal_town_name_notation(rest).and_then(|it| find_town(&it, candidates))
-}
-
-/// 「大字」が省略されている可能性を考慮して町名の抽出を行なう
-///
-/// 「〇〇〜〜」という入力に対して、「大字〇〇〜〜」である可能性を考慮して町名の抽出を試みます。
-/// 一致するものがある場合は結果を返しますが、ない場合はNoneを返します。
-fn extract_town_name_assuming_lack_of_oaza(
-    rest: &str,
-    candidates: &[String],
-) -> Option<(String, String)> {
-    find_town(&format!("大字{}", rest), candidates)
-}
-
-/// 「字」が省略されている可能性を考慮して町名の抽出を行なう
-///
-/// 「〇〇〜〜」という入力に対して、「字〇〇〜〜」である可能性を考慮して町名の抽出を試みます。
-/// 一致するものがある場合は結果を返しますが、ない場合はNoneを返します。
-fn extract_town_name_assuming_lack_of_aza(
-    rest: &str,
-    candidates: &[String],
-) -> Option<(String, String)> {
-    find_town(&format!("字{}", rest), candidates)
 }
 
 /// Find out one of the most likely matches from the given candidates
@@ -105,7 +90,7 @@ fn find_town(input: &str, candidates: &[String]) -> Option<(String, String)> {
 #[cfg(test)]
 mod tests {
     use crate::domain::common::token::Token;
-    use crate::tokenizer::read_town::{extract_town_name_assuming_jukyohyouji, find_town};
+    use crate::tokenizer::read_town::find_town;
     use crate::tokenizer::{CityNameFound, Tokenizer};
     use std::marker::PhantomData;
 
@@ -139,27 +124,6 @@ mod tests {
             result.unwrap(),
             ("薮田南二丁目".to_string(), "1-1".to_string())
         );
-    }
-
-    #[test]
-    fn extract_town_name_assuming_jukyohyouji_一致する候補がある場合は候補を返す() {
-        let result = extract_town_name_assuming_jukyohyouji(
-            "桧原1-1-1",
-            &vec!["大字桧原".to_string(), "桧原一丁目".to_string()],
-        );
-        assert_eq!(
-            result.unwrap(),
-            ("桧原一丁目".to_string(), "1-1".to_string()),
-        );
-    }
-
-    #[test]
-    fn extract_town_name_assuming_jukyohyouji_一致する候補がない場合は_noneを返す() {
-        let result = extract_town_name_assuming_jukyohyouji(
-            "桧原10",
-            &vec!["大字桧原".to_string(), "桧原一丁目".to_string()],
-        );
-        assert_eq!(result, None);
     }
 
     #[test]
