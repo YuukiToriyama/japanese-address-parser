@@ -50,4 +50,4 @@ jobs:
       - name: Upload wasm to npmjs.com
         run: |
           cd pkg
-          npm publish --provenance --access public
+          npm publish --access public
