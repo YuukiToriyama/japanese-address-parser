@@ -9,7 +9,7 @@ license.workspace = true
 readme = "../README.md"
 keywords.workspace = true
 categories.workspace = true
-rust-version = "1.75.0"
+rust-version = "1.85.0"
 
 [lib]
 crate-type = ["rlib", "cdylib"]
