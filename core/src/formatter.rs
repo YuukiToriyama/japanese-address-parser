@@ -1,3 +1,4 @@
+pub(crate) mod append_machi;
 pub(crate) mod chome_with_arabic_numerals;
 pub(crate) mod fullwidth_character;
 pub(crate) mod halfwidth_character;
