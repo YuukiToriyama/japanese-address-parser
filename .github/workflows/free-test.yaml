@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Get head commit
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v8
         id: get-head-commit
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -49,7 +49,7 @@ jobs:
           path: ./test_result.md
 
       - name: Comment
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v8
         if: steps.run-free-test.outcome == 'success'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
             })
 
       - name: Comment(on error)
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v8
         if: steps.run-free-test.outcome == 'failure'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
