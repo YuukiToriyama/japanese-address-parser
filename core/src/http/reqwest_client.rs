@@ -14,15 +14,17 @@ impl ApiClient for ReqwestApiClient {
         let response = if cfg!(target_arch = "wasm32") {
             reqwest::get(url).await
         } else {
-            let client = reqwest::Client::builder()
+            reqwest::Client::builder()
                 .user_agent(format!(
                     "{}/{}",
                     env!("CARGO_PKG_NAME"),
                     env!("CARGO_PKG_VERSION")
                 ))
                 .build()
-                .unwrap();
-            client.get(url).send().await
+                .unwrap()
+                .get(url)
+                .send()
+                .await
         }
         .map_err(|e| ApiClientError::Request {
             url: url.to_string(),
