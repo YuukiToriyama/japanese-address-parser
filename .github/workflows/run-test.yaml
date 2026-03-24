@@ -13,7 +13,7 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
@@ -33,7 +33,7 @@ jobs:
   run-tests-wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
         with:
           cache-all-crates: true
@@ -53,7 +53,7 @@ jobs:
   msrv:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install minimum supported version
         uses: dtolnay/rust-toolchain@master
         with:
