@@ -50,6 +50,4 @@ jobs:
       - name: Upload wasm to npmjs.com
         run: |
           cd pkg
-          npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_REGISTRY_TOKEN }}
+          npm publish --access public

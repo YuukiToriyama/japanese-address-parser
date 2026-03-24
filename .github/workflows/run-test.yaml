@@ -52,26 +52,13 @@ jobs:
 
   msrv:
     runs-on: ubuntu-latest
-    # ローカル環境では1.75.0でビルドできるがGitHub Actions上ではビルドが通らないため一時的にスキップするよう設定
-    # MSRVを見直す際に以下の設定は除却する
-    if: false
     steps:
       - uses: actions/checkout@v4
       - name: Install minimum supported version
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.75.0
+          toolchain: 1.85.0
       - name: Basic build
-        run: |
-          # `litemap`と`zerofrom`の最新版でMSRVがv1.81.0になってしまっていて、Rust1.75.0でビルドしようとすると失敗するため以下を実行
-          # `litemap`と`zerofrom`においてMSRVが元に戻ったり、`japanese-address-parser`自体のMSRVが1.81.0以上になったら以下の処理は不要になるので除却する
-          cargo update litemap --precise 0.7.4
-          cargo update zerofrom --precise 0.1.5
-          cargo build --verbose
+        run: cargo build --verbose
       - name: Build docs
-        run: |
-          # `litemap`と`zerofrom`の最新版でMSRVがv1.81.0になってしまっていて、Rust1.75.0でビルドしようとすると失敗するため以下を実行
-          # `litemap`と`zerofrom`においてMSRVが元に戻ったり、`japanese-address-parser`自体のMSRVが1.81.0以上になったら以下の処理は不要になるので除却する
-          cargo update litemap --precise 0.7.4
-          cargo update zerofrom --precise 0.1.5
-          cargo doc --verbose
+        run: cargo doc --verbose
