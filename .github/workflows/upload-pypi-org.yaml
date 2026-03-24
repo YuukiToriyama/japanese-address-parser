@@ -136,7 +136,7 @@ jobs:
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
         env:
-          MATURIN_REPOSITORY: "pypi" # test.pypi.orgにアップロードする際は"testpypi"を設定する
+          MATURIN_REPOSITORY: "testpypi" # test.pypi.orgにアップロードする際は"testpypi"を設定する
         with:
           maturin-version: 1.8.1
           command: upload
