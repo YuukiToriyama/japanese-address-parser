@@ -15,3 +15,15 @@ classifiers = [
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<9",
+    "pytest-benchmark>=5,<6",
+]
+
+[tool.pytest.ini_options]
+# ベンチマークは外部 HTTP に依存するためデフォルトでは無効化する。
+# 計測時は `--benchmark-enable` を付けて実行する。
+addopts = "--benchmark-disable"
+testpaths = ["tests"]
