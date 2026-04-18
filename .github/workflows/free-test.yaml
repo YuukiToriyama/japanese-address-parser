@@ -9,10 +9,10 @@ jobs:
     if: github.event.issue.pull_request == null && startsWith(github.event.comment.body, '```text:freetest') && github.event.comment.user.login == 'YuukiToriyama'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Get head commit
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v8
         id: get-head-commit
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -33,7 +33,7 @@ jobs:
         run: wasm-pack build --target nodejs --scope toriyama
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
 
@@ -44,12 +44,12 @@ jobs:
 
       - name: Read test result
         id: read-test-result
-        uses: juliangruber/read-file-action@v1.1.7
+        uses: juliangruber/read-file-action@v1.1.8
         with:
           path: ./test_result.md
 
       - name: Comment
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v8
         if: steps.run-free-test.outcome == 'success'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
             })
 
       - name: Comment(on error)
-        uses: actions/github-script@v7.0.1
+        uses: actions/github-script@v8
         if: steps.run-free-test.outcome == 'failure'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
