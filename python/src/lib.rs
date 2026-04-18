@@ -43,15 +43,20 @@ impl PyParser {
         }
     }
 
-    fn parse(&self, address: &str) -> PyParseResult {
-        self.parser.parse_blocking(address).into()
+    fn parse(&self, py: Python<'_>, address: &str) -> PyParseResult {
+        // parse_blocking はPythonオブジェクトに触れないためGILを解放する
+        py.allow_threads(|| self.parser.parse_blocking(address))
+            .into()
     }
 }
 
 #[pyfunction]
-fn parse(address: &str) -> PyParseResult {
-    let parser: Parser = Default::default();
-    parser.parse_blocking(address).into()
+fn parse(py: Python<'_>, address: &str) -> PyParseResult {
+    py.allow_threads(|| {
+        let parser: Parser = Default::default();
+        parser.parse_blocking(address)
+    })
+    .into()
 }
 
 #[pymodule]
