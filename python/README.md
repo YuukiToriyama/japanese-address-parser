@@ -19,17 +19,19 @@ pip install japanese-address-parser-py
 
 ## Usage
 
+### Sequential execution
+
 ```python
 from japanese_address_parser_py import Parser
 
-address_list = [
+addresses = [
     "埼玉県さいたま市浦和区高砂3-15-1",
     "千葉県千葉市中央区市場町1-1",
     "東京都新宿区西新宿2-8-1",
-    "神奈川県横浜市中区日本大通1"
+    "神奈川県横浜市中区日本大通1",
 ]
 parser = Parser()
-for address in address_list:
+for address in addresses:
     parse_result = parser.parse(address)
     print(parse_result.address)
 ```
@@ -41,23 +43,33 @@ for address in address_list:
 {'town': '日本大通', 'city': '横浜市中区', 'prefecture': '神奈川県', 'rest': '1'}
 ```
 
+### Parallel execution
+
 ```python
+from concurrent.futures import ThreadPoolExecutor
+
 from japanese_address_parser_py import Parser
 
+addresses = [
+    "徳島県徳島市万代町1-1",
+    "香川県高松市番町4-1-10",
+    "愛媛県松山市一番町4-4-2",
+    "高知県高知市丸ノ内1-2-20",
+]
+
 parser = Parser()
-address = "神奈川県横浜市中区本町6丁目50-10"
-parse_result = parser.parse(address)
-print(parse_result.address["prefecture"])
-print(parse_result.address["city"])
-print(parse_result.address["town"])
-print(parse_result.address["rest"])
+with ThreadPoolExecutor(max_workers=4) as executor:
+    results = executor.map(parser.parse, addresses)
+
+for result in results:
+    print(result.address)
 ```
 
 ```text
-神奈川県
-横浜市中区
-本町六丁目
-50-10
+{'prefecture': '徳島県', 'rest': '1', 'city': '徳島市', 'town': '万代町一丁目'}
+{'prefecture': '香川県', 'city': '高松市', 'town': '番町四丁目', 'rest': '1-10'}
+{'city': '松山市', 'rest': '4-2', 'town': '一番町四丁目', 'prefecture': '愛媛県'}
+{'city': '高知市', 'town': '丸ノ内一丁目', 'rest': '2-20', 'prefecture': '高知県'}
 ```
 
 ## Development
@@ -97,4 +109,4 @@ provided by [株式会社Geolonia](https://www.geolonia.com/company/).
 
 ## License
 
-This crate is distributed under the terms of the MIT license.
+This library is distributed under the terms of the MIT license.
