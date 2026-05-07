@@ -12,6 +12,9 @@ permissions:
 jobs:
   linux:
     runs-on: ${{ matrix.platform.runner }}
+    defaults:
+      run:
+        working-directory: python
     strategy:
       matrix:
         platform:
@@ -29,12 +32,12 @@ jobs:
             target: ppc64le
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v8
         with:
-          python-version: '3.10'
+          enable-cache: true
       # 0.12.0にするとppc64leでビルドに失敗するため、0.11.0を手動インストールしている
       - name: Install Zig 0.11.0
-        run: python3 -m pip install ziglang==0.11.0
+        run: uv pip install ziglang==0.11.0
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -52,6 +55,9 @@ jobs:
 
   windows:
     runs-on: ${{ matrix.platform.runner }}
+    defaults:
+      run:
+        working-directory: python
     strategy:
       matrix:
         platform:
@@ -61,10 +67,9 @@ jobs:
             target: x86
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v8
         with:
-          python-version: '3.10'
-          architecture: ${{ matrix.platform.target }}
+          enable-cache: true
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -81,6 +86,9 @@ jobs:
 
   macos:
     runs-on: ${{ matrix.platform.runner }}
+    defaults:
+      run:
+        working-directory: python
     strategy:
       matrix:
         platform:
@@ -90,9 +98,9 @@ jobs:
             target: aarch64
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v8
         with:
-          python-version: '3.10'
+          enable-cache: true
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -109,8 +117,14 @@ jobs:
 
   sdist:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
     steps:
       - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8
+        with:
+          enable-cache: true
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
