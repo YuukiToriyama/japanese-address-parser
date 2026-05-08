@@ -13,6 +13,12 @@ pub(crate) struct RequestParameters {
 pub(crate) async fn process_address_list(
     params: RequestParameters,
 ) -> Result<CallToolResult, ErrorData> {
+    if params.address_list.is_empty() {
+        return Err(ErrorData::invalid_params(
+            "Address list cannot be empty",
+            None,
+        ));
+    }
     if params.address_list.len() > 100 {
         return Err(ErrorData::invalid_params(
             "More than 100 addresses cannot be entered",
