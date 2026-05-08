@@ -3,6 +3,7 @@ members = [
     "core",
     "wasm",
     "python",
+    "mcp",
     "tests",
 ]
 resolver = "2"

@@ -1,0 +1,12 @@
+[package]
+name = "japanese-address-parser-mcp"
+version.workspace = true
+edition.workspace = true
+description = "MCP server for japanese-address-parser — parsing addresses with natural language instructions"
+repository.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords = ["parser", "geo", "mcp"]
+categories.workspace = true
+
+[dependencies]
