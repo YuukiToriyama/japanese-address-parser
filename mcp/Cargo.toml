@@ -3,6 +3,7 @@ name = "japanese-address-parser-mcp"
 version.workspace = true
 edition.workspace = true
 description = "MCP server for japanese-address-parser — parsing addresses with natural language instructions"
+readme = "README.md"
 repository.workspace = true
 authors.workspace = true
 license.workspace = true
