@@ -1,6 +1,6 @@
 """Benchmarks for verifying the GIL-release effect on ``Parser.parse``.
 
-``Parser.parse`` releases the GIL via ``py.allow_threads`` so that concurrent
+``Parser.parse`` releases the GIL via ``py.detach`` so that concurrent
 Python threads can overlap HTTP I/O while fetching Geolonia masters. These
 benchmarks keep that behavior under regression watch.
 
