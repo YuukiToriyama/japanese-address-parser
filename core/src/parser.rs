@@ -7,27 +7,11 @@ pub use self::parse::ParseResult;
 
 use std::sync::Arc;
 
-use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
 use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
-use crate::tokenizer::{End, Tokenizer};
-
-impl From<Tokenizer<End>> for Address {
-    fn from(value: Tokenizer<End>) -> Self {
-        let mut address = Address::new("", "", "", "");
-        for token in value.tokens {
-            match token {
-                Token::Prefecture(prefecture_name) => address.prefecture = prefecture_name,
-                Token::City(city_name) => address.city = city_name,
-                Token::Town(town_name) => address.town = town_name,
-                Token::Rest(rest) => address.rest = rest,
-            }
-        }
-        address
-    }
-}
+use crate::tokenizer::Tokenizer;
 
 /// An asynchronous `Parser` to process addresses.
 ///
