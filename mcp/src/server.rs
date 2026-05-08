@@ -1,3 +1,4 @@
+mod process_address_list;
 mod process_an_address;
 
 use rmcp::handler::server::tool::ToolRouter;
@@ -26,6 +27,14 @@ impl ParseAddressServer {
     ) -> Result<CallToolResult, ErrorData> {
         process_an_address::process_an_address(params).await
     }
+
+    #[tool(description = "最大100件までの複数の住所を一括で処理できます")]
+    async fn process_address_list(
+        &self,
+        Parameters(params): Parameters<process_address_list::RequestParameters>,
+    ) -> Result<CallToolResult, ErrorData> {
+        process_address_list::process_address_list(params).await
+    }
 }
 
 #[tool_handler]
@@ -35,7 +44,8 @@ impl ServerHandler for ParseAddressServer {
             .with_server_info(Implementation::from_build_env())
             .with_instructions(
                 "日本の住所を都道府県・市区町村・町名・それ以降に分割できるMCPサーバーです。 \
-                process_an_address: 1件の住所を解析",
+                process_an_address: 1件の住所を解析 \
+                process_address_list: 複数の住所を一括で解析",
             )
     }
 }
