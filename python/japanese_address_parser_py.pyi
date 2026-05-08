@@ -41,7 +41,7 @@ class Parser:
         :return: JapaneseAddressParser
         """
 
-    def parse(cls, address: str) -> ParseResult:
+    def parse(self, address: str) -> ParseResult:
         """
         Format informal address into formal style
 
