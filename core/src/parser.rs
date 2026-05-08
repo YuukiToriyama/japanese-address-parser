@@ -1,3 +1,10 @@
+pub mod parse;
+#[deprecated(
+    since = "0.3.2",
+    note = "Use japanese_address_parser::parser::parse::ParseResult instead. This will be deleted in v0.4"
+)]
+pub use self::parse::ParseResult;
+
 use std::sync::Arc;
 
 use crate::domain::common::token::Token;
@@ -6,7 +13,6 @@ use crate::domain::geolonia::error::{Error, ParseErrorKind};
 use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
-use serde::Serialize;
 
 impl From<Tokenizer<End>> for Address {
     fn from(value: Tokenizer<End>) -> Self {
@@ -276,10 +282,4 @@ mod blocking_tests {
             ParseErrorKind::City.to_string()
         );
     }
-}
-
-#[derive(Serialize, PartialEq, Debug)]
-pub struct ParseResult {
-    pub address: Address,
-    pub error: Option<Error>,
 }

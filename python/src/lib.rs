@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use pyo3::prelude::*;
 
-use japanese_address_parser::parser::ParseResult;
 use japanese_address_parser::parser::Parser;
+use japanese_address_parser::parser::parse::ParseResult;
 
 #[pyclass(name = "ParseResult")]
 struct PyParseResult {
