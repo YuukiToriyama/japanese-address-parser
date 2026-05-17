@@ -15,6 +15,7 @@ description = "A library for processing addresses of Japan"
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 license = "MIT"
+license-file = "LICENSE"
 keywords = ["parser", "geo", "wasm"]
 categories = ["parser-implementations", "wasm"]
 
