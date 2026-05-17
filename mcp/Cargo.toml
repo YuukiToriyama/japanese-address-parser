@@ -16,7 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0.102"
-japanese-address-parser = { version = "0.3.1", path = "../core", features = ["experimental"] }
+japanese-address-parser = { version = "0.3.2", path = "../core", features = ["experimental"] }
 rmcp = { version = "1.6.0", features = ["server", "transport-io"] }
 schemars = "1.2.1"
 serde.workspace = true
