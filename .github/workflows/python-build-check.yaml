@@ -12,6 +12,9 @@ permissions:
 jobs:
   linux:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
     steps:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
@@ -21,9 +24,9 @@ jobs:
           key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v8.1.0
         with:
-          python-version: '3.10'
+          enable-cache: true
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -35,6 +38,9 @@ jobs:
 
   windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: python
     steps:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
@@ -44,10 +50,9 @@ jobs:
           key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v8.1.0
         with:
-          python-version: '3.10'
-          architecture: x64
+          enable-cache: true
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -58,6 +63,9 @@ jobs:
 
   macos:
     runs-on: macos-14
+    defaults:
+      run:
+        working-directory: python
     steps:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
@@ -67,9 +75,9 @@ jobs:
           key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v8.1.0
         with:
-          python-version: '3.10'
+          enable-cache: true
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -80,6 +88,9 @@ jobs:
 
   sdist:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
     steps:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
@@ -89,6 +100,9 @@ jobs:
           key: 'main'
           save-if: ${{ github.ref == 'refs/heads/main' }} # mainブランチにコミットが追加された時のみキャッシュを保存する
           cache-provider: 'github'
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
