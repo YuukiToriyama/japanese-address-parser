@@ -1,0 +1,24 @@
+[package]
+name = "japanese-address-parser-mcp"
+version.workspace = true
+edition.workspace = true
+description = "MCP server for japanese-address-parser — parsing addresses with natural language instructions"
+readme = "README.md"
+repository.workspace = true
+authors.workspace = true
+license-file.workspace = true
+keywords = ["parser", "geo", "mcp"]
+categories.workspace = true
+
+[[bin]]
+name = "japanese-address-parser-mcp"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.102"
+japanese-address-parser = { version = "0.3.1", path = "../core", features = ["experimental"] }
+rmcp = { version = "1.6.0", features = ["server", "transport-io"] }
+schemars = "1.2.1"
+serde.workspace = true
+serde_json = "1.0.149"
+tokio = { workspace = true, features = ["rt-multi-thread"] }

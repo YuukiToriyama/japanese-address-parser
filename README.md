@@ -56,6 +56,13 @@ You can run this crate on your browser. For more details, see [wasm module's REA
 
 This library can be called from the Python world. For more details, see [python module's README](python/README.md).
 
+## MCP server(experimental)
+
+[![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser-mcp)](https://crates.io/crates/japanese-address-parser-mcp)
+
+This library provides an MCP (Model Context Protocol) server implementation that allows AI models and tools to integrate Japanese address parsing capabilities.  
+The MCP server is available as a separate package: [`japanese-address-parser-mcp`](https://crates.io/crates/japanese-address-parser-mcp)  
+
 ## Road to v1
 
 The goals of this library are as follows.
