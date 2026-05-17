@@ -15,16 +15,18 @@ struct PyParseResult {
 
 impl From<ParseResult> for PyParseResult {
     fn from(value: ParseResult) -> Self {
-        let mut address = HashMap::new();
-        address.insert(String::from("prefecture"), value.address.prefecture);
-        address.insert(String::from("city"), value.address.city);
-        address.insert(String::from("town"), value.address.town);
-        address.insert(String::from("rest"), value.address.rest);
-        let mut error = HashMap::new();
-        if let Some(err) = value.error {
-            error.insert(String::from("error_type"), err.error_type);
-            error.insert(String::from("error_message"), err.error_message);
-        }
+        let address = HashMap::from([
+            ("prefecture".to_string(), value.address.prefecture),
+            ("city".to_string(), value.address.city),
+            ("town".to_string(), value.address.town),
+            ("rest".to_string(), value.address.rest),
+        ]);
+        let error = value.error.map_or_else(HashMap::new, |err| {
+            HashMap::from([
+                ("error_type".to_string(), err.error_type),
+                ("error_message".to_string(), err.error_message),
+            ])
+        });
         Self { address, error }
     }
 }
@@ -45,14 +47,13 @@ impl PyParser {
 
     fn parse(&self, py: Python<'_>, address: &str) -> PyParseResult {
         // parse_blocking はPythonオブジェクトに触れないためGILを解放する
-        py.allow_threads(|| self.parser.parse_blocking(address))
-            .into()
+        py.detach(|| self.parser.parse_blocking(address)).into()
     }
 }
 
 #[pyfunction]
 fn parse(py: Python<'_>, address: &str) -> PyParseResult {
-    py.allow_threads(|| {
+    py.detach(|| {
         let parser: Parser = Default::default();
         parser.parse_blocking(address)
     })

@@ -3,17 +3,19 @@ members = [
     "core",
     "wasm",
     "python",
+    "mcp",
     "tests",
 ]
 resolver = "2"
 
 [workspace.package]
-version = "0.3.1"
+version = "0.3.2"
 edition = "2024"
 description = "A library for processing addresses of Japan"
 repository = "https://github.com/YuukiToriyama/japanese-address-parser"
 authors = ["Yuuki Toriyama <github@toriyama.dev>"]
 license = "MIT"
+license-file = "LICENSE"
 keywords = ["parser", "geo", "wasm"]
 categories = ["parser-implementations", "wasm"]
 

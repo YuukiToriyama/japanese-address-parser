@@ -75,19 +75,23 @@ for result in results:
 ## Development
 
 This library is written in Rust. You need to set up a Rust development environment to build this library.
-Also, you need to install `maturin` as this library uses it in order to generate Python bindings.
+We recommend `uv` for Python dependency management and development.
 
 ```bash
-# Install maturin
-cargo install --locked maturin
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 # Clone repository
 git clone https://github.com/YuukiToriyama/japanese-address-parser.git
-# Build python module
-cd japanse-address-parser/python
-maturin build --release --out dist --find-interpreter
-# Install the built library
-python3 -m venv .venv
-pip3 install dist/japanese_address_parser_py-[version]-cp37-abi3-[arch].whl
+cd japanese-address-parser/python
+# Setup environment and install dependencies
+uv sync
+# Run tests
+uv run pytest tests/test_parser.py
+```
+
+If you want to build the wheel manually:
+```bash
+uv tool run maturin build --release --out dist
 ```
 
 ## Support
