@@ -2,28 +2,30 @@
 
 [japanese-address-parser](https://github.com/YuukiToriyama/japanese-address-parser)をModel Context Protocol(MCP)サーバーとして提供するためのクレートです。
 
-本プロジェクトを利用することで、Claude DesktopなどのMCP対応クライアントを介して、日本の住所の正規化機能をAIアシスタントから直接呼び出すことが可能になります。RustやJavaScriptのコードを実装することなく、自然言語による指示のみで高度な住所解析機能を利用できます。
+このクレートを利用することで、Claude DesktopなどのMCP対応クライアントを介して、日本の住所の正規化機能をAIアシスタントから直接呼び出すことが可能になります。  
+RustやJavaScriptのコードを実装することなく、自然言語による指示のみで高度な住所解析機能を利用できます。  
 
 ## 主な特徴
 
-- **正確な住所分割**: 複雑な日本の住所体系を「都道府県」「市区町村」「町名」「番地以降」に適切に分割します。
+- **正確な住所分割**: 複雑な日本の住所体系を「都道府県」「市区町村」「町名」「番地以降」に分割します。
 - **バッチ処理対応**: 最大100件までの住所を一度の操作で一括処理可能です。
-- **シームレスな AI 統合**: Claude Desktop やその他の MCP 対応ツールと即座に連携できます。
+- **シームレスなAI統合**: Claude Desktop やその他の MCP 対応ツールと即座に連携できます。
 
 ## 公開ツール
 
-本サーバーは以下のツールを AI アシスタントに提供します。
+本サーバーは以下のツールをAIアシスタントに提供します。
 
-| ツール名 | 機能概要 |
-| :--- | :--- |
-| `process_an_address` | 単一の住所文字列を解析し、構成要素（都道府県・市区町村・町名等）に分割します。 |
-| `process_address_list` | 複数の住所を一括で解析します（一回の呼び出しで最大100件まで）。 |
+| ツール名 | 機能概要                                    |
+| :--- |:----------------------------------------|
+| `process_an_address` | 単一の住所文字列を解析し、構成要素(都道府県・市区町村・町名等)に分割します。 |
+| `process_address_list` | 複数の住所を一括で解析します(一回の呼び出しで最大100件まで)。       |
 
 ## 導入手順
 
 ### 1. ビルド方法
 
-本サーバーのビルドには Rust の開発環境（Cargo）が必要です。リポジトリをクローンし、リリースビルドを行ってください。
+本MCPサーバーのビルドには Rust の開発環境（Cargo）が必要です。  
+リポジトリをクローンし、ビルドを行なってください。  
 
 ```bash
 git clone git@github.com:YuukiToriyama/japanese-address-parser.git
@@ -33,10 +35,9 @@ cargo build --release -p japanese-address-parser-mcp
 
 ビルドが完了すると、`./target/release/japanese-address-parser-mcp` に実行バイナリが生成されます。
 
-### 2. 設定（Claude Desktop の例）
+### 2. 設定(Claude Desktop)
 
-以下の設定ファイルに本サーバーの情報を追記してください。
-設定ファイルのパス: `~/Library/Application Support/Claude/claude_desktop_config.json`
+ClaudeDesktopの設定ファイル(`~/Library/Application Support/Claude/claude_desktop_config.json`)に本サーバーの情報を追記してください。
 
 ```json
 {
