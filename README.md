@@ -58,6 +58,8 @@ This library can be called from the Python world. For more details, see [python 
 
 ## MCP server(experimental)
 
+[![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser-mcp)](https://crates.io/crates/japanese-address-parser-mcp)
+
 This library provides an MCP (Model Context Protocol) server implementation that allows AI models and tools to integrate Japanese address parsing capabilities.  
 The MCP server is available as a separate package: [`japanese-address-parser-mcp`](https://crates.io/crates/japanese-address-parser-mcp)  
 

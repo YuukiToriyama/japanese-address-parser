@@ -1,5 +1,7 @@
 # japanese-address-parser-mcp
 
+[![Crates.io (latest)](https://img.shields.io/crates/v/japanese-address-parser-mcp)](https://crates.io/crates/japanese-address-parser-mcp)
+
 [japanese-address-parser](https://github.com/YuukiToriyama/japanese-address-parser)をModel Context Protocol(MCP)サーバーとして提供するためのクレートです。
 
 このクレートを利用することで、Claude DesktopなどのMCP対応クライアントを介して、日本の住所の正規化機能をAIアシスタントから直接呼び出すことが可能になります。  
@@ -22,10 +24,17 @@ RustやJavaScriptのコードを実装することなく、自然言語による
 
 ## 導入手順
 
-### 1. ビルド方法
+### 1. MCPサーバーのインストール
 
-本MCPサーバーのビルドには Rust の開発環境（Cargo）が必要です。  
-リポジトリをクローンし、ビルドを行なってください。  
+#### crates.ioからインストールする
+
+```bash
+cargo install japanese-address-parser-mcp
+```
+
+インストールが完了すると、`$HOME/.cargo/bin/japanese-address-parser-mcp`に実行バイナリが配置されます。
+
+#### ソースコードからビルドする
 
 ```bash
 git clone git@github.com:YuukiToriyama/japanese-address-parser.git
