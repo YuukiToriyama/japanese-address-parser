@@ -50,6 +50,21 @@ jobs:
         working-directory: wasm
         run: wasm-pack build --target web --scope toriyama
 
+  run-tests-python:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync
+      - name: Run tests
+        run: uv run pytest tests/test_parser.py
+
   msrv:
     runs-on: ubuntu-latest
     # ローカル環境では1.85.0でビルドできるがGitHub Actions上ではビルドが通らないため一時的にスキップするよう設定

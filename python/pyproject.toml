@@ -6,6 +6,7 @@ build-backend = "maturin"
 name = "japanese-address-parser-py"
 # Cargo.toml のワークスペース設定から maturin が解決する
 dynamic = ["version"]
+requires-python = ">=3.10"
 keywords = ["converter", "utility", "geo", "rust"]
 classifiers = [
     "Topic :: Text Processing",

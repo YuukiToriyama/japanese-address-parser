@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  release-core:
     runs-on: ubuntu-latest
     environment: crates-io
     permissions:
@@ -26,6 +26,31 @@ jobs:
           cargo test
           cargo test --features blocking
 
+      - name: Try packaging
+        run: cargo publish --dry-run
+      - name: Show files will be included
+        run: cargo package --list
+      - name: Upload artifact to crates.io
+        run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+
+  release-mcp:
+    needs: release-core
+    runs-on: ubuntu-latest
+    environment: crates-io
+    permissions:
+      contents: read
+      id-token: write # Required for OIDC token exchange
+    defaults:
+      run:
+        working-directory: mcp
+    steps:
+      - uses: actions/checkout@v6
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+      - name: Build check
+        run: cargo build --verbose
       - name: Try packaging
         run: cargo publish --dry-run
       - name: Show files will be included
