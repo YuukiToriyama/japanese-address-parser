@@ -10,7 +10,7 @@ const createRow = (input, parseResult) => {
     tr.appendChild(createCell(`<p>${parseResult.address.city}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.address.town}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.address.rest}</p>`))
-    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, 2)}</code>`))
+    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, 2)}</code>`, true))
     return tr
 }
 
@@ -22,17 +22,26 @@ const createRowForNightlyPage = (input, parseResult) => {
     tr.appendChild(createCell(`<p>${parseResult.city}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.town}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.rest}</p>`))
-    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, 2)}</code>`))
+    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, 2)}</code>`, true))
     return tr
 }
 
-const createCell = (innerHtml) => {
+const createCell = (innerHtml, isCopyable = false) => {
     const td = document.createElement("td")
     td.innerHTML = innerHtml
-    td.addEventListener("click", () => {
-        navigator.clipboard.writeText(td.innerText).then(() => {
-            console.log(td.innerText)
-        })
-    })
+    if (isCopyable) {
+        const target = td.querySelector("code")
+        if (target) {
+            target.style.cursor = "pointer"
+            target.addEventListener("click", () => {
+                navigator.clipboard.writeText(target.innerText).then(() => {
+                    target.classList.add("copied")
+                    setTimeout(() => {
+                        target.classList.remove("copied")
+                    }, 1000)
+                })
+            })
+        }
+    }
     return td
 }

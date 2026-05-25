@@ -178,7 +178,43 @@ code {
     color: #475569;
     display: block;
     white-space: pre-wrap;
-    min-width: 200px;
+    min-width: 300px;
+    position: relative;
+    transition: all 0.2s;
+}
+
+code.copied::after {
+    content: "Copied!";
+    position: absolute;
+    top: -2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: fadeOutUp 1s forwards;
+}
+
+@keyframes fadeOutUp {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 0);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -0.5rem);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(-50%, -0.5rem);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -1rem);
+    }
 }
 
 /* Nightly/Debug Settings */
