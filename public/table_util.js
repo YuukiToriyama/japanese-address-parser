@@ -2,9 +2,9 @@ const createRow = (input, parseResult) => {
     const tr = document.createElement("tr")
     tr.appendChild(createCell(`<p>${input}</p>`))
     if (parseResult.error === undefined) {
-        tr.appendChild(createCell("<p>成功</p>"))
+        tr.appendChild(createCell("<p>✅</p>"))
     } else {
-        tr.appendChild(createCell("<p>失敗</p>"))
+        tr.appendChild(createCell("<p>❌</p>"))
     }
     tr.appendChild(createCell(`<p>${parseResult.address.prefecture}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.address.city}</p>`))
