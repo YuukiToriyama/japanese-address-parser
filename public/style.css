@@ -260,3 +260,15 @@ legend {
         overflow-x: auto;
     }
 }
+
+footer {
+    margin-top: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+footer p {
+    font-size: 0.875rem;
+    margin: 0;
+}
