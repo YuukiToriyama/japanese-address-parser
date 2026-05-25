@@ -240,10 +240,12 @@ legend {
     color: var(--text-muted);
 }
 
-#radioGroup br {
-    display: block;
-    margin-bottom: 0.5rem;
-    content: "";
+#radioGroup fieldset {
+    margin-bottom: 1rem;
+}
+
+#radioGroup input[type="checkbox"] {
+    margin-top: 0.5rem;
 }
 
 .setting input[type="checkbox"],
