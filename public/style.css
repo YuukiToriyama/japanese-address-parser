@@ -138,12 +138,13 @@ h3 {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     border-bottom: 2px solid var(--border-color);
+    min-width: 100px;
 }
 
 .output td {
-    padding: 1rem;
+    padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--border-color);
     font-size: 0.95rem;
     cursor: pointer;
