@@ -29,6 +29,16 @@ const createRowForNightlyPage = (input, parseResult) => {
 const createCell = (innerHtml, isCopyable = false) => {
     const td = document.createElement("td")
     td.innerHTML = innerHtml
+
+    td.querySelectorAll("script").forEach(script => script.remove())
+    td.querySelectorAll("*").forEach(el => {
+        for (const attr of [...el.attributes]) {
+            if (attr.name.startsWith("on")) {
+                el.removeAttribute(attr.name)
+            }
+        }
+    })
+
     if (isCopyable) {
         const target = td.querySelector("code")
         if (target) {
