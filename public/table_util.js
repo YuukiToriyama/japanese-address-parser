@@ -10,7 +10,7 @@ const createRow = (input, parseResult) => {
     tr.appendChild(createCell(`<p>${parseResult.address.city}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.address.town}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.address.rest}</p>`))
-    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, null)}</code>`))
+    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, 2)}</code>`))
     return tr
 }
 
@@ -22,7 +22,7 @@ const createRowForNightlyPage = (input, parseResult) => {
     tr.appendChild(createCell(`<p>${parseResult.city}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.town}</p>`))
     tr.appendChild(createCell(`<p>${parseResult.rest}</p>`))
-    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, null)}</code>`))
+    tr.appendChild(createCell(`<code>${JSON.stringify(parseResult, null, 2)}</code>`))
     return tr
 }
 
