@@ -35,7 +35,20 @@ h2 {
 p {
     color: var(--text-muted);
     margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
     margin-bottom: 2rem;
+}
+
+.badges img {
+    height: 20px;
+    vertical-align: middle;
 }
 
 h3 {
