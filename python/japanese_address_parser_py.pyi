@@ -61,3 +61,13 @@ class Parser:
         :param address: 住所
         :return: ParseResult
         """
+
+    async def parse_async(self, address: str) -> ParseResult:
+        """
+        Format informal address into formal style (async)
+
+        入力された住所を正式な表記に整形します（非同期版）。
+
+        :param address: 住所
+        :return: ParseResult
+        """

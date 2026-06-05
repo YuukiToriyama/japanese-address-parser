@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 use std::collections::HashMap;
-use std::sync::OnceLock;
+use std::sync::{Arc, OnceLock};
 
 use japanese_address_parser::parser::ParseResult;
 use japanese_address_parser::parser::Parser;
@@ -33,7 +33,7 @@ impl From<ParseResult> for PyParseResult {
 
 #[pyclass(name = "Parser")]
 struct PyParser {
-    parser: Parser,
+    parser: Arc<Parser>,
 }
 
 #[pymethods]
@@ -41,13 +41,22 @@ impl PyParser {
     #[new]
     fn default() -> Self {
         PyParser {
-            parser: Default::default(),
+            parser: Arc::new(Default::default()),
         }
     }
 
     fn parse(&self, py: Python<'_>, address: &str) -> PyParseResult {
         // parse_blocking はPythonオブジェクトに触れないためGILを解放する
         py.detach(|| self.parser.parse_blocking(address)).into()
+    }
+
+    fn parse_async<'py>(&self, py: Python<'py>, address: String) -> PyResult<Bound<'py, PyAny>> {
+        let parser = Arc::clone(&self.parser);
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
+            let result: ParseResult = parser.parse(&address).await;
+            let py_result: PyParseResult = result.into();
+            Ok(py_result)
+        })
     }
 }
 
