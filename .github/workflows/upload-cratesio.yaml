@@ -51,6 +51,8 @@ jobs:
         id: auth
       - name: Build check
         run: cargo build --verbose
+      - name: Copy project root LICENSE file to mcp directory
+        run: cp ../LICENSE LICENSE
       - name: Try packaging
         run: cargo publish --dry-run
       - name: Show files will be included
