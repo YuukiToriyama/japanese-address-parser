@@ -24,6 +24,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@toriyama'
 
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
+
       - name: Setup wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
