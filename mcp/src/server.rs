@@ -40,12 +40,13 @@ impl ParseAddressServer {
 #[tool_handler]
 impl ServerHandler for ParseAddressServer {
     fn get_info(&self) -> ServerInfo {
+        let instructions = "日本の住所を都道府県・市区町村・町名・それ以降に分割できるMCPサーバーです。 \
+            process_an_address: 1件の住所を解析 \
+            process_address_list: 複数の住所を一括で解析 \
+            環境変数 JAPANESE_ADDRESS_PARSER_MCP_MAX_CONCURRENCY で並列度を制御できます（デフォルト:8）";
+
         ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
             .with_server_info(Implementation::from_build_env())
-            .with_instructions(
-                "日本の住所を都道府県・市区町村・町名・それ以降に分割できるMCPサーバーです。 \
-                process_an_address: 1件の住所を解析 \
-                process_address_list: 複数の住所を一括で解析",
-            )
+            .with_instructions(instructions)
     }
 }
