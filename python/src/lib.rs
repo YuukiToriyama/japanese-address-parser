@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-
 use pyo3::prelude::*;
+use std::collections::HashMap;
+use std::sync::{Arc, OnceLock};
 
 use japanese_address_parser::parser::ParseResult;
 use japanese_address_parser::parser::Parser;
@@ -33,7 +33,7 @@ impl From<ParseResult> for PyParseResult {
 
 #[pyclass(name = "Parser")]
 struct PyParser {
-    parser: Parser,
+    parser: Arc<Parser>,
 }
 
 #[pymethods]
@@ -41,7 +41,7 @@ impl PyParser {
     #[new]
     fn default() -> Self {
         PyParser {
-            parser: Default::default(),
+            parser: Arc::new(Default::default()),
         }
     }
 
@@ -49,15 +49,35 @@ impl PyParser {
         // parse_blocking はPythonオブジェクトに触れないためGILを解放する
         py.detach(|| self.parser.parse_blocking(address)).into()
     }
+
+    fn parse_async<'py>(&self, py: Python<'py>, address: String) -> PyResult<Bound<'py, PyAny>> {
+        let parser = Arc::clone(&self.parser);
+        pyo3_async_runtimes::tokio::future_into_py(py, async move {
+            let result: ParseResult = parser.parse(&address).await;
+            let py_result: PyParseResult = result.into();
+            Ok(py_result)
+        })
+    }
+}
+
+static GLOBAL_PARSER: OnceLock<Parser> = OnceLock::new();
+
+fn get_parser() -> &'static Parser {
+    GLOBAL_PARSER.get_or_init(Default::default)
 }
 
 #[pyfunction]
 fn parse(py: Python<'_>, address: &str) -> PyParseResult {
-    py.detach(|| {
-        let parser: Parser = Default::default();
-        parser.parse_blocking(address)
+    py.detach(|| get_parser().parse_blocking(address)).into()
+}
+
+#[pyfunction]
+fn parse_async<'py>(py: Python<'py>, address: String) -> PyResult<Bound<'py, PyAny>> {
+    pyo3_async_runtimes::tokio::future_into_py(py, async move {
+        let result: ParseResult = get_parser().parse(&address).await;
+        let py_result: PyParseResult = result.into();
+        Ok(py_result)
     })
-    .into()
 }
 
 #[pymodule]
@@ -66,5 +86,6 @@ fn python_module(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyParseResult>()?;
     m.add_class::<PyParser>()?;
     m.add_function(wrap_pyfunction!(parse, m)?)?;
+    m.add_function(wrap_pyfunction!(parse_async, m)?)?;
     Ok(())
 }

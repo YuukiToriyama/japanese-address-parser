@@ -18,3 +18,4 @@ crate-type = ["cdylib"]
 [dependencies]
 japanese-address-parser = { path = "../core", features = ["blocking"] }
 pyo3 = { version = "0.28.3", features = ["abi3-py37"] }
+pyo3-async-runtimes = { version = "0.28.0", features = ["tokio-runtime"] }
