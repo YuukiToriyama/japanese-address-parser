@@ -6,7 +6,7 @@ description = "MCP server for japanese-address-parser — parsing addresses with
 readme = "README.md"
 repository.workspace = true
 authors.workspace = true
-license-file.workspace = true
+license.workspace = true
 keywords = ["parser", "geo", "mcp"]
 categories.workspace = true
 
@@ -16,6 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0.102"
+futures = "0.3.32"
 japanese-address-parser = { version = "0.3.3", path = "../core", features = ["experimental"] }
 rmcp = { version = "1.6.0", features = ["server", "transport-io"] }
 schemars = "1.2.1"
