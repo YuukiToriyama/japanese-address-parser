@@ -33,6 +33,7 @@ pub(crate) async fn process_address_list(
     let max_concurrency: usize = std::env::var("JAPANESE_ADDRESS_PARSER_MCP_MAX_CONCURRENCY")
         .ok()
         .and_then(|v| v.parse().ok())
+        .filter(|&v| v > 0)
         .unwrap_or(8);
 
     let parser = Arc::new(Parser::default());
