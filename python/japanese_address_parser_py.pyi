@@ -31,6 +31,17 @@ def parse(address: str) -> ParseResult:
     """
 
 
+async def parse_async(address: str) -> ParseResult:
+    """
+    Format informal address into formal style (async)
+
+    入力された住所を正式な表記に整形します（非同期版）。
+
+    :param address: 住所
+    :return: ParseResult
+    """
+
+
 class Parser:
     def __new__(cls) -> Parser:
         """
@@ -46,6 +57,16 @@ class Parser:
         Format informal address into formal style
 
         入力された住所を正式な表記に整形します。
+
+        :param address: 住所
+        :return: ParseResult
+        """
+
+    async def parse_async(self, address: str) -> ParseResult:
+        """
+        Format informal address into formal style (async)
+
+        入力された住所を正式な表記に整形します（非同期版）。
 
         :param address: 住所
         :return: ParseResult

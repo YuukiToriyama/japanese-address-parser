@@ -2,12 +2,20 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo | japanese-address-parser</title>
     <link rel="stylesheet" href="./style.css" type="text/css">
 </head>
 <body>
 <h2>YuukiToriyama/japanese-address-parser</h2>
-<p>Rust製の住所パーサーです</p>
+<p>Rustで開発された、住所解析用ライブラリです。多様な表記ゆれを吸収し、構造化されたデータに変換します。</p>
+
+<div class="badges">
+    <a href="https://www.npmjs.com/package/@toriyama/japanese-address-parser"><img alt="NPM Version" src="https://img.shields.io/npm/v/%40toriyama%2Fjapanese-address-parser?logo=npm"></a>
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dy/%40toriyama%2Fjapanese-address-parser?logo=npm">
+    <img alt="NPM License" src="https://img.shields.io/npm/l/%40toriyama%2Fjapanese-address-parser">
+    <a href="https://github.com/YuukiToriyama/japanese-address-parser"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/YuukiToriyama/japanese-address-parser?style=flat&logo=GitHub"></a>
+</div>
 
 <h3>住所を入力してください</h3>
 <div class="input">
@@ -19,19 +27,19 @@
 <table class="output">
     <thead>
     <tr>
-        <th>入力値</th>
+        <th>解析対象</th>
         <th>ステータス</th>
-        <th>address.prefecture</th>
-        <th>address.city</th>
-        <th>address.town</th>
-        <th>address.rest</th>
+        <th>都道府県</th>
+        <th>市区町村</th>
+        <th>町字</th>
+        <th>それ以降</th>
         <th>JSON</th>
     </tr>
     </thead>
     <tbody id="result">
     <tr>
         <td><p>東京都中央区日本橋一丁目1-1</p></td>
-        <td><p>成功</p></td>
+        <td><p>✅</p></td>
         <td><p>東京都</p></td>
         <td><p>中央区</p></td>
         <td><p>日本橋一丁目</p></td>
@@ -60,6 +68,10 @@
         })
     })
 </script>
+
+<footer>
+    <p>Copyright &copy; Yuuki Toriyama. Licensed under the MIT License.</p>
+</footer>
 
 </body>
 </html>

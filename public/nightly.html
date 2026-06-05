@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo | japanese-address-parser</title>
     <link rel="stylesheet" href="./style.css" type="text/css">
 </head>
@@ -10,7 +11,14 @@
     <span class="ribbon-label">Nightly</span>
 </div>
 <h2>YuukiToriyama/japanese-address-parser</h2>
-<p>Rust製の住所パーサーです</p>
+<p>Rustで開発された、住所解析用ライブラリです。多様な表記ゆれを吸収し、構造化されたデータに変換します。</p>
+
+<div class="badges">
+    <a href="https://www.npmjs.com/package/@toriyama/japanese-address-parser"><img alt="NPM Version" src="https://img.shields.io/npm/v/%40toriyama%2Fjapanese-address-parser?logo=npm"></a>
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dy/%40toriyama%2Fjapanese-address-parser?logo=npm">
+    <img alt="NPM License" src="https://img.shields.io/npm/l/%40toriyama%2Fjapanese-address-parser">
+    <a href="https://github.com/YuukiToriyama/japanese-address-parser"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/YuukiToriyama/japanese-address-parser?style=flat&logo=GitHub"></a>
+</div>
 
 <h3>オプションを指定してください</h3>
 <div class="setting">
@@ -43,12 +51,12 @@
 <table class="output">
     <thead>
     <tr>
-        <th>入力値</th>
-        <th>depth<br><small>分析の深さ</small></th>
-        <th>prefecture<br><small>都道府県名</small></th>
-        <th>city<br><small>市区町村名</small></th>
-        <th>town<br><small>町名</small></th>
-        <th>rest<br><small>それ以降</small></th>
+        <th>解析対象</th>
+        <th>解析の深さ<br><small>depth</small></th>
+        <th>都道府県<br><small>prefecture</small></th>
+        <th>市区町村<br><small>city</small></th>
+        <th>町字<br><small>town</small></th>
+        <th>それ以降<br><small>rest</small></th>
         <th>JSON</th>
     </tr>
     </thead>
@@ -88,6 +96,10 @@
         })
     })
 </script>
+
+<footer>
+    <p>Copyright &copy; Yuuki Toriyama. Licensed under the MIT License.</p>
+</footer>
 
 </body>
 </html>
