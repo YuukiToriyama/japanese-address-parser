@@ -45,8 +45,13 @@ impl ServerHandler for ParseAddressServer {
             process_address_list: 複数の住所を一括で解析 \
             環境変数 JAPANESE_ADDRESS_PARSER_MCP_MAX_CONCURRENCY で並列度を制御できます（デフォルト:8）";
 
+        let server_info = Implementation::from_build_env()
+            .with_title("japanese-address-parser MCP")
+            .with_description("An MCP server for parsing addresses of Japan into components.")
+            .with_website_url("https://crates.io/crates/japanese-address-parser-mcp");
+
         ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
-            .with_server_info(Implementation::from_build_env())
+            .with_server_info(server_info)
             .with_instructions(instructions)
     }
 }
