@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-
 use pyo3::prelude::*;
+use std::collections::HashMap;
+use std::sync::OnceLock;
 
 use japanese_address_parser::parser::ParseResult;
 use japanese_address_parser::parser::Parser;
@@ -51,13 +51,15 @@ impl PyParser {
     }
 }
 
+static GLOBAL_PARSER: OnceLock<Parser> = OnceLock::new();
+
+fn get_parser() -> &'static Parser {
+    GLOBAL_PARSER.get_or_init(Default::default)
+}
+
 #[pyfunction]
 fn parse(py: Python<'_>, address: &str) -> PyParseResult {
-    py.detach(|| {
-        let parser: Parser = Default::default();
-        parser.parse_blocking(address)
-    })
-    .into()
+    py.detach(|| get_parser().parse_blocking(address)).into()
 }
 
 #[pymodule]
