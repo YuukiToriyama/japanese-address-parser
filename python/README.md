@@ -72,6 +72,31 @@ for result in results:
 {'city': '高知市', 'town': '丸ノ内一丁目', 'rest': '2-20', 'prefecture': '高知県'}
 ```
 
+### Async usage
+
+```python
+import asyncio
+from japanese_address_parser_py import parse_async
+
+ADDRESSES = [
+    "神奈川県相模原市緑区西橋本五丁目3番21",
+    "神奈川県相模原市中央区中央二丁目11番15号",
+    "神奈川県相模原市南区相模大野五丁目31番1号",
+]
+
+
+async def main():
+    tasks = [parse_async(addr) for addr in ADDRESSES]
+    results = await asyncio.gather(*tasks)
+
+    for result in results:
+        print(result.address)
+        print(result.error)
+
+
+asyncio.run(main())
+```
+
 ## Development
 
 This library is written in Rust. You need to set up a Rust development environment to build this library.
