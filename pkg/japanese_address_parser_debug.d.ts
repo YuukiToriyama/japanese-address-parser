@@ -36,9 +36,9 @@ export interface InitOutput {
     readonly parser_new: () => number;
     readonly parser_parse: (a: number, b: number, c: number) => any;
     readonly start: () => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h3d4943f32f32f053: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen__convert__closures_____invoke__h02b8942ca367d946: (a: number, b: number, c: any, d: any) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h621a1de9897ccc3e: (a: number, b: number) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__hbc18c4692c34f119: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen__convert__closures_____invoke__h274b5ec5fd338ff3: (a: number, b: number, c: any, d: any) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__h794f2c00aa815690: (a: number, b: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;
