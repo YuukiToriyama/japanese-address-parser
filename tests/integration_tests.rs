@@ -19,6 +19,11 @@ async fn 異字体旧字体への対応テスト() {
 }
 
 #[tokio::test]
+async fn 略字俗字による表記揺れへの対応テスト() {
+    run_data_driven_tests("./test_data/略字・俗字による表記揺れ.csv").await
+}
+
+#[tokio::test]
 async fn 異字体ではない表記ゆれへの対応テスト() {
     run_data_driven_tests("./test_data/異字体ではない表記ゆれへの対応.csv").await
 }
