@@ -6,7 +6,7 @@ use crate::tokenizer::{CityNameFound, Init, PrefectureNameFound, Tokenizer};
 type PrefectureName = String;
 type CityName = String;
 
-enum State {
+pub(crate) enum State {
     Init(Tokenizer<Init>),
     WaitPrefectureMasterData(Tokenizer<PrefectureNameFound>, PrefectureName),
     WaitCityMasterData(Tokenizer<CityNameFound>),
@@ -109,5 +109,74 @@ impl PureParser {
             address: Address::from(tokenizer),
             error: Some(error),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::domain::geolonia::error::{ApiErrorKind, Error};
+    use crate::parser::pure::{PureParser, PureParserAction, State};
+
+    #[test]
+    fn new() {
+        let pure_parser = PureParser::new("東京都杉並区阿佐谷南1丁目15番1号");
+        assert!(matches!(pure_parser.state, State::Init(_)));
+    }
+
+    #[test]
+    fn provide_input() {
+        let mut pure_parser = PureParser::new("東京都杉並区阿佐谷南1丁目15番1号");
+        assert!(pure_parser.input.is_none());
+
+        pure_parser.provide_input(vec!["a".to_string(), "b".to_string(), "c".to_string()]);
+        assert!(pure_parser.input.is_some());
+        assert_eq!(
+            pure_parser.input.unwrap(),
+            vec!["a".to_string(), "b".to_string(), "c".to_string()]
+        );
+    }
+
+    #[test]
+    fn advance() {
+        let mut pure_parser = PureParser::new("東京都杉並区阿佐谷南1丁目15番1号");
+        assert!(matches!(pure_parser.state, State::Init(_)));
+
+        let action = pure_parser.advance();
+        assert!(matches!(action, PureParserAction::RequestCityNameList(_)));
+        assert!(matches!(
+            pure_parser.state,
+            State::WaitPrefectureMasterData(_, _)
+        ));
+
+        pure_parser.provide_input(vec![
+            "杉並区".to_string(),
+            "板橋区".to_string(),
+            "中野区".to_string(),
+        ]);
+        let action = pure_parser.advance();
+        assert!(matches!(
+            action,
+            PureParserAction::RequestTownNameList(_, _)
+        ));
+        assert!(matches!(pure_parser.state, State::WaitCityMasterData(_)));
+
+        pure_parser.provide_input(vec![
+            "阿佐谷南一丁目".to_string(),
+            "阿佐谷南二丁目".to_string(),
+            "阿佐谷南三丁目".to_string(),
+        ]);
+        let action = pure_parser.advance();
+        assert!(matches!(action, PureParserAction::Done(_)));
+    }
+
+    #[test]
+    fn abort() {
+        let pure_parser = PureParser::new("東京都杉並区阿佐谷南1丁目15番1号");
+        let result = pure_parser.abort(Error::new_api_error(ApiErrorKind::Fetch(
+            "hoge".to_string(),
+        )));
+
+        assert_eq!(result.address.rest, "東京都杉並区阿佐谷南1丁目15番1号");
+        assert!(result.error.is_some());
     }
 }
