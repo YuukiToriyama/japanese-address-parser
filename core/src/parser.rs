@@ -1,3 +1,5 @@
+mod pure;
+
 use std::sync::Arc;
 
 use crate::domain::common::token::Token;
