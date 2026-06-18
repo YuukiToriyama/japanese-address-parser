@@ -26,6 +26,14 @@ impl InMemoryCache {
         }
     }
 
+    /// キャッシュの初期化(カスタム)
+    pub fn with_config(ttl: Duration) -> Self {
+        Self {
+            store: Arc::new(RwLock::new(HashMap::new())),
+            ttl,
+        }
+    }
+
     /// キャッシュデータの取得
     pub fn get(&self, key: &str) -> Option<CacheEntry> {
         let store = self.store.read().ok()?;
@@ -78,10 +86,10 @@ mod tests {
 
     #[tokio::test]
     async fn キャッシュ保持期間を過ぎている場合は_noneを返すこと() {
-        let cache = InMemoryCache::new();
+        let cache = InMemoryCache::with_config(Duration::from_nanos(1));
         cache.register("key1", vec![1, 3, 5, 7, 9]);
 
-        let wait_time = cache.ttl.add(Duration::from_secs(1));
+        let wait_time = cache.ttl.add(Duration::from_nanos(1));
         tokio::time::sleep(wait_time).await;
 
         let result = cache.get("key1");
