@@ -30,7 +30,6 @@ impl InMemoryCache {
     }
 
     /// キャッシュの初期化(カスタム)
-    #[allow(dead_code)]
     pub fn with_config(ttl: Duration, max_entries: usize) -> Self {
         assert!(max_entries > 0, "max_entries must be greater than 0");
         Self {

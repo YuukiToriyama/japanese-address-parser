@@ -3,6 +3,7 @@ use crate::http::error::ApiClientError;
 use crate::util::inmemory_cache::InMemoryCache;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
+use std::time::Duration;
 
 /// Wrapper of `ApiClient` that enables in-memory cache
 ///
@@ -16,6 +17,16 @@ use serde_json::Value;
 pub struct CachedApiClient<C: ApiClient> {
     client: C,
     cache: InMemoryCache,
+}
+
+impl<C: ApiClient> CachedApiClient<C> {
+    #[allow(dead_code)]
+    fn with_config(ttl: Duration, max_entries: usize) -> Self {
+        Self {
+            client: C::new(),
+            cache: InMemoryCache::with_config(ttl, max_entries),
+        }
+    }
 }
 
 impl<C: ApiClient + Sync> ApiClient for CachedApiClient<C> {
