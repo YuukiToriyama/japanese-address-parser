@@ -86,3 +86,109 @@ impl<C: ApiClient + Sync> ApiClient for CachedApiClient<C> {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::http::cached_client::CachedApiClient;
+    use crate::http::client::ApiClient;
+    use crate::http::error::ApiClientError;
+    use serde::de::DeserializeOwned;
+    use serde_json::Value;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::thread::sleep;
+    use std::time::Duration;
+
+    struct MockApiClient {
+        called_count: AtomicUsize,
+    }
+
+    impl MockApiClient {
+        fn generate_dummy_response<T: DeserializeOwned>(
+            &self,
+            _url: &str,
+        ) -> Result<T, ApiClientError> {
+            Ok(serde_json::from_str(&format!(
+                "{{\"called_count\": {}}}",
+                self.called_count.load(Ordering::SeqCst),
+            ))
+            .unwrap())
+        }
+
+        fn increment(&self) {
+            self.called_count.fetch_add(1, Ordering::SeqCst);
+        }
+    }
+
+    impl ApiClient for MockApiClient {
+        fn new() -> Self {
+            Self {
+                called_count: 0.into(),
+            }
+        }
+
+        async fn fetch<T: DeserializeOwned>(&self, url: &str) -> Result<T, ApiClientError> {
+            self.increment();
+            self.generate_dummy_response(url)
+        }
+
+        #[cfg(feature = "blocking")]
+        fn fetch_blocking<T: DeserializeOwned>(&self, url: &str) -> Result<T, ApiClientError> {
+            self.increment();
+            self.generate_dummy_response(url)
+        }
+    }
+
+    #[tokio::test]
+    async fn キャッシュヒット時はキャッシュされたデータを返すこと() {
+        let client = CachedApiClient::<MockApiClient>::new();
+        let response = client.fetch::<Value>("/endpoint").await.unwrap();
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
+
+        let response = client.fetch::<Value>("/endpoint").await.unwrap();
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
+        assert_ne!(response.get("called_count").unwrap().as_u64(), Some(2));
+    }
+
+    #[tokio::test]
+    async fn キャッシュミス時はfetchによるデータを返すこと() {
+        let client = CachedApiClient::<MockApiClient>::with_config(Duration::from_secs(1), 10);
+        let response = client.fetch::<Value>("/endpoint").await.unwrap();
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
+
+        // 1秒待機
+        tokio::time::sleep(Duration::from_secs(1)).await;
+
+        let response = client.fetch::<Value>("/endpoint").await.unwrap();
+        // TTL=1秒なのでキャッシュミスになるはず
+        assert_ne!(response.get("called_count").unwrap().as_u64(), Some(1));
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(2));
+    }
+
+    #[test]
+    #[cfg(feature = "blocking")]
+    fn キャッシュヒット時はキャッシュされたデータを返すこと_blocking() {
+        let client = CachedApiClient::<MockApiClient>::new();
+        let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
+
+        let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
+        assert_ne!(response.get("called_count").unwrap().as_u64(), Some(2));
+    }
+
+    #[test]
+    #[cfg(feature = "blocking")]
+    fn キャッシュミス時はfetchによるデータを返すこと_blocking() {
+        let client = CachedApiClient::<MockApiClient>::with_config(Duration::from_secs(1), 10);
+        let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
+
+        // 1秒待機
+        sleep(Duration::from_secs(1));
+
+        let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
+        // TTL=1秒なのでキャッシュミスになるはず
+        assert_ne!(response.get("called_count").unwrap().as_u64(), Some(1));
+        assert_eq!(response.get("called_count").unwrap().as_u64(), Some(2));
+    }
+}
