@@ -15,6 +15,8 @@ pub(crate) struct InMemoryCache {
     store: Arc<RwLock<HashMap<String, CacheEntry>>>,
     /// キャッシュの保持期間
     ttl: Duration,
+    /// キャッシュの最大容量
+    max_entries: usize,
 }
 
 impl InMemoryCache {
@@ -23,14 +25,16 @@ impl InMemoryCache {
         Self {
             store: Arc::new(RwLock::new(HashMap::new())),
             ttl: Duration::from_secs(3600),
+            max_entries: 100,
         }
     }
 
     /// キャッシュの初期化(カスタム)
-    pub fn with_config(ttl: Duration) -> Self {
+    pub fn with_config(ttl: Duration, max_entries: usize) -> Self {
         Self {
             store: Arc::new(RwLock::new(HashMap::new())),
             ttl,
+            max_entries,
         }
     }
 
@@ -51,6 +55,18 @@ impl InMemoryCache {
             .store
             .write()
             .unwrap_or_else(|poisoned| poisoned.into_inner());
+
+        // キャッシュの最大容量を超える場合は、キャッシュに登録した時刻が最も古いものが削除される
+        if store.len() == self.max_entries {
+            if let Some(oldest_key) = store
+                .iter()
+                .min_by_key(|(_, value)| value.registered_at)
+                .map(|(key, _)| key.to_string())
+            {
+                store.remove(&oldest_key);
+            }
+        }
+
         let entry = CacheEntry {
             body: value,
             registered_at: Instant::now(),
@@ -86,7 +102,7 @@ mod tests {
 
     #[tokio::test]
     async fn キャッシュ保持期間を過ぎている場合は_noneを返すこと() {
-        let cache = InMemoryCache::with_config(Duration::from_nanos(1));
+        let cache = InMemoryCache::with_config(Duration::from_nanos(1), 10);
         cache.register("key1", vec![1, 3, 5, 7, 9]);
 
         let wait_time = cache.ttl.add(Duration::from_nanos(1));
@@ -94,5 +110,19 @@ mod tests {
 
         let result = cache.get("key1");
         assert!(result.is_none());
+    }
+
+    #[test]
+    fn キャッシュ最大容量を超えた場合は最古のエントリが削除されること() {
+        let cache = InMemoryCache::with_config(Duration::from_secs(3600), 3);
+        cache.register("key1", vec![1, 2, 3]);
+        cache.register("key2", vec![4, 5, 6]);
+        cache.register("key3", vec![7, 8, 9]);
+
+        assert!(cache.get("key1").is_some());
+
+        cache.register("key4", vec![0, 0, 0]);
+        assert!(cache.get("key1").is_none());
+        assert!(cache.get("key4").is_some());
     }
 }
