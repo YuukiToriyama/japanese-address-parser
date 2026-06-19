@@ -94,7 +94,6 @@ mod tests {
     use serde::de::DeserializeOwned;
     use serde_json::Value;
     use std::sync::atomic::{AtomicUsize, Ordering};
-    use std::thread::sleep;
     use std::time::Duration;
 
     struct MockApiClient {
@@ -148,6 +147,7 @@ mod tests {
         assert_ne!(response.get("called_count").unwrap().as_u64(), Some(2));
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
     #[tokio::test]
     async fn キャッシュミス時はfetchによるデータを返すこと() {
         let client = CachedApiClient::<MockApiClient>::with_config(Duration::from_secs(1), 10);
@@ -183,7 +183,7 @@ mod tests {
         assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
 
         // 1秒待機
-        sleep(Duration::from_secs(1));
+        std::thread::sleep(Duration::from_secs(1));
 
         let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
         // TTL=1秒なのでキャッシュミスになるはず
