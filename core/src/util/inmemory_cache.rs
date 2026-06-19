@@ -59,7 +59,7 @@ impl InMemoryCache {
             .unwrap_or_else(|poisoned| poisoned.into_inner());
 
         // キャッシュの最大容量を超える場合は、キャッシュに登録した時刻が最も古いものが削除される
-        if store.len() == self.max_entries {
+        if store.len() == self.max_entries && !store.contains_key(key) {
             if let Some(oldest_key) = store
                 .iter()
                 .min_by_key(|(_, value)| value.registered_at)
