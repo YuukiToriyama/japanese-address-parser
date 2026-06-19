@@ -42,7 +42,11 @@ impl InMemoryCache {
 
     /// キャッシュデータの取得
     pub fn get(&self, key: &str) -> Option<CacheEntry> {
-        let store = self.store.read().ok()?;
+        let store = self
+            .store
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+
         let entry = store.get(key).cloned()?;
         if entry.registered_at.elapsed() < self.ttl {
             Some(entry)
