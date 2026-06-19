@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
-use std::time::{Duration, Instant};
+use std::time::Duration;
+use web_time::Instant;
 
 #[derive(Clone)]
 pub(crate) struct CacheEntry {
@@ -87,6 +88,7 @@ mod tests {
     use std::time::Duration;
 
     #[test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
     fn キャッシュヒット時はキャッシュされたデータを返すこと() {
         let cache = InMemoryCache::new();
         cache.register("key1", vec![1, 2, 3, 4, 5]);
@@ -97,6 +99,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
     fn キャッシュミス時は_noneを返すこと() {
         let cache = InMemoryCache::new();
         cache.register("key1", vec![4, 5, 6]);
@@ -105,19 +108,24 @@ mod tests {
         assert!(result.is_none());
     }
 
-    #[test]
-    fn キャッシュ保持期間を過ぎている場合は_noneを返すこと() {
+    #[cfg_attr(not(target_arch = "wasm32"), tokio::test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    async fn キャッシュ保持期間を過ぎている場合は_noneを返すこと() {
         let cache = InMemoryCache::with_config(Duration::from_nanos(1), 10);
         cache.register("key1", vec![1, 3, 5, 7, 9]);
 
-        let wait_time = cache.ttl.add(Duration::from_nanos(1));
-        std::thread::sleep(wait_time);
+        let wait_time = cache.ttl.add(Duration::from_secs(1));
+        #[cfg(not(target_arch = "wasm32"))]
+        tokio::time::sleep(wait_time).await;
+        #[cfg(target_arch = "wasm32")]
+        gloo_timers::future::TimeoutFuture::new(wait_time.as_millis() as u32).await;
 
         let result = cache.get("key1");
         assert!(result.is_none());
     }
 
     #[test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
     fn キャッシュ最大容量を超えた場合は最古のエントリが削除されること() {
         let cache = InMemoryCache::with_config(Duration::from_secs(3600), 3);
         cache.register("key1", vec![1, 2, 3]);
