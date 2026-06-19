@@ -33,6 +33,7 @@ impl InMemoryCache {
 
     /// キャッシュの初期化(カスタム)
     pub fn with_config(ttl: Duration, max_entries: usize) -> Self {
+        assert!(max_entries > 0, "max_entries must be greater than 0");
         Self {
             store: Arc::new(RwLock::new(HashMap::new())),
             ttl,
@@ -63,7 +64,7 @@ impl InMemoryCache {
             .unwrap_or_else(|poisoned| poisoned.into_inner());
 
         // キャッシュの最大容量を超える場合は、キャッシュに登録した時刻が最も古いものが削除される
-        if store.len() == self.max_entries && !store.contains_key(key) {
+        if store.len() >= self.max_entries && !store.contains_key(key) {
             if let Some(oldest_key) = store
                 .iter()
                 .min_by_key(|(_, value)| value.registered_at)
