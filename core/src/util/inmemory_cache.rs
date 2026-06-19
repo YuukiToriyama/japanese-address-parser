@@ -102,13 +102,13 @@ mod tests {
         assert!(result.is_none());
     }
 
-    #[tokio::test]
-    async fn キャッシュ保持期間を過ぎている場合は_noneを返すこと() {
+    #[test]
+    fn キャッシュ保持期間を過ぎている場合は_noneを返すこと() {
         let cache = InMemoryCache::with_config(Duration::from_nanos(1), 10);
         cache.register("key1", vec![1, 3, 5, 7, 9]);
 
         let wait_time = cache.ttl.add(Duration::from_nanos(1));
-        tokio::time::sleep(wait_time).await;
+        std::thread::sleep(wait_time);
 
         let result = cache.get("key1");
         assert!(result.is_none());
