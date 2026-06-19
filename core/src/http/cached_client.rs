@@ -20,8 +20,7 @@ pub struct CachedApiClient<C: ApiClient> {
 }
 
 impl<C: ApiClient> CachedApiClient<C> {
-    #[allow(dead_code)]
-    fn with_config(ttl: Duration, max_entries: usize) -> Self {
+    pub fn with_config(ttl: Duration, max_entries: usize) -> Self {
         Self {
             client: C::new(),
             cache: InMemoryCache::with_config(ttl, max_entries),
