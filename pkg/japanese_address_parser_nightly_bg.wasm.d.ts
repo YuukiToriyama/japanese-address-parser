@@ -1,14 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export const parse_experimental: (a: number, b: number, c: any) => any;
 export const __wbg_parser_free: (a: number, b: number) => void;
+export const parse_experimental: (a: number, b: number, c: any) => any;
 export const parser_new: () => number;
 export const parser_parse: (a: number, b: number, c: number) => any;
 export const start: () => void;
-export const wasm_bindgen__convert__closures_____invoke__h065c0619c708fb1a: (a: number, b: number, c: any) => [number, number];
-export const wasm_bindgen__convert__closures_____invoke__h5e5b3ce218d0879a: (a: number, b: number, c: any, d: any) => void;
-export const wasm_bindgen__convert__closures_____invoke__hcce16e2c2f226409: (a: number, b: number) => void;
+export const wasm_bindgen__convert__closures_____invoke__h1e6f7ca627f8e747: (a: number, b: number, c: any) => [number, number];
+export const wasm_bindgen__convert__closures_____invoke__h501e7aba2e9dfc0e: (a: number, b: number, c: any, d: any) => void;
+export const wasm_bindgen__convert__closures_____invoke__h176fe38bda810651: (a: number, b: number) => void;
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 export const __wbindgen_exn_store: (a: number) => void;
