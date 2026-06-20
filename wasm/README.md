@@ -62,6 +62,12 @@ init().then(() => {
 }
 ```
 
+## Tips
+
+Initialize the `Parser` instance once and reuse it across your application.
+Re-initializing the `Parser` frequently can lead to performance degradation, especially if API client caching is
+enabled, as the cache will be reset for each new instance.
+
 ## How it works
 
 The input string is basically read in order from the beginning to the end.

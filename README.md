@@ -72,6 +72,11 @@ The goals of this library are as follows.
 - Returns the location of the given address.
 - Enables processing of town names that no longer exist due to municipal mergers.
 
+## Documentation
+
+For further information on architecture, integration, and parsing processes, see
+the [documentation index](docs/README.md).
+
 ## Support
 
 This software is maintained by [YuukiToriyama](https://github.com/yuukitoriyama).

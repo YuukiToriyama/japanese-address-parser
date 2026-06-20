@@ -20,6 +20,7 @@ blocking = ["reqwest/blocking"]
 city-name-correction = []
 format-house-number = []
 eliminate-whitespaces = []
+enable-api-client-cache = []
 fix-halfwidth-katakana = []
 experimental = ["fix-halfwidth-katakana"]
 
@@ -28,16 +29,21 @@ log.workspace = true
 rapidfuzz = "0.5.0"
 regex = { version = "1.11.1", default-features = false, features = ["std", "unicode-perl"] }
 serde.workspace = true
+serde_json = "1.0.150"
 reqwest = { version = "0.13.2", default-features = false, features = ["json", "rustls"] }
 js-sys = "0.3.74"
 thiserror = "2.0.3"
 jisx0401 = "0.1.1"
 strum = { version = "0.27.1", features = ["derive"] }
 trait-variant = "0.1.2"
+web-time = "1.1.0"
 
 [dev-dependencies]
 tokio.workspace = true
 wasm-bindgen-test = { workspace = true }
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+gloo-timers = { version = "0.4.0", features = ["futures"] } # wasm_bindgen_test用
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 mockito = "1.6.1" # mockitoがwasm32に対応していないため
