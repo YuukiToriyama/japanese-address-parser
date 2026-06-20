@@ -5,6 +5,7 @@
 //! - `city-name-correction`*(enabled by default)*: Enable autocorrection if ambiguous city name was typed
 //! - `format-house-number`: Enable normalization of addresses after town name
 //! - `eliminate-whitespaces`*(experimental)*: Enable elimination of whitespaces from given text
+//! - `enable-api-client-cache`: Enable In-Memory cache for api client
 //! - `fix-halfwidth-katakana`*(experimental)*: Enable fixing halfwidth katakana with fullwidth ones
 //! - `experimental`: Enable experimental module
 

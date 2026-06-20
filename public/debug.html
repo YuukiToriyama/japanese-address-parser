@@ -59,10 +59,10 @@
     const inputTextArea = document.getElementById("input")
 
     init().then(() => {
+        const parser = new Parser();
         document.getElementById("exec").addEventListener("click", () => {
             const input = inputTextArea.value
             alert("input: " + input)
-            const parser = new Parser()
             parser.parse(input).then(result => {
                 document.getElementById("result").appendChild(
                     createRow(input, result)

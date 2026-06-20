@@ -17,7 +17,7 @@ path = "src/main.rs"
 [dependencies]
 anyhow = "1.0.102"
 futures = "0.3.32"
-japanese-address-parser = { version = "0.3.5", path = "../core", features = ["experimental"] }
+japanese-address-parser = { version = "0.3.5", path = "../core", features = ["experimental", "enable-api-client-cache"] }
 rmcp = { version = "1.6.0", features = ["server", "transport-io"] }
 schemars = "1.2.1"
 serde.workspace = true
