@@ -62,6 +62,9 @@ impl InMemoryCache {
             .write()
             .unwrap_or_else(|poisoned| poisoned.into_inner());
 
+        // まず、期限切れのデータを一掃する
+        store.retain(|_, entry| entry.registered_at.elapsed() < self.ttl);
+
         // キャッシュの最大容量を超える場合は、キャッシュに登録した時刻が最も古いものが削除される
         if store.len() >= self.max_entries && !store.contains_key(key) {
             if let Some(oldest_key) = store

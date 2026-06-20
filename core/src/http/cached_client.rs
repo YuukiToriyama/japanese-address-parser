@@ -151,15 +151,16 @@ mod tests {
     #[cfg_attr(not(target_arch = "wasm32"), tokio::test)]
     #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
     async fn キャッシュミス時はfetchによるデータを返すこと() {
-        let client = CachedApiClient::<MockApiClient>::with_config(Duration::from_secs(1), 10);
+        let client =
+            CachedApiClient::<MockApiClient>::with_config(Duration::from_millis(1_000), 10);
         let response = client.fetch::<Value>("/endpoint").await.unwrap();
         assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
 
-        // 1秒待機
+        // 1.1秒待機(TTL+0.1秒待機)
         #[cfg(not(target_arch = "wasm32"))]
-        tokio::time::sleep(Duration::from_secs(1)).await;
+        tokio::time::sleep(Duration::from_millis(1_100)).await;
         #[cfg(target_arch = "wasm32")]
-        gloo_timers::future::TimeoutFuture::new(1_000).await;
+        gloo_timers::future::TimeoutFuture::new(1_100).await;
 
         let response = client.fetch::<Value>("/endpoint").await.unwrap();
         // TTL=1秒なのでキャッシュミスになるはず
@@ -182,12 +183,13 @@ mod tests {
     #[test]
     #[cfg(feature = "blocking")]
     fn キャッシュミス時はfetchによるデータを返すこと_blocking() {
-        let client = CachedApiClient::<MockApiClient>::with_config(Duration::from_secs(1), 10);
+        let client =
+            CachedApiClient::<MockApiClient>::with_config(Duration::from_millis(1_000), 10);
         let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
         assert_eq!(response.get("called_count").unwrap().as_u64(), Some(1));
 
-        // 1秒待機
-        std::thread::sleep(Duration::from_secs(1));
+        // 1.1秒待機(TTL+0.1秒待機)
+        std::thread::sleep(Duration::from_millis(1_100));
 
         let response = client.fetch_blocking::<Value>("/endpoint").unwrap();
         // TTL=1秒なのでキャッシュミスになるはず
