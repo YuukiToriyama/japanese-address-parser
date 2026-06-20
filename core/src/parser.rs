@@ -3,6 +3,8 @@ use std::sync::Arc;
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
 use crate::domain::geolonia::error::{Error, ParseErrorKind};
+#[cfg(feature = "enable-api-client-cache")]
+use crate::http::cached_client::CachedApiClient;
 use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
 use crate::tokenizer::{End, Tokenizer};
@@ -36,7 +38,10 @@ impl From<Tokenizer<End>> for Address {
 /// }
 /// ```
 pub struct Parser {
+    #[cfg(not(feature = "enable-api-client-cache"))]
     interactor: Arc<GeoloniaInteractorImpl<ReqwestApiClient>>,
+    #[cfg(feature = "enable-api-client-cache")]
+    interactor: Arc<GeoloniaInteractorImpl<CachedApiClient<ReqwestApiClient>>>,
 }
 
 impl Default for Parser {
@@ -247,6 +252,137 @@ mod tests {
     }
 }
 
+/// Tests specifically for the `enable-api-client-cache` feature.
+///
+/// These tests verify that `Parser` behaves correctly when it is backed by
+/// `CachedApiClient<ReqwestApiClient>` instead of the plain `ReqwestApiClient`.
+/// The caching layer must be transparent to callers: parse results must be
+/// identical regardless of whether a response comes from the network or the
+/// in-memory cache.
+#[cfg(all(test, feature = "enable-api-client-cache", not(feature = "blocking")))]
+mod cached_client_tests {
+    use crate::domain::geolonia::error::ParseErrorKind;
+    use crate::parser::Parser;
+
+    // --- success path ---
+
+    /// A successful parse must still succeed when the cache feature is active.
+    /// Calling parse() a second time with the same address exercises the cache
+    /// warm path; both results must be identical.
+    #[tokio::test]
+    async fn キャッシュ有効時に正常な住所をパースできること() {
+        let parser = Parser::default();
+        let address = "青森県青森市長島１丁目１−１";
+
+        let first = parser.parse(address).await;
+        let second = parser.parse(address).await;
+
+        assert_eq!(first.address.prefecture, "青森県");
+        assert_eq!(first.address.city, "青森市");
+        assert!(first.error.is_none());
+
+        // Second call should return the same data (served from cache).
+        assert_eq!(first.address, second.address);
+        assert_eq!(first.error, second.error);
+    }
+
+    /// Repeated calls with different addresses must not interfere with each
+    /// other via the cache.
+    #[tokio::test]
+    async fn キャッシュ有効時に異なる住所を連続してパースできること() {
+        let parser = Parser::default();
+
+        let result_a = parser.parse("青森県青森市長島１丁目１−１").await;
+        let result_b = parser.parse("兵庫県淡路市生穂新島8番地").await;
+
+        assert_eq!(result_a.address.prefecture, "青森県");
+        assert_eq!(result_a.address.city, "青森市");
+        assert!(result_a.error.is_none());
+
+        assert_eq!(result_b.address.prefecture, "兵庫県");
+        assert_eq!(result_b.address.city, "淡路市");
+        assert!(result_b.error.is_none());
+    }
+
+    // --- error paths ---
+
+    /// An invalid prefecture must still return a Prefecture error when the
+    /// cache feature is active.
+    #[tokio::test]
+    async fn キャッシュ有効時に都道府県名が誤っている場合はエラーになること() {
+        let parser = Parser::default();
+        let result = parser.parse("青盛県青森市長島１丁目１−１").await;
+
+        assert_eq!(result.address.prefecture, "");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青盛県青森市長島１丁目１−１");
+        assert!(result.error.is_some());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::Prefecture.to_string()
+        );
+    }
+
+    /// An invalid city must still return a City error when the cache feature
+    /// is active.
+    #[tokio::test]
+    async fn キャッシュ有効時に市区町村名が誤っている場合はエラーになること() {
+        let parser = Parser::default();
+        let result = parser.parse("青森県青盛市長島１丁目１−１").await;
+
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "青盛市長島１丁目１−１");
+        assert!(result.error.is_some());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::City.to_string()
+        );
+    }
+
+    /// An invalid town must still return a Town error when the cache feature
+    /// is active.
+    #[tokio::test]
+    async fn キャッシュ有効時に町名が誤っている場合はエラーになること() {
+        let parser = Parser::default();
+        let result = parser.parse("青森県青森市永嶋１丁目１−１").await;
+
+        assert_eq!(result.address.prefecture, "青森県");
+        assert_eq!(result.address.city, "青森市");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "永嶋１丁目１−１");
+        assert!(result.error.is_some());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::Town.to_string()
+        );
+    }
+
+    /// Calling parse() on the same invalid address twice must return
+    /// identical (cached) errors – the cache must not swallow errors or
+    /// transform them.
+    #[tokio::test]
+    async fn キャッシュ有効時にエラーは繰り返し呼び出しても一貫していること() {
+        let parser = Parser::default();
+        let address = "青盛県青森市長島１丁目１−１"; // bad prefecture
+
+        let first = parser.parse(address).await;
+        let second = parser.parse(address).await;
+
+        // Both calls must report a prefecture error.
+        assert!(first.error.is_some());
+        assert!(second.error.is_some());
+        assert_eq!(
+            first.error.unwrap().error_message,
+            second.error.unwrap().error_message
+        );
+        // rest field must be identical in both results.
+        assert_eq!(first.address.rest, second.address.rest);
+    }
+}
+
 #[cfg(all(test, feature = "blocking"))]
 mod blocking_tests {
     use crate::domain::geolonia::error::ParseErrorKind;
@@ -278,8 +414,59 @@ mod blocking_tests {
     }
 }
 
+/// Blocking tests for the `enable-api-client-cache` + `blocking` feature combination.
+///
+/// When both features are active Parser uses `CachedApiClient<ReqwestApiClient>` AND
+/// exposes a synchronous `parse_blocking` method. These tests verify that the
+/// blocking surface is unaffected by the caching layer.
+#[cfg(all(test, feature = "blocking", feature = "enable-api-client-cache"))]
+mod blocking_cached_client_tests {
+    use crate::domain::geolonia::error::ParseErrorKind;
+    use crate::parser::Parser;
+
+    /// A successful blocking parse must still succeed when the cache feature is
+    /// active. Calling parse_blocking() twice with the same address exercises
+    /// the cache warm path; both results must be identical.
+    #[test]
+    fn キャッシュ有効時に正常な住所をブロッキングでパースできること() {
+        let parser = Parser::default();
+        let address = "埼玉県秩父市熊木町8番15号";
+
+        let first = parser.parse_blocking(address);
+        let second = parser.parse_blocking(address);
+
+        assert_eq!(first.address.prefecture, "埼玉県");
+        assert_eq!(first.address.city, "秩父市");
+        assert_eq!(first.address.town, "熊木町");
+        assert_eq!(first.address.rest, "8番15号");
+        assert!(first.error.is_none());
+
+        // Second call must return identical data from cache.
+        assert_eq!(first.address, second.address);
+        assert_eq!(first.error, second.error);
+    }
+
+    /// A City error must still be returned when the cache feature is active
+    /// and the blocking API is used.
+    #[test]
+    fn キャッシュ有効時に市区町村名が誤っている場合はブロッキングでエラーになること() {
+        let parser = Parser::default();
+        let result = parser.parse_blocking("埼玉県秩父柿熊木町8番15号");
+
+        assert_eq!(result.address.prefecture, "埼玉県");
+        assert_eq!(result.address.city, "");
+        assert_eq!(result.address.town, "");
+        assert_eq!(result.address.rest, "秩父柿熊木町8番15号");
+        assert!(result.error.is_some());
+        assert_eq!(
+            result.error.unwrap().error_message,
+            ParseErrorKind::City.to_string()
+        );
+    }
+}
+
 #[derive(Serialize, PartialEq, Debug)]
 pub struct ParseResult {
     pub address: Address,
-    pub error: Option<Error>,
+
 }
