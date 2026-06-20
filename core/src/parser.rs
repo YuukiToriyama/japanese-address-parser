@@ -1,10 +1,13 @@
+mod pure;
+
 use std::sync::Arc;
 
 use crate::domain::common::token::Token;
 use crate::domain::geolonia::entity::Address;
-use crate::domain::geolonia::error::{Error, ParseErrorKind};
+use crate::domain::geolonia::error::Error;
 use crate::http::reqwest_client::ReqwestApiClient;
 use crate::interactor::geolonia::{GeoloniaInteractor, GeoloniaInteractorImpl};
+use crate::parser::pure::{PureParser, PureParserAction};
 use crate::tokenizer::{End, Tokenizer};
 use serde::Serialize;
 
@@ -52,70 +55,27 @@ impl Parser {
     /// Parses the given `address` asynchronously.
     pub async fn parse(&self, address: &str) -> ParseResult {
         let interactor = self.interactor.clone();
-        let tokenizer = Tokenizer::new(address);
-        // 都道府県を特定
-        let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
-            Ok(found) => found,
-            Err(tokenizer) => {
-                return ParseResult {
-                    address: Address::from(tokenizer),
-                    error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-                }
-            }
-        };
-        // その都道府県の市町村名リストを取得
-        let prefecture_master = match interactor.get_prefecture_master(prefecture.name_ja()).await {
-            Err(error) => {
-                return ParseResult {
-                    address: Address::from(tokenizer.finish()),
-                    error: Some(error),
-                };
-            }
-            Ok(result) => result,
-        };
-        // 市町村名を特定
-        let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
-            Ok(found) => found,
-            Err(not_found) => {
-                // 市区町村が特定できない場合かつフィーチャフラグが有効な場合、郡名が抜けている可能性を検討
-                match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
-                    Ok(found) if cfg!(feature = "city-name-correction") => found,
-                    _ => {
-                        // それでも見つからない場合は終了
-                        return ParseResult {
-                            address: Address::from(tokenizer.finish()),
-                            error: Some(Error::new_parse_error(ParseErrorKind::City)),
-                        };
+        let mut pure_parser = PureParser::new(address);
+
+        loop {
+            match pure_parser.advance() {
+                PureParserAction::RequestCityNameList(pref_name) => {
+                    match interactor.get_prefecture_master(&pref_name).await {
+                        Ok(result) => pure_parser.provide_input(result.cities),
+                        Err(error) => return pure_parser.abort(error),
                     }
                 }
+                PureParserAction::RequestTownNameList(pref_name, city_name) => {
+                    match interactor.get_city_master(&pref_name, &city_name).await {
+                        Ok(result) => {
+                            let town_names = result.towns.into_iter().map(|x| x.name).collect();
+                            pure_parser.provide_input(town_names);
+                        }
+                        Err(error) => return pure_parser.abort(error),
+                    }
+                }
+                PureParserAction::Done(result) => return result,
             }
-        };
-        // その市町村の町名リストを取得
-        let city = match interactor
-            .get_city_master(prefecture.name_ja(), &city_name)
-            .await
-        {
-            Err(error) => {
-                return ParseResult {
-                    address: Address::from(tokenizer.finish()),
-                    error: Some(error),
-                };
-            }
-            Ok(result) => result,
-        };
-        // 町名を特定
-        let Ok((_, tokenizer)) =
-            tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
-        else {
-            return ParseResult {
-                address: Address::from(tokenizer.finish()),
-                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-            };
-        };
-
-        ParseResult {
-            address: Address::from(tokenizer.finish()),
-            error: None,
         }
     }
 
@@ -123,61 +83,27 @@ impl Parser {
     #[cfg(feature = "blocking")]
     pub fn parse_blocking(&self, address: &str) -> ParseResult {
         let interactor = self.interactor.clone();
-        let tokenizer = Tokenizer::new(address);
-        let (prefecture, tokenizer) = match tokenizer.read_prefecture() {
-            Ok(found) => found,
-            Err(tokenizer) => {
-                return ParseResult {
-                    address: Address::from(tokenizer),
-                    error: Some(Error::new_parse_error(ParseErrorKind::Prefecture)),
-                }
-            }
-        };
-        let prefecture_master =
-            match interactor.get_blocking_prefecture_master(prefecture.name_ja()) {
-                Err(error) => {
-                    return ParseResult {
-                        address: Address::from(tokenizer.finish()),
-                        error: Some(error),
-                    };
-                }
-                Ok(result) => result,
-            };
-        let (city_name, tokenizer) = match tokenizer.read_city(&prefecture_master.cities) {
-            Ok(found) => found,
-            Err(not_found) => {
-                match not_found.read_city_with_county_name_completion(&prefecture_master.cities) {
-                    Ok(found) if cfg!(feature = "city-name-correction") => found,
-                    _ => {
-                        return ParseResult {
-                            address: Address::from(tokenizer.finish()),
-                            error: Some(Error::new_parse_error(ParseErrorKind::City)),
-                        };
+        let mut pure_parser = PureParser::new(address);
+
+        loop {
+            match pure_parser.advance() {
+                PureParserAction::RequestCityNameList(pref_name) => {
+                    match interactor.get_blocking_prefecture_master(&pref_name) {
+                        Ok(result) => pure_parser.provide_input(result.cities),
+                        Err(error) => return pure_parser.abort(error),
                     }
                 }
+                PureParserAction::RequestTownNameList(pref_name, city_name) => {
+                    match interactor.get_blocking_city_master(&pref_name, &city_name) {
+                        Ok(result) => {
+                            let town_names = result.towns.into_iter().map(|x| x.name).collect();
+                            pure_parser.provide_input(town_names);
+                        }
+                        Err(error) => return pure_parser.abort(error),
+                    }
+                }
+                PureParserAction::Done(result) => return result,
             }
-        };
-        let city = match interactor.get_blocking_city_master(prefecture.name_ja(), &city_name) {
-            Err(error) => {
-                return ParseResult {
-                    address: Address::from(tokenizer.finish()),
-                    error: Some(error),
-                };
-            }
-            Ok(result) => result,
-        };
-        let Ok((_, tokenizer)) =
-            tokenizer.read_town(city.towns.iter().map(|x| x.name.clone()).collect())
-        else {
-            return ParseResult {
-                address: Address::from(tokenizer.finish()),
-                error: Some(Error::new_parse_error(ParseErrorKind::Town)),
-            };
-        };
-
-        ParseResult {
-            address: Address::from(tokenizer.finish()),
-            error: None,
         }
     }
 }
