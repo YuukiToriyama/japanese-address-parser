@@ -20,6 +20,7 @@ blocking = ["reqwest/blocking"]
 city-name-correction = []
 format-house-number = []
 eliminate-whitespaces = []
+enable-api-client-cache = []
 fix-halfwidth-katakana = []
 experimental = ["fix-halfwidth-katakana"]
 
