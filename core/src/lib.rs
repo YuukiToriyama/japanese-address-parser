@@ -10,6 +10,9 @@
 //! - `experimental`: Enable experimental module
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![feature(test)]
+extern crate test;
+
 #[cfg(all(target_family = "wasm", feature = "blocking"))]
 compile_error! {
     "The `blocking` feature is not supported with wasm target."
