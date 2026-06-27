@@ -133,9 +133,13 @@ struct OrthographicalVariantMatcher {
 }
 
 impl OrthographicalVariantMatcher {
-    pub fn new<T: Into<String>>(input: T, target: T, variants: Vec<OrthographicalVariant>) -> Self {
-        let input = input.into();
-        let target = target.into();
+    pub fn new<I: AsRef<str>, T: AsRef<str>>(
+        input: I,
+        target: T,
+        variants: Vec<OrthographicalVariant>,
+    ) -> Self {
+        let input = input.as_ref();
+        let target = target.as_ref();
         Self {
             input: TextCursor {
                 body: input.chars().collect(),
