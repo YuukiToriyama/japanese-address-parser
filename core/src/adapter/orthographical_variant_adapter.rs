@@ -186,9 +186,7 @@ fn modify_specific_character(text: &str, from: char, to: char) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::adapter::orthographical_variant_adapter::{
-        OrthographicalVariant, OrthographicalVariantAdapter,
-    };
+    use crate::adapter::orthographical_variant_adapter::OrthographicalVariant;
 
     #[test]
     fn permutations() {
@@ -210,33 +208,5 @@ mod tests {
                 ('ガ', 'が'),
             ]
         );
-    }
-
-    extern crate test;
-    use test::Bencher;
-
-    #[bench]
-    fn bench_orthographical_variant_performance_regression(b: &mut Bencher) {
-        let adapter = OrthographicalVariantAdapter {
-            variant_list: vec![
-                OrthographicalVariant::ケ,
-                OrthographicalVariant::崎,
-                OrthographicalVariant::塚,
-                OrthographicalVariant::渕,
-                OrthographicalVariant::嶋,
-                OrthographicalVariant::龍,
-                OrthographicalVariant::澤,
-                OrthographicalVariant::濱,
-                OrthographicalVariant::曾,
-                OrthographicalVariant::國,
-            ],
-        };
-
-        let input = "霞ヶ崎塚渕嶋竜沢浜曽国 １丁目";
-        let target = "霞ケ関";
-
-        b.iter(|| {
-            adapter.apply(input, target);
-        });
     }
 }
