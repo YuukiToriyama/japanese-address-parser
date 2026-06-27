@@ -102,19 +102,6 @@ impl OrthographicalVariant {
             溪 => &['溪', '渓'],
         }
     }
-
-    fn permutations(&self) -> Vec<(char, char)> {
-        let characters = self.value();
-        let mut permutations = Vec::with_capacity(characters.len() * (characters.len() - 1));
-        for &a in characters {
-            for &b in characters {
-                if a != b {
-                    permutations.push((a, b));
-                }
-            }
-        }
-        permutations
-    }
 }
 
 struct TextCursor {
@@ -271,85 +258,25 @@ impl OrthographicalVariantAdapter {
         if variants.is_empty() {
             return None;
         }
-        self.match_with_variants(input, region_name, variants)
+
+        let mut matcher = OrthographicalVariantMatcher::new(input, region_name, variants);
+
+        if matcher.matches() {
+            return Some((
+                region_name.to_string(),
+                input.chars().skip(region_name.chars().count()).collect(),
+            ));
+        }
+        None
     }
 
     /// マッチ候補の文字列(target)と表記揺れパターン(self.variant_list)を照らし合わせ、マッチ候補の文字列に含まれる文字のパターンのみを選別する
-    fn filter_variants(&self, target: &str) -> Vec<&OrthographicalVariant> {
+    fn filter_variants(&self, target: &str) -> Vec<OrthographicalVariant> {
         // マッチ候補の文字列
         self.variant_list
             .iter()
             .filter(|v| v.value().iter().any(|&c| target.contains(c)))
+            .cloned()
             .collect()
-    }
-
-    fn match_with_variants(
-        &self,
-        input: &str,
-        target: &str,
-        variants: Vec<&OrthographicalVariant>,
-    ) -> Option<(String, String)> {
-        // マッチ候補を容れておくためのVector
-        let mut candidates = vec![target.to_string()];
-        // パターンを一つづつ検証していく
-        for variant in variants {
-            let mut semi_candidates = vec![];
-            // variantから順列を作成
-            // ["ケ", "ヶ", "が"] -> (ケ, ヶ), (ケ, が), (ヶ, ケ), (ヶ, が), (が, ケ), (が, ヶ)
-            for (a, b) in variant.permutations() {
-                for candidate in candidates.iter().filter(|x| x.contains(a)) {
-                    let modified_candidate = modify_specific_character(candidate, a, b);
-                    if input.starts_with(&modified_candidate) {
-                        // マッチすれば早期リターン
-                        return Some((
-                            target.to_string(),
-                            input
-                                .chars()
-                                .skip(modified_candidate.chars().count())
-                                .collect(),
-                        ));
-                    } else {
-                        // マッチしなければsemi_candidatesに置き換え後の文字列をpush
-                        semi_candidates.push(modified_candidate);
-                    }
-                }
-            }
-            candidates = semi_candidates;
-            candidates.push(target.to_string());
-        }
-        None
-    }
-}
-
-fn modify_specific_character(text: &str, from: char, to: char) -> String {
-    text.chars()
-        .map(|x| if x == from { to } else { x })
-        .collect()
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::adapter::orthographical_variant_adapter::OrthographicalVariant;
-
-    #[test]
-    fn permutations() {
-        let variant = OrthographicalVariant::ケ;
-        assert_eq!(
-            variant.permutations(),
-            vec![
-                ('ケ', 'ヶ'),
-                ('ケ', 'が'),
-                ('ケ', 'ガ'),
-                ('ヶ', 'ケ'),
-                ('ヶ', 'が'),
-                ('ヶ', 'ガ'),
-                ('が', 'ケ'),
-                ('が', 'ヶ'),
-                ('が', 'ガ'),
-                ('ガ', 'ケ'),
-                ('ガ', 'ヶ'),
-                ('ガ', 'が'),
-            ]
-        );
     }
 }
