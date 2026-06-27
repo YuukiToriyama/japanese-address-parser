@@ -117,13 +117,12 @@ impl OrthographicalVariant {
     }
 }
 
-#[derive(Clone)]
 pub struct OrthographicalVariantAdapter {
     pub variant_list: Vec<OrthographicalVariant>,
 }
 
 impl OrthographicalVariantAdapter {
-    pub fn apply(self, input: &str, region_name: &str) -> Option<(String, String)> {
+    pub fn apply(&self, input: &str, region_name: &str) -> Option<(String, String)> {
         let variants = self.filter_variants(input);
         if variants.is_empty() {
             return None;
@@ -235,7 +234,7 @@ mod tests {
         let target = "霞ケ関";
 
         b.iter(|| {
-            adapter.clone().apply(input, target);
+            adapter.apply(input, target);
         });
     }
 }
