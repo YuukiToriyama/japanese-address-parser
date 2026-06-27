@@ -117,6 +117,149 @@ impl OrthographicalVariant {
     }
 }
 
+struct TextCursor {
+    body: Vec<char>,
+    index: usize,
+}
+
+impl TextCursor {
+    fn advance(&mut self) {
+        self.index += 1;
+    }
+
+    fn current_char(&self) -> char {
+        self.body[self.index]
+    }
+
+    fn is_terminated(&self) -> bool {
+        self.index >= self.body.len()
+    }
+}
+
+struct OrthographicalVariantMatcher {
+    /// ユーザーから入力された文字列
+    input: TextCursor,
+    /// 比較対象となる文字列
+    target: TextCursor,
+    /// 表記揺れとして考慮する文字種のパターン群
+    variants: Vec<OrthographicalVariant>,
+}
+
+impl OrthographicalVariantMatcher {
+    pub fn new<T: Into<String>>(input: T, target: T, variants: Vec<OrthographicalVariant>) -> Self {
+        let input = input.into();
+        let target = target.into();
+        Self {
+            input: TextCursor {
+                body: input.chars().collect(),
+                index: 0,
+            },
+            target: TextCursor {
+                body: target.chars().collect(),
+                index: 0,
+            },
+            variants,
+        }
+    }
+
+    pub fn matches(&mut self) -> bool {
+        // targetを先頭から読み取っていく
+        'outer_loop: while !self.target.is_terminated() {
+            // targetには残りがあるのにinputを読み切ってしまった場合は、処理を終了する
+            if self.input.is_terminated() {
+                return false;
+            }
+
+            let input_char = self.input.current_char();
+            let target_char = self.target.current_char();
+
+            // 文字が一致する場合は、次の文字の評価に進む
+            if input_char == target_char {
+                self.input.advance();
+                self.target.advance();
+                continue;
+            }
+
+            // 文字が一致しない場合は、表記揺れの可能性を疑う
+            for variant in &self.variants {
+                // 同じ表記揺れパターンを共有している場合は、同じ文字であると評価して次の文字の評価に進む
+                if variant.value().contains(&input_char) && variant.value().contains(&target_char) {
+                    self.input.advance();
+                    self.target.advance();
+                    continue 'outer_loop;
+                }
+            }
+
+            // 表記揺れを考慮しても文字が一致しない場合は、マッチ失敗としてfalseを返す
+            return false;
+        }
+
+        // targetを最後まで読み切ったら、マッチ成功としてtrueを返す
+        true
+    }
+}
+
+#[cfg(test)]
+mod matcher_tests {
+    use crate::adapter::orthographical_variant_adapter::{
+        OrthographicalVariant, OrthographicalVariantMatcher,
+    };
+
+    #[test]
+    fn 比較対象より入力のほうが短い場合_falseを返す() {
+        let mut matcher = OrthographicalVariantMatcher::new("千駄ケ谷", "千駄ケ谷四丁目", vec![]);
+        assert_eq!(matcher.matches(), false);
+    }
+
+    #[test]
+    fn 比較対象が入力に対して前方一致する場合_trueを返す() {
+        let mut matcher =
+            OrthographicalVariantMatcher::new("千駄ケ谷四丁目1-1", "千駄ケ谷四丁目", vec![]);
+        assert_eq!(matcher.matches(), true);
+    }
+
+    #[test]
+    fn 表記揺れを考慮したうえで比較対象が入力に対して前方一致する場合_trueを返す() {
+        let mut matcher = OrthographicalVariantMatcher::new(
+            "千駄ヶ谷四丁目1-1",
+            "千駄ケ谷四丁目",
+            vec![OrthographicalVariant::ケ],
+        );
+        assert_eq!(matcher.matches(), true);
+    }
+
+    #[test]
+    fn 表記揺れを考慮しても文字が一致しない場合_falseを返す() {
+        let mut matcher = OrthographicalVariantMatcher::new(
+            "百駄ヶ谷四丁目1-1",
+            "千駄ケ谷四丁目",
+            vec![OrthographicalVariant::ケ],
+        );
+        assert_eq!(matcher.matches(), false);
+    }
+
+    #[test]
+    fn 表記揺れがあるがvariantsに何も指定されていない場合_falseを返す() {
+        let mut matcher =
+            OrthographicalVariantMatcher::new("千駄ヶ谷四丁目", "千駄ケ谷四丁目", vec![]);
+        assert_eq!(matcher.matches(), false);
+    }
+
+    #[test]
+    fn 複数個の表記揺れを考慮したうえで比較対象が入力に対して前方一致する場合_trueを返す() {
+        let mut matcher = OrthographicalVariantMatcher::new(
+            "松が﨑御所之内町",
+            "松ケ崎御所ノ内町",
+            vec![
+                OrthographicalVariant::崎,
+                OrthographicalVariant::の,
+                OrthographicalVariant::ケ,
+            ],
+        );
+        assert_eq!(matcher.matches(), true);
+    }
+}
+
 pub struct OrthographicalVariantAdapter {
     pub variant_list: Vec<OrthographicalVariant>,
 }
