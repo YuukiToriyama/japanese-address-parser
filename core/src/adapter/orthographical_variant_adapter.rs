@@ -123,18 +123,20 @@ pub struct OrthographicalVariantAdapter {
 
 impl OrthographicalVariantAdapter {
     pub fn apply(&self, input: &str, region_name: &str) -> Option<(String, String)> {
-        let variants = self.filter_variants(input);
+        // 必要最低限のパターンのみを選別する
+        let variants = self.filter_variants(region_name);
         if variants.is_empty() {
             return None;
         }
         self.match_with_variants(input, region_name, variants)
     }
 
-    fn filter_variants(&self, input: &str) -> Vec<&OrthographicalVariant> {
-        // 必要なパターンのみを選別する
+    /// マッチ候補の文字列(target)と表記揺れパターン(self.variant_list)を照らし合わせ、マッチ候補の文字列に含まれる文字のパターンのみを選別する
+    fn filter_variants(&self, target: &str) -> Vec<&OrthographicalVariant> {
+        // マッチ候補の文字列
         self.variant_list
             .iter()
-            .filter(|v| v.value().iter().any(|&c| input.contains(c)))
+            .filter(|v| v.value().iter().any(|&c| target.contains(c)))
             .collect()
     }
 
