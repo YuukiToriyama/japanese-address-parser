@@ -28,7 +28,7 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Setup wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        run: curl https://wasm-bindgen.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Build wasm module
         run: wasm-pack build --release --target web --scope toriyama --out-name japanese_address_parser
