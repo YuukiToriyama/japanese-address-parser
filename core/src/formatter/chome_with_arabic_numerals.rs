@@ -1,4 +1,5 @@
 use crate::util::converter::JapaneseNumber;
+use std::sync::LazyLock;
 
 pub(crate) fn format_chome_with_arabic_numerals(target: &str) -> Option<String> {
     let chome = extract_chome(target)?;
@@ -8,13 +9,14 @@ pub(crate) fn format_chome_with_arabic_numerals(target: &str) -> Option<String> 
 
 fn extract_chome(target: &str) -> Option<String> {
     if cfg!(target_arch = "wasm32") {
-        js_sys::RegExp::new(r"\D+(\d+)丁目", "")
-            .exec(target)?
-            .get(1)
-            .as_string()
+        static REGEX: LazyLock<js_sys::RegExp> =
+            LazyLock::new(|| js_sys::RegExp::new(r"\D+(\d+)丁目", ""));
+        REGEX.exec(target)?.get(1).as_string()
     } else {
-        regex::Regex::new(r"\D+(?<chome>\d+)丁目")
-            .unwrap()
+        static REGEX: LazyLock<regex::Regex> = LazyLock::new(|| {
+            regex::Regex::new(r"\D+(?<chome>\d+)丁目").expect("regex compile error")
+        });
+        REGEX
             .captures(target)?
             .name("chome")
             .map(|m| m.as_str().to_string())

@@ -1,7 +1,12 @@
+use std::sync::LazyLock;
+
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) fn format_house_number(input: &str) -> Result<String, &'static str> {
-    let captures = regex::Regex::new(r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$")
-        .unwrap()
+    static REGEX: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new(r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$")
+            .expect("regex compile error")
+    });
+    let captures = REGEX
         .captures(input)
         .ok_or("マッチするものがありませんでした")?;
     let block_number = captures
@@ -24,12 +29,15 @@ pub(crate) fn format_house_number(input: &str) -> Result<String, &'static str> {
 
 #[cfg(target_arch = "wasm32")]
 pub(crate) fn format_house_number(input: &str) -> Result<String, &'static str> {
-    let captures = js_sys::RegExp::new(
-        r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$",
-        "",
-    )
-    .exec(input)
-    .ok_or("マッチするものがありませんでした")?;
+    static REGEX: LazyLock<js_sys::RegExp> = LazyLock::new(|| {
+        js_sys::RegExp::new(
+            r"(?<block_number>\d+)\D+(?<house_number>\d+)(?<rest>.*)$",
+            "",
+        )
+    });
+    let captures = REGEX
+        .exec(input)
+        .ok_or("マッチするものがありませんでした")?;
     let block_number = captures
         .get(1)
         .as_string()

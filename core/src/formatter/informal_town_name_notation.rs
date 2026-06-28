@@ -1,24 +1,35 @@
 use crate::util::converter::JapaneseNumber;
+use std::sync::LazyLock;
 
 /// 住居表示実施済みの住所でN丁目のNが算用数字の場合に漢数字に書き換えます
 pub(crate) fn format_informal_town_name_notation(target: &str) -> Option<String> {
     let (town_name, chome, rest) = if cfg!(target_arch = "wasm32") {
-        js_sys::RegExp::new(
-            r"^(\D+)(\d+)[\u002D\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u30FC\uFF0D\uFF70]*(.*)$",
-            "",
-        ).exec(target).and_then(|captures| Some((
-            captures.get(1).as_string()?,
-            captures.get(2).as_string()?.parse::<i8>().ok()?,
-            captures.get(3).as_string()?,
-        )))?
+        static REGEX: LazyLock<js_sys::RegExp> = LazyLock::new(|| {
+            js_sys::RegExp::new(
+                r"^(\D+)(\d+)[\u002D\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u30FC\uFF0D\uFF70]*(.*)$",
+                "",
+            )
+        });
+        REGEX.exec(target).and_then(|captures| {
+            Some((
+                captures.get(1).as_string()?,
+                captures.get(2).as_string()?.parse::<i8>().ok()?,
+                captures.get(3).as_string()?,
+            ))
+        })?
     } else {
-        regex::Regex::new(
-            r"^(?<town_name>\D+)(?<chome>\d+)[\u002D\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u30FC\uFF0D\uFF70]*(?<rest>.*)$",
-        ).unwrap().captures(target).and_then(|captures| Some((
-            captures.name("town_name")?.as_str().to_string(),
-            captures.name("chome")?.as_str().parse::<i8>().ok()?,
-            captures.name("rest")?.as_str().to_string(),
-        )))?
+        static REGEX: LazyLock<regex::Regex> = LazyLock::new(|| {
+            regex::Regex::new(
+                r"^(?<town_name>\D+)(?<chome>\d+)[\u002D\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u30FC\uFF0D\uFF70]*(?<rest>.*)$",
+            ).expect("regex compile error")
+        });
+        REGEX.captures(target).and_then(|captures| {
+            Some((
+                captures.name("town_name")?.as_str().to_string(),
+                captures.name("chome")?.as_str().parse::<i8>().ok()?,
+                captures.name("rest")?.as_str().to_string(),
+            ))
+        })?
     };
     // 帯広市西十九条四十二丁目の42が最大なので、43以上の値の場合はNoneを返すようにする
     if chome > 42 {
