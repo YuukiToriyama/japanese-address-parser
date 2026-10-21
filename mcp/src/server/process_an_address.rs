@@ -1,6 +1,6 @@
 use japanese_address_parser::experimental::parser::Parser;
 use rmcp::ErrorData;
-use rmcp::model::{CallToolResult, Content};
+use rmcp::model::{CallToolResult, ContentBlock};
 use schemars::JsonSchema;
 use serde::Deserialize;
 
@@ -19,5 +19,5 @@ pub(crate) async fn process_an_address(
     let result = parser.parse(&params.address).await;
     let json = serde_json::to_string_pretty(&result)
         .map_err(|e| ErrorData::internal_error(e.to_string(), None))?;
-    Ok(CallToolResult::success(vec![Content::text(json)]))
+    Ok(CallToolResult::success(vec![ContentBlock::text(json)]))
 }
