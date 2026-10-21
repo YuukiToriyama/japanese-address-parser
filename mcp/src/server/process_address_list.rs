@@ -49,9 +49,9 @@ pub(crate) async fn process_address_list(
     entries.sort_by_key(|(index, _)| *index);
     let results: Vec<Value> = entries.into_iter().map(|(_, v)| v).collect();
 
-    let json = serde_json::to_value(&results)
-        .map_err(|e| ErrorData::internal_error(e.to_string(), None))?;
-    Ok(CallToolResult::structured(json))
+    Ok(CallToolResult::structured(serde_json::json!({
+        "results": results
+    })))
 }
 
 async fn parse_entry(parser: Arc<Parser>, index: usize, address: String) -> (usize, Value) {
