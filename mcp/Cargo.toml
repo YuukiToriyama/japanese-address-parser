@@ -9,6 +9,7 @@ authors.workspace = true
 license.workspace = true
 keywords = ["parser", "geo", "mcp"]
 categories.workspace = true
+rust-version = "1.88.0"
 
 [[bin]]
 name = "japanese-address-parser-mcp"
