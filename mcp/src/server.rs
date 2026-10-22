@@ -3,8 +3,9 @@ mod process_an_address;
 
 use rmcp::handler::server::tool::ToolRouter;
 use rmcp::handler::server::wrapper::Parameters;
-use rmcp::model::{CallToolResult, Implementation, ServerCapabilities, ServerInfo};
+use rmcp::model::{CallToolResult, Implementation, ServerCapabilities, ServerConfig};
 use rmcp::{ErrorData, ServerHandler, tool, tool_handler, tool_router};
+use serde_json::json;
 
 #[derive(Clone)]
 pub(crate) struct ParseAddressServer {
@@ -18,6 +19,13 @@ impl ParseAddressServer {
         Self {
             tool_router: Self::tool_router(),
         }
+    }
+
+    #[tool(description = "japanese-address-parser-mcpのバージョンを取得します")]
+    async fn get_version(&self) -> Result<CallToolResult, ErrorData> {
+        Ok(CallToolResult::structured(json!({
+            "version": env!("CARGO_PKG_VERSION")
+        })))
     }
 
     #[tool(description = "日本の住所を都道府県・市区町村・町名・それ以降に分割できます")]
@@ -39,10 +47,11 @@ impl ParseAddressServer {
 
 #[tool_handler]
 impl ServerHandler for ParseAddressServer {
-    fn get_info(&self) -> ServerInfo {
+    fn get_info(&self) -> ServerConfig {
         let instructions = "日本の住所を都道府県・市区町村・町名・それ以降に分割できるMCPサーバーです。 \
             process_an_address: 1件の住所を解析 \
             process_address_list: 複数の住所を一括で解析 \
+            get_version: このMCPサーバー自身のバージョンを取得 \
             環境変数 JAPANESE_ADDRESS_PARSER_MCP_MAX_CONCURRENCY で並列度を制御できます（デフォルト:8）";
 
         let server_info = Implementation::from_build_env()
@@ -50,7 +59,7 @@ impl ServerHandler for ParseAddressServer {
             .with_description("An MCP server for parsing addresses of Japan into components.")
             .with_website_url("https://crates.io/crates/japanese-address-parser-mcp");
 
-        ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
+        ServerConfig::new(ServerCapabilities::builder().enable_tools().build())
             .with_server_info(server_info)
             .with_instructions(instructions)
     }
