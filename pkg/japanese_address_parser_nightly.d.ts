@@ -63,9 +63,9 @@ export interface InitOutput {
     readonly parser_new: () => number;
     readonly parser_parse: (a: number, b: number, c: number) => any;
     readonly start: () => void;
-    readonly wasm_bindgen__convert__closures_____invoke__hadddbc57eb82539a: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen__convert__closures_____invoke__h2eeb30aab6b69e9f: (a: number, b: number, c: any, d: any) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__hcef89efdd5fd2305: (a: number, b: number) => void;
+    readonly wasm_bindgen_248947384d859d17___convert__closures_____invoke___js_sys_5235a105fd4230d3___Function_fn_wasm_bindgen_248947384d859d17___JsValue_____wasm_bindgen_248947384d859d17___sys__Undefined___js_sys_5235a105fd4230d3___Function_fn_wasm_bindgen_248947384d859d17___JsValue_____wasm_bindgen_248947384d859d17___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
+    readonly wasm_bindgen_248947384d859d17___convert__closures_____invoke___wasm_bindgen_248947384d859d17___JsValue__core_608f92abc48d28da___result__Result_____wasm_bindgen_248947384d859d17___JsError___true_: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_248947384d859d17___convert__closures_____invoke_______true_: (a: number, b: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;
