@@ -2,6 +2,7 @@ use crate::adapter::orthographical_variant_adapter::{
     OrthographicalVariant, OrthographicalVariantAdapter,
 };
 use crate::domain::common::token::{append_token, Token};
+use crate::formatter::append_machi::append_machi;
 use crate::formatter::chome_with_arabic_numerals::format_chome_with_arabic_numerals;
 use crate::formatter::fullwidth_character::format_fullwidth_numerals;
 use crate::formatter::house_number::format_house_number;
@@ -31,10 +32,14 @@ impl Tokenizer<CityNameFound> {
             vec![prepend_oaza],
             // ④ 先頭に「字」を補う
             vec![prepend_aza],
-            // ⑤ 「〇〇L-M-N」を「〇〇L丁目M-N」に変換する かつ 先頭に「大字」を補う
+            // ⑤ 末尾に「町」を補う
+            vec![append_machi],
+            // ⑥ 「〇〇L-M-N」を「〇〇L丁目M-N」に変換する かつ 先頭に「大字」を補う
             vec![format_informal_town_name_notation, prepend_oaza],
-            // ⑥ 「〇〇L-M-N」を「〇〇L丁目M-N」に変換する かつ 先頭に「字」を補う
+            // ⑦ 「〇〇L-M-N」を「〇〇L丁目M-N」に変換する かつ 先頭に「字」を補う
             vec![format_informal_town_name_notation, prepend_aza],
+            // ⑧ 末尾に「町」を補う かつ 先頭に「大字」を補う
+            vec![append_machi, prepend_oaza],
         ];
         for pattern in formatter_sets_patterns {
             match apply_all(&rest, &pattern).and_then(|it| find_town(&it, &candidates)) {
@@ -265,5 +270,25 @@ mod tests {
         let tokenizer = result.unwrap_err();
         assert_eq!(tokenizer.tokens.len(), 3);
         assert_eq!(tokenizer.tokens[2], Token::Rest("".to_string()));
+
+    #[test]
+    fn read_town_町が省略されている単独町名の場合() {
+        let tokenizer = Tokenizer {
+            tokens: vec![
+                Token::Prefecture("東京都".to_string()),
+                Token::City("八王子市".to_string()),
+            ],
+            rest: "本123".to_string(), // 「本町」から「町」が省略されている
+            _state: PhantomData::<CityNameFound>,
+        };
+        let result = tokenizer.read_town(vec![
+            "本郷町".to_string(),
+            "本町".to_string(),
+        ]);
+        assert!(result.is_ok());
+        let (town_name, tokenizer) = result.unwrap();
+        assert_eq!(town_name, "本町");
+        assert_eq!(tokenizer.rest, "123");
+    }
     }
 }
